@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1386491679 &1
+PresetManager:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_DefaultPresets:
+  - first:
+      m_NativeTypeID: 108
+      m_ManagedTypePPtr: {fileID: 0}
+      m_ManagedTypeFallback: 
+    second:
+    - m_Preset: {fileID: 2655988077585873504, guid: 0b4164a9ffcff5e49804f9c5e914be63, type: 2}
+      m_Filter: Spot
+      m_Disabled: 0
+    - m_Preset: {fileID: 2655988077585873504, guid: 8c7a4e78e36d98848b9caffec0b07c2c, type: 2}
+      m_Filter: Point
+      m_Disabled: 0
+    - m_Preset: {fileID: 2655988077585873504, guid: f5a9b25f0d946764f9016fb51abeef23, type: 2}
+      m_Filter: Directional
+      m_Disabled: 0
+  - first:
+      m_NativeTypeID: 23
+      m_ManagedTypePPtr: {fileID: 0}
+      m_ManagedTypeFallback: 
+    second:
+    - m_Preset: {fileID: 2655988077585873504, guid: 1d21ccba1c988a749ab992962795214c, type: 2}
+      m_Filter: 
+      m_Disabled: 0
