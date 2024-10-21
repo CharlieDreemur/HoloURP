@@ -1,18 +1,5 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &-1061121649488555641
-MonoBehaviour:
-  m_ObjectHideFlags: 11
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d0353a89b1f911e48b9e16bdc9f2e058, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  version: 9
 --- !u!21 &2100000
 Material:
   serializedVersion: 8
@@ -21,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: 16.hairaito
-  m_Shader: {fileID: 4800000, guid: 3cdde4f571e0bee4bb891e65e840d0c7, type: 3}
+  m_Shader: {fileID: 4800000, guid: d2504132f75c1ad48881097bd6121a38, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
@@ -30,17 +17,18 @@ Material:
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: 2018
+  m_CustomRenderQueue: -1
   stringTagMap: {}
   disabledShaderPasses:
   - MOTIONVECTORS
+  - CharacterOutline
   - CharacterTransparent
   m_LockedProperties: 
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
     - _BaseMap:
-        m_Texture: {fileID: 2800000, guid: e1e5fb41f24586c42861787c0b5f89b1, type: 3}
+        m_Texture: {fileID: 2800000, guid: f8c0a042bfaf4a64f8a27a4a9ce41fc5, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BaseMapOutter:
@@ -76,7 +64,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: f8c0a042bfaf4a64f8a27a4a9ce41fc5, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
@@ -160,11 +148,9 @@ Material:
     - _FoldoutEmissRimEnd: 0
     - _FoldoutEyelash: 0
     - _FoldoutEyelashEnd: 0
-    - _FoldoutFringeShadow: 0
-    - _FoldoutFringeShadowEnd: 0
     - _FoldoutIndirectLight: 0
     - _FoldoutIndirectLightEnd: 0
-    - _FoldoutOutline: 2
+    - _FoldoutOutline: 0
     - _FoldoutOutlineEnd: 0
     - _FoldoutPBRProp: 0
     - _FoldoutPBRPropEnd: 0
@@ -172,21 +158,15 @@ Material:
     - _FoldoutShadowRampEnd: 0
     - _FoldoutTex: 0
     - _FoldoutTexEnd: 0
-    - _FriColorMask: 0
-    - _FriStencil: 96
-    - _FriStencilComp: 3
-    - _FriStencilOp: 3
-    - _FriStencilReadMask: 97
-    - _FriStencilWriteMask: 97
     - _GlossMapScale: 1
     - _Glossiness: 0.14142135
     - _GlossyReflections: 1
     - _INDIR_CUBEMAP: 0
-    - _IndirDiffIntensity: 0.622
+    - _IndirDiffIntensity: 1
     - _IndirDiffUpDirSH: 0
     - _IndirSpecCubeWeight: 0.5
     - _IndirSpecIntensity: 1
-    - _MainLightColorLerp: 0.82
+    - _MainLightColorLerp: 0.5
     - _Metallic: 0
     - _Mode: 0
     - _NoShadowCasting: 1
@@ -202,17 +182,11 @@ Material:
     - _OutlinePunctualLightingOffset: 0
     - _OutlineWidth: 1
     - _Parallax: 0.02
-    - _ParallaxMaskEdge: 0.8
-    - _ParallaxMaskEdgeOffset: 0.2
-    - _ParallaxScale: 1
-    - _PostfixRenderQueue: 0
     - _PunctualRimWidth: 2.75
     - _QueueOffset: 0
     - _ReceiveShadows: 1
     - _Revision: 2
     - _SHADOW_RAMP: 0
-    - _ScreenOffsetScaleX: 1
-    - _ScreenOffsetScaleY: 1
     - _ShadowLum: 1.5
     - _ShadowOffset: 0.5
     - _ShadowSmoothNdotL: 0.25
@@ -255,3 +229,16 @@ Material:
     - _ToonTone: {r: 1, g: 0.5, b: 0.5, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
+--- !u!114 &2038773365628926248
+MonoBehaviour:
+  m_ObjectHideFlags: 11
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0353a89b1f911e48b9e16bdc9f2e058, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  version: 9

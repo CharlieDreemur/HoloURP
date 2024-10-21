@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &-6528957272616054084
+--- !u!114 &-1853273910246654956
 MonoBehaviour:
   m_ObjectHideFlags: 11
   m_CorrespondingSourceObject: {fileID: 0}
@@ -21,7 +21,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: 15.hitomi
-  m_Shader: {fileID: 4800000, guid: 3cdde4f571e0bee4bb891e65e840d0c7, type: 3}
+  m_Shader: {fileID: 4800000, guid: d2504132f75c1ad48881097bd6121a38, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
@@ -30,17 +30,18 @@ Material:
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: 2017
+  m_CustomRenderQueue: -1
   stringTagMap: {}
   disabledShaderPasses:
   - MOTIONVECTORS
+  - CharacterOutline
   - CharacterTransparent
   m_LockedProperties: 
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
     - _BaseMap:
-        m_Texture: {fileID: 2800000, guid: e1e5fb41f24586c42861787c0b5f89b1, type: 3}
+        m_Texture: {fileID: 2800000, guid: f8c0a042bfaf4a64f8a27a4a9ce41fc5, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BaseMapOutter:
@@ -76,7 +77,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: f8c0a042bfaf4a64f8a27a4a9ce41fc5, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
@@ -143,7 +144,7 @@ Material:
     - _ClearCoatMask: 0
     - _ClearCoatSmoothness: 0
     - _Cull: 2
-    - _Cutoff: 0.538
+    - _Cutoff: 0.5
     - _DetailAlbedoMapScale: 1
     - _DetailNormalMapScale: 1
     - _DirectOcclusion: 0.1
@@ -160,11 +161,9 @@ Material:
     - _FoldoutEmissRimEnd: 0
     - _FoldoutEyelash: 0
     - _FoldoutEyelashEnd: 0
-    - _FoldoutFringeShadow: 0
-    - _FoldoutFringeShadowEnd: 0
     - _FoldoutIndirectLight: 0
     - _FoldoutIndirectLightEnd: 0
-    - _FoldoutOutline: 2
+    - _FoldoutOutline: 0
     - _FoldoutOutlineEnd: 0
     - _FoldoutPBRProp: 0
     - _FoldoutPBRPropEnd: 0
@@ -172,12 +171,6 @@ Material:
     - _FoldoutShadowRampEnd: 0
     - _FoldoutTex: 0
     - _FoldoutTexEnd: 0
-    - _FriColorMask: 0
-    - _FriStencil: 96
-    - _FriStencilComp: 3
-    - _FriStencilOp: 3
-    - _FriStencilReadMask: 97
-    - _FriStencilWriteMask: 97
     - _GlossMapScale: 1
     - _Glossiness: 0.14142135
     - _GlossyReflections: 1
@@ -186,8 +179,8 @@ Material:
     - _IndirDiffUpDirSH: 0
     - _IndirSpecCubeWeight: 0.5
     - _IndirSpecIntensity: 1
-    - _MainLightColorLerp: 0.503
-    - _Metallic: 0.5
+    - _MainLightColorLerp: 0.5
+    - _Metallic: 0
     - _Mode: 0
     - _NoShadowCasting: 1
     - _NormalScale: 1
@@ -202,24 +195,18 @@ Material:
     - _OutlinePunctualLightingOffset: 0
     - _OutlineWidth: 1
     - _Parallax: 0.02
-    - _ParallaxMaskEdge: 0.8
-    - _ParallaxMaskEdgeOffset: 0.2
-    - _ParallaxScale: 0
-    - _PostfixRenderQueue: 0
     - _PunctualRimWidth: 2.75
     - _QueueOffset: 0
     - _ReceiveShadows: 1
     - _Revision: 2
     - _SHADOW_RAMP: 0
-    - _ScreenOffsetScaleX: 1
-    - _ScreenOffsetScaleY: 1
     - _ShadowLum: 1.5
     - _ShadowOffset: 0.5
     - _ShadowSmoothNdotL: 0.25
     - _ShadowSmoothScene: 0.1
     - _ShadowStrength: 1
     - _Shininess: 2
-    - _Smoothness: 0.5
+    - _Smoothness: 0.14142135
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
@@ -240,7 +227,7 @@ Material:
     - _DirectRimBackCol: {r: 0.2, g: 0.2, b: 0.2, a: 0.5}
     - _DirectRimFrontCol: {r: 1, g: 1, b: 1, a: 0.5}
     - _EdgeColor: {r: 0, g: 0, b: 0, a: 1}
-    - _EmissionCol: {r: 0.4433962, g: 0.4433962, b: 0.4433962, a: 1}
+    - _EmissionCol: {r: 0, g: 0, b: 0, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _Emissive: {r: 0, g: 0, b: 0, a: 0}
     - _NoseSpecColor: {r: 0, g: 0, b: 0, a: 1}
@@ -248,7 +235,7 @@ Material:
     - _OutlineDirectLightingColor: {r: 1, g: 1, b: 1, a: 0.5}
     - _OutlinePunctualLightingColor: {r: 1, g: 1, b: 1, a: 0.5}
     - _SelfEnvColor: {r: 0.5, g: 0.5, b: 0.5, a: 0.5}
-    - _SelfLight: {r: 0, g: 0.7566807, b: 1, a: 1}
+    - _SelfLight: {r: 1, g: 1, b: 1, a: 1}
     - _ShadowColor: {r: 0, g: 0, b: 0, a: 1}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
     - _Specular: {r: 0, g: 0, b: 0, a: 0}

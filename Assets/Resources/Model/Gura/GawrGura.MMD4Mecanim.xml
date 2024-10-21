@@ -140,9 +140,9 @@
     <vertexScaleByHeightFlag>false</vertexScaleByHeightFlag>
     <vertexScaleByHeight>158</vertexScaleByHeight>
     <waitProcessExitting>false</waitProcessExitting>
-    <pmxAssetPath>Assets/Resources/Model/Gura/GawrGura.pmx</pmxAssetPath>
+    <pmxAssetPath>Assets/Resources/Model/GawrGura.pmx</pmxAssetPath>
     <vmdAssetPathList />
-    <fbxOutputPath>Assets/Resources/Model/Gura/GawrGura.fbx</fbxOutputPath>
+    <fbxOutputPath>Assets/Resources/Model/GawrGura.fbx</fbxOutputPath>
     <bulletPhysicsVersion>_275</bulletPhysicsVersion>
     <useWineFlag>false</useWineFlag>
     <wine>Manual</wine>
