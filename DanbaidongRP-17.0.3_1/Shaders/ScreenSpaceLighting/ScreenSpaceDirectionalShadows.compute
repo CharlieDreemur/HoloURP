@@ -1,0 +1,456 @@
+// Definitions
+//--------------------------------------------------------------------------------------------------
+
+// #pragma enable_d3d11_debug_symbols
+#pragma kernel ShadowClassifyTiles      SHADOW_CLASSIFY_TILES
+#pragma kernel ScreenSpaceShadowmap     SHADOW_PCSS                 PCSS_FILTER=ScreenSpaceShadowmap
+#pragma kernel BilateralFilterH         SHADOW_BILATERAL_FILTER     BILATERAL_FILTER=BilateralFilterH
+#pragma kernel BilateralFilterV         SHADOW_BILATERAL_FILTER     BILATERAL_FILTER=BilateralFilterV       FINAL_PASS
+
+#pragma multi_compile _ _MAIN_LIGHT_SHADOWS _MAIN_LIGHT_SHADOWS_CASCADE _MAIN_LIGHT_SHADOWS_SCREEN
+
+//--------------------------------------------------------------------------------------------------
+// Included headers
+//--------------------------------------------------------------------------------------------------
+
+#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Common.hlsl"
+#include "Packages/com.unity.render-pipelines.danbaidong/Shaders/Utils/Deferred.hlsl"
+#include "Packages/com.unity.render-pipelines.danbaidong/ShaderLibrary/Core.hlsl"
+
+#include "Packages/com.unity.render-pipelines.danbaidong/ShaderLibrary/ShadowsPCSS.hlsl"
+#include "Packages/com.unity.render-pipelines.danbaidong/ShaderLibrary/DeclareDepthTexture.hlsl"
+#include "Packages/com.unity.render-pipelines.danbaidong/ShaderLibrary/GPUCulledLights.hlsl"
+
+#include "Packages/com.unity.render-pipelines.danbaidong/Shaders/ScreenSpaceLighting/ScreenSpaceLighting.hlsl"
+
+//--------------------------------------------------------------------------------------------------
+// Inputs & outputs
+//--------------------------------------------------------------------------------------------------
+
+RWStructuredBuffer<uint> g_TileList;
+
+#if defined(SHADOW_CLASSIFY_TILES)
+TEXTURE2D_ARRAY(_DirShadowmapTexture);
+
+RW_TEXTURE2D(float, _SSDirShadowmapTexture);
+RWBuffer<uint> g_DispatchIndirectBuffer;
+
+
+#elif defined(SHADOW_PCSS)
+TEXTURE2D_ARRAY(_DirShadowmapTexture);
+
+RW_TEXTURE2D(float, _PCSSTexture);
+
+
+#elif defined(SHADOW_BILATERAL_FILTER)
+TEXTURE2D_X_FLOAT(_GBuffer2);
+
+RW_TEXTURE2D(float, _BilateralTexture);
+
+#endif
+
+//--------------------------------------------------------------------------------------------------
+// Helpers
+//--------------------------------------------------------------------------------------------------
+
+#define SCREENSPACE_SHADOWS_TILE_SIZE   (16)
+#define SCREENSPACE_SHADOWS_GROUP_SIZE  (SCREENSPACE_SHADOWS_TILE_SIZE / 2)
+#define SCREENSPACE_SHADOWS_THREADS     (64)
+
+
+#define PREFILTER_SAMPLE_COUNT          (32)
+#define BLOCKER_SAMPLE_COUNT            (16)
+#define PCSS_SAMPLE_COUNT               (32)
+
+// World space filter size.
+#define FILTER_SIZE_PREFILTER           (0.3)
+#define FILTER_SIZE_BLOCKER             (0.2)
+
+#define DIR_LIGHT_PENUMBRA_WIDTH        _DirLightShadowPenumbraParams.x
+
+
+int _CamHistoryFrameCount;
+
+
+uint2 DecodeTileIndex(uint encoded)
+{
+    return uint2((encoded >> TILE_INDEX_SHIFT_X) & TILE_INDEX_MASK, (encoded >> TILE_INDEX_SHIFT_Y) & TILE_INDEX_MASK);
+}
+
+uint EncodeTileIndex(uint2 tileID)
+{
+    return (unity_StereoEyeIndex << TILE_INDEX_SHIFT_EYE) | (tileID.y << TILE_INDEX_SHIFT_Y) | (tileID.x << TILE_INDEX_SHIFT_X);
+}
+
+void InitializeDispatchThreadIdFromTileList(uint groupId, uint2 gThreadId, out uint2 tileCoord, out uint2 dThreadId)
+{
+    uint encodedTileIndex = g_TileList[groupId / 4];
+
+    tileCoord = DecodeTileIndex(encodedTileIndex);
+    dThreadId = tileCoord * SCREENSPACE_SHADOWS_TILE_SIZE
+              + uint2(groupId & 1, (groupId >> 1) & 1) * SCREENSPACE_SHADOWS_GROUP_SIZE
+              + gThreadId;
+}
+
+#if defined(SHADOW_CLASSIFY_TILES) || defined(SHADOW_PCSS)
+
+
+#elif defined(SHADOW_BILATERAL_FILTER)
+
+
+#endif
+
+//--------------------------------------------------------------------------------------------------
+// Implementation Classify Tiles
+//--------------------------------------------------------------------------------------------------
+
+#if defined(SHADOW_CLASSIFY_TILES)
+
+groupshared uint gTileCount = 0;
+
+// Dispatch size is 16*16 (tile size), each group has 64 threads, each thread handle 4 piexels.
+[numthreads(SCREENSPACE_SHADOWS_THREADS, 1, 1)]
+void ShadowClassifyTiles(uint3 dispatchThreadId : SV_DispatchThreadID, uint groupIndex : SV_GroupIndex, uint3 groupID : SV_GroupID)
+{
+    uint2 tileID = groupID.xy;
+    bool needPenumbra = false;
+    uint2 screenSize = _ScreenSize.xy;
+    uint tilesNum;
+    tilesNum = (screenSize.x + SCREENSPACE_SHADOWS_TILE_SIZE - 1) / SCREENSPACE_SHADOWS_TILE_SIZE;
+    tilesNum *= (screenSize.y + SCREENSPACE_SHADOWS_TILE_SIZE - 1) / SCREENSPACE_SHADOWS_TILE_SIZE;
+
+    uint2 coordBoundLL = SCREENSPACE_SHADOWS_TILE_SIZE * tileID;
+    
+
+    // Sampling shadows
+    UNITY_UNROLL
+    for (int i = 0; i < 4; i++)
+    {
+        int idx = i * SCREENSPACE_SHADOWS_THREADS + groupIndex;
+        uint2 coordSS = min(uint2(coordBoundLL.x + (idx & 0xf), coordBoundLL.y + (idx >> 4)), uint2(screenSize.x - 1, screenSize.y - 1));
+
+        // Check valid first. Reject the sky/background
+        float depth = LoadSceneDepth(coordSS);
+        if (depth == UNITY_RAW_FAR_CLIP_VALUE)
+        {
+            _SSDirShadowmapTexture[coordSS] = 1.0;
+            continue;
+        }
+
+        // Position
+        PositionInputs posInput = GetPositionInput(coordSS.xy, _ScreenSize.zw, depth, UNITY_MATRIX_I_VP, UNITY_MATRIX_V, uint2(0, 0));
+        float3 positionWS = posInput.positionWS;
+        float cascadeIndex = ComputeCascadeIndex(positionWS);
+        float4 shadowCoord = mul(_MainLightWorldToShadow[cascadeIndex], float4(positionWS, 1.0));
+        bool isNotDistFar = GetMainLightShadowFade(positionWS) < 1;
+
+        float radial2ShadowmapDepth = _PerCascadePCSSData[cascadeIndex].x;
+        float texelSizeWS           = _PerCascadePCSSData[cascadeIndex].y;
+        float farToNear             = _PerCascadePCSSData[cascadeIndex].z;
+        float blockerInvTangent     = _PerCascadePCSSData[cascadeIndex].w;
+
+        // Sample Noise: Use Jitter instead.
+        float2 noiseJitter = 0;
+        noiseJitter.xy = InterleavedGradientNoise(coordSS.xy, _CamHistoryFrameCount);
+        noiseJitter *= TWO_PI;
+        noiseJitter.x = sin(noiseJitter.x);
+        noiseJitter.y = cos(noiseJitter.y);
+
+        // PreFilter Search
+        float preFilterSize = FILTER_SIZE_PREFILTER / texelSizeWS; // texel count
+        preFilterSize = max(preFilterSize, 1.0);
+        float preFilterRet = PreFilterSearch(PREFILTER_SAMPLE_COUNT, preFilterSize, shadowCoord.xyz, cascadeIndex, noiseJitter);
+        bool isOcclusion = preFilterRet > 0 && isNotDistFar;
+        if (isOcclusion && preFilterRet < PREFILTER_SAMPLE_COUNT)
+        {
+            needPenumbra = true;
+        }
+        if (isOcclusion)
+        {
+            _SSDirShadowmapTexture[coordSS] = (preFilterRet == PREFILTER_SAMPLE_COUNT) ? 0.0 : 0.5;
+        }
+    }
+
+    // Set group shared.
+    if (needPenumbra)
+    {
+        InterlockedAdd(gTileCount, 1);
+    }
+
+    GroupMemoryBarrierWithGroupSync();
+
+    // Write per tile data.
+    if (groupIndex == 0 && gTileCount > 0)
+    {
+        uint tileOffset = 0;
+        uint prevGroupCnt;
+        // We are filling up an indirect argument buffer for DispatchIndirect.
+        // The buffer contains {groupCntX, groupCntY, groupCntZ} = {groupCnt, 0, 0}.
+        // Current thread contorls 4 pixels.
+        InterlockedAdd(g_DispatchIndirectBuffer[0], 4, prevGroupCnt);
+        tileOffset = prevGroupCnt / 4; // 4x 8x8 groups per a 16x16 tile
+        g_TileList[tileOffset] = EncodeTileIndex(tileID.xy);
+    }
+
+}
+
+#elif defined(SHADOW_PCSS)
+//--------------------------------------------------------------------------------------------------
+// Implementation PCSS shadows
+//--------------------------------------------------------------------------------------------------
+
+
+[numthreads(SCREENSPACE_SHADOWS_GROUP_SIZE, SCREENSPACE_SHADOWS_GROUP_SIZE, 1)]
+void PCSS_FILTER(uint3 dispatchThreadId : SV_DispatchThreadID, uint2 groupThreadId : SV_GroupThreadID, uint groupId : SV_GroupID)
+{
+    uint2 coordSS;
+    uint2 tileCoord;
+    InitializeDispatchThreadIdFromTileList(groupId, groupThreadId, tileCoord, coordSS);
+
+    if (_PCSSTexture[coordSS] == 0.0 || _PCSSTexture[coordSS] == 1.0)
+        return;
+
+    float2 screenUV = coordSS * _ScreenSize.zw + (0.5 * _ScreenSize.zw);
+    float depth = LoadSceneDepth(coordSS);
+
+    // Position
+    PositionInputs posInput = GetPositionInput(coordSS.xy, _ScreenSize.zw, depth, UNITY_MATRIX_I_VP, UNITY_MATRIX_V, uint2(0, 0));
+    float3 positionWS = posInput.positionWS;
+    float cascadeIndex = ComputeCascadeIndex(positionWS);
+    float4 shadowCoord = mul(_MainLightWorldToShadow[cascadeIndex], float4(positionWS, 1.0));
+
+    float radial2ShadowmapDepth = _PerCascadePCSSData[cascadeIndex].x;
+    float texelSizeWS           = _PerCascadePCSSData[cascadeIndex].y;
+    float farToNear             = _PerCascadePCSSData[cascadeIndex].z;
+    float blockerInvTangent     = _PerCascadePCSSData[cascadeIndex].w;
+
+    // Sample Noise: Use Jitter instead.
+    float2 noiseJitter = 0;
+    noiseJitter.xy = InterleavedGradientNoise(coordSS.xy, _CamHistoryFrameCount);
+    noiseJitter *= TWO_PI;
+    noiseJitter.x = sin(noiseJitter.x);
+    noiseJitter.y = cos(noiseJitter.y);
+
+
+    // Blocker Search
+    float filterSize = FILTER_SIZE_BLOCKER / texelSizeWS; // texel count
+    filterSize = max(filterSize, 1.0);
+    float2 avgDepthAndCount = BlockerSearch(BLOCKER_SAMPLE_COUNT, filterSize, shadowCoord.xyz, noiseJitter, cascadeIndex);
+    if (avgDepthAndCount.y == 0) // No Blocker
+    {
+        _PCSSTexture[coordSS] = 1.0;
+        return;
+    }
+
+    // Penumbra Estimation
+    float blockerDistance = abs(avgDepthAndCount.x - shadowCoord.z);
+    blockerDistance *= farToNear;
+    blockerDistance = min(blockerDistance, 10.0);
+
+    float maxPCSSoffset = blockerDistance / farToNear * 0.25;
+
+    float pcssFilterSize = DIR_LIGHT_PENUMBRA_WIDTH * blockerDistance * 0.01 / texelSizeWS;
+    pcssFilterSize = max(pcssFilterSize, 0.01);
+
+
+    // PCSS Filter
+    float pcssResult = PCSSFilter(PCSS_SAMPLE_COUNT, pcssFilterSize, shadowCoord.xyz, noiseJitter, cascadeIndex, maxPCSSoffset);
+    
+
+    _PCSSTexture[coordSS] = pcssResult;
+
+}
+
+#elif defined(SHADOW_BILATERAL_FILTER)
+//--------------------------------------------------------------------------------------------------
+// Implementation Bilateral Filter
+//--------------------------------------------------------------------------------------------------
+
+groupshared float4 localNormalDepth[256];
+groupshared float localColor[256];
+
+struct CoordData {
+    float3  normal;
+    float   depth;
+    float   color;
+};
+
+
+#define GAUSSIAN_WEIGHT_COUNT (9)
+static const float gaussianWeight[GAUSSIAN_WEIGHT_COUNT] = {0.02763055, 0.06628224, 0.1238315, 0.1801738, 0.2041637, 0.1801738, 0.1238315, 0.06628224, 0.02763055};
+
+struct BilateralData
+{
+    float3 position;
+    float depth;
+    float3 normal;
+};
+
+float GetEdegStoppingNormalWeight(float3 normal1, float3 normal2)
+{
+    return pow(max(dot(normal1, normal2), 0.0f), 32.0f);
+}
+
+float GetEdgeStoppingDepthWeight(float centerDepth, float neighDepth)
+{
+    return exp(-abs(centerDepth - neighDepth) * 4.0);
+}
+
+// TODO: Actually we should use plane base depth weight like SVGF.
+float ComputeBilateralWeight(BilateralData center, BilateralData neigh)
+{
+    // Depth
+    float depthWeight = GetEdgeStoppingDepthWeight(center.depth, neigh.depth);
+
+    // Normal
+    float normalWeight = GetEdegStoppingNormalWeight(center.normal, neigh.normal);
+
+    return depthWeight * normalWeight;
+}
+
+CoordData LoadFromGroupSharedMemory(uint2 gThreadId)
+{
+    #if FINAL_PASS
+    gThreadId.y += 4;
+    #else
+    gThreadId.x += 4;
+    #endif
+
+    uint localID = gThreadId.x + 16 * gThreadId.y;
+    float4 encodedNormalDepth = localNormalDepth[localID];
+
+    CoordData neighborSample;
+    ZERO_INITIALIZE(CoordData, neighborSample);
+    neighborSample.normal = encodedNormalDepth.xyz;
+    neighborSample.depth = encodedNormalDepth.w;
+    neighborSample.color = localColor[localID];
+    
+    return neighborSample;
+}
+
+void StoreInGroupSharedMemory(uint2 gThreadId, CoordData inData)
+{
+    #if FINAL_PASS
+    gThreadId.y += 4;
+    #else
+    gThreadId.x += 4;
+    #endif
+
+    uint localID = gThreadId.x + 16 * gThreadId.y;
+    localNormalDepth[localID] = float4(inData.normal.xyz, inData.depth);
+    localColor[localID] = inData.color;
+}
+
+void LoadCoordData(int2 coordSS, out CoordData outData)
+{
+    ZERO_INITIALIZE(CoordData, outData);
+    if (coordSS.x >= _ScreenSize.x || coordSS.y >= _ScreenSize.y || coordSS.x < 0.0 || coordSS.y < 0.0)
+    {
+        outData.depth = UNITY_RAW_FAR_CLIP_VALUE;
+        return;
+    }
+
+    float deviceDepth = LoadSceneDepth(coordSS);
+    if (deviceDepth == UNITY_RAW_FAR_CLIP_VALUE)
+    {
+        outData.depth = UNITY_RAW_FAR_CLIP_VALUE;
+        return;
+    }
+
+    float4 normalGBuffer = LOAD_TEXTURE2D_X(_GBuffer2, coordSS);
+    float3 normalWS = normalize(UnpackNormal(normalGBuffer.xyz));
+
+    outData.normal = normalWS;
+    outData.depth = LinearEyeDepth(deviceDepth, _ZBufferParams);
+    outData.color = _BilateralTexture[coordSS];
+}
+
+void InitializeGroupSharedMemory(uint2 dThreadId, uint2 gThreadId)
+{
+    #if FINAL_PASS
+    uint2 offset[2] = {uint2(0, -4), uint2(0, 4)};
+    #else
+    uint2 offset[2] = {uint2(-4, 0), uint2(4, 0)};
+    #endif
+
+    CoordData coordData[2];
+    for (int i = 0; i < 2; i++)
+    {
+        LoadCoordData(dThreadId + offset[i], coordData[i]);
+    }
+
+    for (int j = 0; j < 2; j++)
+    {
+        StoreInGroupSharedMemory(gThreadId + offset[j], coordData[j]);
+    }
+}
+
+
+[numthreads(SCREENSPACE_SHADOWS_GROUP_SIZE, SCREENSPACE_SHADOWS_GROUP_SIZE, 1)]
+void BILATERAL_FILTER(uint3 dispatchThreadId : SV_DispatchThreadID, uint2 groupThreadId : SV_GroupThreadID, uint groupId : SV_GroupID)
+{
+    uint2 coordSS;
+    uint2 tileCoord;
+    InitializeDispatchThreadIdFromTileList(groupId, groupThreadId, tileCoord, coordSS);
+
+    uint2 coordGroup = groupThreadId.xy;
+    InitializeGroupSharedMemory(coordSS, coordGroup);
+
+    GroupMemoryBarrierWithGroupSync();
+
+    CoordData center = LoadFromGroupSharedMemory(coordGroup);
+    float2 screenUV = coordSS * _ScreenSize.zw + (0.5 * _ScreenSize.zw);
+
+    if (center.depth == UNITY_RAW_FAR_CLIP_VALUE)
+        return;
+
+    // Position
+    PositionInputs posInput = GetPositionInput(coordSS.xy, _ScreenSize.zw, center.depth, UNITY_MATRIX_I_VP, UNITY_MATRIX_V, uint2(0, 0));
+
+    BilateralData centerData;
+    ZERO_INITIALIZE(BilateralData, centerData);
+    {
+        centerData.normal = center.normal;
+        centerData.depth = center.depth;
+    }
+
+
+    float colorSum = center.color * gaussianWeight[4];
+    float weightSum = gaussianWeight[4];
+
+    // TODO: Actually far distance pixels should have smaller radius.
+    int radius = 4;
+
+    #if FINAL_PASS
+        const int2 passIncr = int2(0, 1);
+    #else
+        const int2 passIncr = int2(1, 0);
+    #endif
+
+    int2 neighCoordGroup = coordGroup - radius * passIncr;
+    for (int r = -radius; r <= radius; r++, neighCoordGroup += passIncr)
+    {
+        if (r == 0)
+            continue;
+        CoordData neigh = LoadFromGroupSharedMemory(neighCoordGroup);
+        if (neigh.depth == UNITY_RAW_FAR_CLIP_VALUE)
+            continue;
+
+        BilateralData neighData;
+        ZERO_INITIALIZE(BilateralData, neighData);
+        {
+            neighData.normal = neigh.normal;
+            neighData.depth = neigh.depth;
+        }
+
+        float bilateralWeight = ComputeBilateralWeight(centerData, neighData);
+        float weight = gaussianWeight[r + 4] * bilateralWeight;
+
+        colorSum += weight * neigh.color;
+        weightSum += weight;
+    }
+
+    _BilateralTexture[coordSS] = colorSum / weightSum;
+}
+
+#endif

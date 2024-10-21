@@ -1,0 +1,660 @@
+// Definitions
+//--------------------------------------------------------------------------------------------------
+
+// #pragma enable_d3d11_debug_symbols
+#pragma only_renderers d3d11 playstation xboxone xboxseries vulkan metal
+// Note that DanbaidongRP don't care with switch platform(which need to handle with PLATFORM_LANE_COUNT).
+
+// Kernel max num is SHADINGMODELS_MAX_MODELS_NUM
+#pragma kernel DeferredClassifyTiles        DEFERRED_CLASSIFY_TILES
+#pragma kernel DeferredLighting0            DEFERRED_LIGHTING           DEFERRED_COMPUTE_ENTRY=DeferredLighting0        DEFERRED_LIT
+#pragma kernel DeferredLighting1            DEFERRED_LIGHTING           DEFERRED_COMPUTE_ENTRY=DeferredLighting1        DEFERRED_SIMPLELIT
+#pragma kernel DeferredLighting2            DEFERRED_LIGHTING           DEFERRED_COMPUTE_ENTRY=DeferredLighting2        DEFERRED_CHARACTER
+
+#pragma multi_compile _ _MAIN_LIGHT_SHADOWS _MAIN_LIGHT_SHADOWS_CASCADE _MAIN_LIGHT_SHADOWS_SCREEN
+#pragma multi_compile _ _ADDITIONAL_LIGHT_SHADOWS
+#pragma multi_compile _ _SHADOWS_SOFT
+#pragma multi_compile _ _LIGHT_LAYERS
+#pragma multi_compile _ _PEROBJECT_SCREEN_SPACE_SHADOW
+#pragma multi_compile _ _GBUFFER_NORMALS_OCT
+#pragma multi_compile _ _GPU_LIGHTS_CLUSTER
+#pragma multi_compile _ _SCREEN_SPACE_REFLECTION
+//--------------------------------------------------------------------------------------------------
+// Included headers
+//--------------------------------------------------------------------------------------------------
+
+#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Common.hlsl"
+#include "Packages/com.unity.render-pipelines.danbaidong/Shaders/Utils/Deferred.hlsl"
+#include "Packages/com.unity.render-pipelines.danbaidong/ShaderLibrary/Core.hlsl"
+#include "Packages/com.unity.render-pipelines.danbaidong/Runtime/Lights/GPULights.cs.hlsl"
+#include "Packages/com.unity.render-pipelines.danbaidong/Runtime/Lighting/ShadingModels.cs.hlsl"
+
+#if defined(DEFERRED_CLASSIFY_TILES)
+#elif defined(DEFERRED_LIGHTING)
+#include "Packages/com.unity.render-pipelines.danbaidong/ShaderLibrary/Shadows.hlsl"
+#include "Packages/com.unity.render-pipelines.danbaidong/ShaderLibrary/PerObjectShadows.hlsl"
+#include "Packages/com.unity.render-pipelines.danbaidong/ShaderLibrary/DeclareDepthTexture.hlsl"
+#include "Packages/com.unity.render-pipelines.danbaidong/ShaderLibrary/PreIntegratedFGD.hlsl"
+#include "Packages/com.unity.render-pipelines.danbaidong/ShaderLibrary/GPUCulledLights.hlsl"
+#include "Packages/com.unity.render-pipelines.danbaidong/ShaderLibrary/UnityGBuffer.hlsl"
+#endif
+//--------------------------------------------------------------------------------------------------
+// Inputs & outputs
+//--------------------------------------------------------------------------------------------------
+
+TEXTURE2D_X(_ShadowScatterTexture);
+
+#if defined(DEFERRED_CLASSIFY_TILES)
+Texture2D<uint2> _StencilTexture;
+
+RWBuffer<uint> g_DispatchIndirectBuffer;
+RWStructuredBuffer<uint> g_TileList;
+#elif defined(DEFERRED_LIGHTING)
+
+StructuredBuffer<uint> g_TileList;
+Texture2D<uint2> _StencilTexture;
+TEXTURE2D_X(_GBuffer0);
+TEXTURE2D_X(_GBuffer1);
+TEXTURE2D_X(_GBuffer2);
+// Optional gbuffer, accroding to UnityGBuffer.hlsl defined
+#ifdef GBUFFER_OPTIONAL_SLOT_1
+TEXTURE2D_X(_GBuffer4);
+#endif
+#ifdef GBUFFER_OPTIONAL_SLOT_2
+TEXTURE2D_X(_GBuffer5);
+#endif
+#ifdef GBUFFER_OPTIONAL_SLOT_3
+TEXTURE2D_X(_GBuffer6);
+#endif
+
+TEXTURE2D(_SSRLightingTexture);
+
+RWTexture2D<float4> _LightingTexture;
+#endif
+
+//--------------------------------------------------------------------------------------------------
+// Helpers
+//--------------------------------------------------------------------------------------------------
+
+#define DEFERRED_LIGHTING_TILE_SIZE (16)
+#define DEFERRED_LIGHTING_GROUP_SIZE (DEFERRED_LIGHTING_TILE_SIZE / 2)
+#define DEFERRED_LIGHTING_THREADS   (64)
+#define HasShadingModel(stencilVal) ((stencilVal >> SHADINGMODELS_USER_MASK_BITS) > 0)
+#define StencilToShadingModel(stencilVal) (stencilVal & SHADINGMODELS_MODELS_MASK)
+
+uint2 DecodeTileIndex(uint encoded)
+{
+    return uint2((encoded >> TILE_INDEX_SHIFT_X) & TILE_INDEX_MASK, (encoded >> TILE_INDEX_SHIFT_Y) & TILE_INDEX_MASK);
+}
+
+uint DecodeEyeIndex(uint encoded)
+{
+    encoded >> TILE_INDEX_SHIFT_EYE;
+}
+
+uint EncodeTileIndex(uint2 tileID)
+{
+    return (unity_StereoEyeIndex << TILE_INDEX_SHIFT_EYE) | (tileID.y << TILE_INDEX_SHIFT_Y) | (tileID.x << TILE_INDEX_SHIFT_X);
+}
+
+int ShadingModelToIndex(uint shadingModel)
+{
+    if (shadingModel == SHADINGMODELS_LIT)
+    {
+        return 0;
+    }
+    else if (shadingModel == SHADINGMODELS_SIMPLE_LIT)
+    {
+        return 1;
+    }
+    else if (shadingModel == SHADINGMODELS_CHARACTER)
+    {
+        return 2;
+    }
+
+    return 0;
+}
+
+uint IndexToShadingModel(int index)
+{
+    if (index == 0)
+    {
+        return SHADINGMODELS_LIT;
+    }
+    else if (index == 1)
+    {
+        return SHADINGMODELS_SIMPLE_LIT;
+    }
+    else if (index == 2)
+    {
+        return SHADINGMODELS_CHARACTER;
+    }
+
+    return SHADINGMODELS_LIT;
+}
+
+#if defined(DEFERRED_CLASSIFY_TILES)
+
+
+#elif defined(DEFERRED_LIGHTING)
+
+int  _ShadingModelIndex;
+int  _ShadingModelStencil;
+int2 _TilesNum;
+
+struct DeferredLightingOutput
+{
+    float3 diffuseLighting;
+    float3 specularLighting;
+};
+
+void InitializeDispatchThreadIdFromTileList(uint groupId, uint2 gThreadId, out uint2 tileCoord, out uint2 dThreadId)
+{
+    uint  encodedTileIndex = g_TileList[_ShadingModelIndex * _TilesNum.x * _TilesNum.y + (groupId / 4)];
+    tileCoord = DecodeTileIndex(encodedTileIndex);
+    dThreadId = tileCoord * DEFERRED_LIGHTING_TILE_SIZE
+              + uint2(groupId & 1, (groupId >> 1) & 1) * DEFERRED_LIGHTING_GROUP_SIZE
+              + gThreadId;
+}
+
+#endif
+
+//--------------------------------------------------------------------------------------------------
+// Implementation Classify Tiles
+//--------------------------------------------------------------------------------------------------
+
+#if defined(DEFERRED_CLASSIFY_TILES)
+
+groupshared uint gs_ShadingModelFlags[SHADINGMODELS_CUR_MODELS_NUM];
+
+// Dispatch size is 16*16 (tile size), each group has 64 threads, each thread handle 4 piexels.
+[numthreads(DEFERRED_LIGHTING_THREADS, 1, 1)]
+void DeferredClassifyTiles(uint3 dispatchThreadId : SV_DispatchThreadID, uint groupIndex : SV_GroupIndex, uint3 groupID : SV_GroupID)
+{
+    uint2 tileID = groupID.xy;
+
+    uint2 screenSize = _ScreenSize.xy;
+    uint tilesNum;
+    tilesNum = (screenSize.x + DEFERRED_LIGHTING_TILE_SIZE - 1) / DEFERRED_LIGHTING_TILE_SIZE;
+    tilesNum *= (screenSize.y + DEFERRED_LIGHTING_TILE_SIZE - 1) / DEFERRED_LIGHTING_TILE_SIZE;
+
+
+    uint2 coordBoundLL = DEFERRED_LIGHTING_TILE_SIZE * tileID;
+    uint shadingModelFlags[SHADINGMODELS_CUR_MODELS_NUM] = (uint[SHADINGMODELS_CUR_MODELS_NUM])0;
+
+    // Per tile Initialize
+    if (groupIndex < SHADINGMODELS_CUR_MODELS_NUM)
+    {
+        gs_ShadingModelFlags[groupIndex] = 0;
+    }
+    GroupMemoryBarrierWithGroupSync();
+
+
+    // Sampling stencil get shading models write to curr thread shadingModelFlags[]
+    UNITY_UNROLL
+    for (int i = 0; i < 4; i++)
+    {
+        int idx = i * DEFERRED_LIGHTING_THREADS + groupIndex;
+        uint2 uCrd = min(uint2(coordBoundLL.x + (idx & 0xf), coordBoundLL.y + (idx >> 4)), uint2(screenSize.x - 1, screenSize.y - 1));
+
+        uint stencilVal = GetStencilValue(LOAD_TEXTURE2D_X(_StencilTexture, uCrd));
+
+        int flagIndex = ShadingModelToIndex(StencilToShadingModel(stencilVal));
+        shadingModelFlags[flagIndex] |= (HasShadingModel(stencilVal) ? 1 : 0);
+    }
+
+
+
+    // Gather per tile shading models
+    UNITY_UNROLL
+    for (int j = 0; j < SHADINGMODELS_CUR_MODELS_NUM; j++)
+    {
+        if (shadingModelFlags[j] > 0)
+        {
+            InterlockedOr(gs_ShadingModelFlags[j], shadingModelFlags[j]);
+        }
+    }
+    GroupMemoryBarrierWithGroupSync();
+
+
+    // Write per tile data.
+    if (groupIndex < SHADINGMODELS_CUR_MODELS_NUM)
+    {
+        
+        if (gs_ShadingModelFlags[groupIndex] > 0)
+        {
+
+            uint tileOffset = 0;
+            uint prevGroupCnt;
+            // We are filling up an indirect argument buffer for DispatchIndirect.
+            // The buffer contains {groupCntX, groupCntY, groupCntZ} = {groupCnt, 0, 0}.
+            // Current thread contorls 4 pixels.
+            InterlockedAdd(g_DispatchIndirectBuffer[groupIndex * 3], 4, prevGroupCnt);
+            tileOffset = prevGroupCnt / 4; // 4x 8x8 groups per a 16x16 tile
+            g_TileList[groupIndex * tilesNum + tileOffset] = EncodeTileIndex(tileID.xy);
+        }
+
+    }
+
+}
+
+
+
+#elif defined(DEFERRED_LIGHTING)
+
+
+#if defined(DEFERRED_LIT)
+//--------------------------------------------------------------------------------------------------
+// Implementation Shading Models: Lit
+//--------------------------------------------------------------------------------------------------
+
+// Shading data decode from gbuffer
+struct ShadingData
+{
+    float3 normalWS;
+
+    float3 albedo;
+    float metallic;
+    float occlusion;
+    float smoothness;
+    uint materialFlags;
+
+    float perceptualRoughness;
+    float roughness;
+    float roughness2;
+
+    float3 diffuseColor;
+    float3 fresnel0;
+
+#ifdef _LIGHT_LAYERS
+    uint meshRenderingLayers;
+#endif
+};
+
+ShadingData DecodeShadingDataFromGBuffer(PositionInputs posInput)
+{
+    ShadingData shadingData;
+    ZERO_INITIALIZE(ShadingData, shadingData);
+
+    float4 gbuffer0 = LOAD_TEXTURE2D_X(_GBuffer0, posInput.positionSS);
+    float4 gbuffer1 = LOAD_TEXTURE2D_X(_GBuffer1, posInput.positionSS);
+    float4 gbuffer2 = LOAD_TEXTURE2D_X(_GBuffer2, posInput.positionSS);
+
+    // Unpack GBuffer informations. Init datas.
+    // See UnityGBuffer for more information.
+    // GBuffer0: diffuse           diffuse         diffuse         materialFlags   (sRGB rendertarget)
+    // GBuffer1: metallic/specular specular        specular        occlusion
+    // GBuffer2: encoded-normal    encoded-normal  encoded-normal  smoothness
+    shadingData.normalWS            = normalize(UnpackNormal(gbuffer2.xyz));
+
+    shadingData.albedo              = gbuffer0.rgb;
+    shadingData.metallic            = MetallicFromReflectivity(gbuffer1.r); // TODO: handle with Specular Metallic and setup.
+    shadingData.occlusion           = gbuffer1.a;
+    shadingData.smoothness          = gbuffer2.a;
+    shadingData.materialFlags       = UnpackMaterialFlags(gbuffer0.a);
+
+    shadingData.perceptualRoughness = PerceptualSmoothnessToPerceptualRoughness(shadingData.smoothness);
+    shadingData.roughness           = PerceptualRoughnessToRoughness(shadingData.perceptualRoughness); // We need to max this with Angular Diameter, which result in minRoughness.
+    shadingData.roughness2          = max(shadingData.roughness * shadingData.roughness, FLT_MIN);
+    
+    shadingData.diffuseColor        = ComputeDiffuseColor(shadingData.albedo, shadingData.metallic);
+    shadingData.fresnel0            = ComputeFresnel0(shadingData.albedo, shadingData.metallic, DEFAULT_SPECULAR_VALUE);
+
+#ifdef _LIGHT_LAYERS
+    float4 renderingLayers = LOAD_TEXTURE2D_X(MERGE_NAME(_, GBUFFER_LIGHT_LAYERS), posInput.positionSS);
+    shadingData.meshRenderingLayers = DecodeMeshRenderingLayer(renderingLayers.r);
+#endif
+
+    return shadingData;
+}
+
+DeferredLightingOutput DeferredLit(PositionInputs posInput, ShadingData shadingData)
+{
+    DeferredLightingOutput lightOutput;
+    ZERO_INITIALIZE(DeferredLightingOutput, lightOutput);
+
+    float3 positionWS       = posInput.positionWS;
+    float3 normalWS         = shadingData.normalWS;
+    float3 viewDirWS        = GetWorldSpaceNormalizeViewDir(positionWS);
+
+
+    float  NdotV = dot(normalWS, viewDirWS);
+    float  clampedNdotV = ClampNdotV(NdotV);
+    float3 specularFGD;
+    float  diffuseFGD;
+    float  reflectivity;
+    GetPreIntegratedFGDGGXAndDisneyDiffuse(clampedNdotV, shadingData.perceptualRoughness, shadingData.fresnel0, specularFGD, diffuseFGD, reflectivity);
+    float energyCompensation = 1.0 / reflectivity - 1.0;
+
+    float3 directDiffuse = 0;
+    float3 directSpecular = 0;
+    float3 indirectDiffuse = 0;
+    float3 indirectSpecular = 0;
+
+    // Shading
+
+    // Accumulate Direct (Directional Lights, Punctual Lights, TODO: Area Lights)
+        uint dirLightIndex = 0;
+        bool materialReceiveShadowsOff = (shadingData.materialFlags & kMaterialFlagReceiveShadowsOff) != 0;
+        for (dirLightIndex = 0; dirLightIndex < _DirectionalLightCount; dirLightIndex++)
+        {
+
+            DirectionalLightData dirLight = g_DirectionalLightDatas[dirLightIndex];
+            #ifdef _LIGHT_LAYERS
+            if (IsMatchingLightLayer(dirLight.lightLayerMask, shadingData.meshRenderingLayers))
+            #endif
+            {
+                float3 lightDirWS = dirLight.lightDirection;
+                float NdotL = dot(normalWS, lightDirWS);
+                
+                float clampedNdotL = saturate(NdotL);
+                float clampedRoughness = max(shadingData.roughness, dirLight.minRoughness);
+
+                float LdotV, NdotH, LdotH, invLenLV;
+                GetBSDFAngle(viewDirWS, lightDirWS, NdotL, NdotV, LdotV, NdotH, LdotH, invLenLV);
+
+
+                float3 F = F_Schlick(shadingData.fresnel0, LdotH);
+                float DV = DV_SmithJointGGX(NdotH, abs(NdotL), clampedNdotV, clampedRoughness);
+                float3 specTerm = F * DV;
+                float diffTerm = DisneyDiffuse(clampedNdotV, abs(NdotL), LdotV, shadingData.perceptualRoughness);
+
+                diffTerm *= clampedNdotL;
+                specTerm *= clampedNdotL;
+
+                directDiffuse += shadingData.diffuseColor * diffTerm * dirLight.lightColor;
+                directSpecular += specTerm * dirLight.lightColor;
+            }
+
+        }
+        // Apply Shadows
+        // TODO: add different direct light shadowmap
+        float shadowAttenuation = LoadScreenSpaceShadowmap(posInput.positionSS);
+        #ifdef _PEROBJECT_SCREEN_SPACE_SHADOW
+        float perObjectShadowAtten = LoadPerObjectScreenSpaceShadowmap(posInput.positionSS);
+        shadowAttenuation = min(shadowAttenuation, perObjectShadowAtten);
+        #endif
+
+        // Shadow Scatter
+        float shadowScatterMode = GetShadowScatterMode();
+        if (shadowScatterMode != SHADOWSCATTERMODE_NONE)
+        {
+            float shadowScatterTex = SAMPLE_TEXTURE2D_LOD(_ShadowScatterTexture, sampler_LinearClamp, posInput.positionNDC, 0).r; // ScatterTex is downsample, use linear sampler
+            shadowScatterTex = smoothstep(0.0, 0.5, shadowScatterTex);
+            #ifdef _PEROBJECT_SCREEN_SPACE_SHADOW
+            shadowScatterTex = min(shadowScatterTex, perObjectShadowAtten);
+            #endif
+
+            float3 shadowSSS = 1.0;
+            if (shadowScatterMode == SHADOWSCATTERMODE_RAMPTEXTURE)
+            {
+                shadowSSS = SAMPLE_TEXTURE2D_LOD(_DirShadowRampTexture, sampler_LinearClamp, float2(shadowAttenuation, 0.5), 0).rgb;
+            }
+            else
+            {
+                float sssRadius = max(1 - shadowAttenuation, HALF_MIN);
+                shadowSSS = EvaluateShadowScatterColor(sssRadius, _DirLightShadowScatterParams.rgb) / sssRadius;
+                shadowSSS = AcesFilm(sqrt(shadowSSS));
+            }
+
+            // Apply shadow strength
+            shadowSSS = LerpWhiteTo(shadowSSS, GetMainLightShadowParams().x);
+            shadowScatterTex = LerpWhiteTo(shadowScatterTex, GetMainLightShadowParams().x);
+
+            directDiffuse *= shadowSSS;
+            directSpecular *= shadowSSS;
+
+            directDiffuse *= shadowScatterTex;
+            directSpecular *= shadowScatterTex;
+        }
+        else
+        {
+            // Apply shadow strength
+            shadowAttenuation = LerpWhiteTo(shadowAttenuation, GetMainLightShadowParams().x);
+
+            directDiffuse *= shadowAttenuation;
+            directSpecular *= shadowAttenuation;
+        }
+
+
+        // Punctual Lights
+        uint lightCategory = LIGHTCATEGORY_PUNCTUAL;
+        uint lightStart;
+        uint lightCount;
+        GetCountAndStart(posInput, lightCategory, lightStart, lightCount);
+        uint v_lightListOffset = 0;
+        uint v_lightIdx = lightStart;
+
+        if (lightCount > 0) // avoid 0 iteration warning.
+        {
+            while (v_lightListOffset < lightCount)
+            {
+                v_lightIdx = FetchIndex(lightStart, v_lightListOffset);
+                if (v_lightIdx == -1)
+                    break;
+
+                GPULightData gpuLight = FetchLight(v_lightIdx);
+
+                #ifdef _LIGHT_LAYERS
+                if (IsMatchingLightLayer(gpuLight.lightLayerMask, shadingData.meshRenderingLayers))
+                #endif
+                {
+                    float3 lightVector = gpuLight.lightPosWS - positionWS.xyz;
+                    float distanceSqr = max(dot(lightVector, lightVector), FLT_MIN);
+                    float3 lightDirection = float3(lightVector * rsqrt(distanceSqr));
+                    float shadowMask = 1;
+
+                    float distanceAtten = DistanceAttenuation(distanceSqr, gpuLight.lightAttenuation.xy) * AngleAttenuation(gpuLight.lightDirection.xyz, lightDirection, gpuLight.lightAttenuation.zw);
+                    float shadowAtten = gpuLight.shadowType == 0 ? 1 : AdditionalLightShadow(gpuLight.shadowLightIndex, positionWS, lightDirection, shadowMask, gpuLight.lightOcclusionProbInfo);
+                    float attenuation = distanceAtten * shadowAtten * gpuLight.baseContribution;
+
+                    float3 lightDirWS = lightDirection;
+                    float NdotL = dot(normalWS, lightDirWS);
+                    
+                    float clampedNdotL = saturate(NdotL);
+                    float clampedRoughness = max(shadingData.roughness, gpuLight.minRoughness);
+
+                    float LdotV, NdotH, LdotH, invLenLV;
+                    GetBSDFAngle(viewDirWS, lightDirWS, NdotL, NdotV, LdotV, NdotH, LdotH, invLenLV);
+
+
+                    float3 F = F_Schlick(shadingData.fresnel0, LdotH);
+                    float DV = DV_SmithJointGGX(NdotH, abs(NdotL), clampedNdotV, clampedRoughness);
+                    float3 specTerm = F * DV;
+                    float diffTerm = DisneyDiffuse(clampedNdotV, abs(NdotL), LdotV, shadingData.perceptualRoughness);
+
+                    diffTerm *= clampedNdotL;
+                    specTerm *= clampedNdotL;
+
+                    directDiffuse += shadingData.diffuseColor * diffTerm * gpuLight.lightColor * attenuation;
+                    directSpecular += specTerm * gpuLight.lightColor * attenuation;
+
+
+                }
+
+                v_lightListOffset++;
+            }
+        }
+        
+    
+
+
+
+
+    // Accumulate Indirect (Reflection probe, ScreenSpace Reflection/Refraction)
+    // Reflection / Refraction hierarchy is
+    //  1. Screen Space Refraction / Reflection
+    //  2. Environment Reflection / Refraction
+    //  3. Sky Reflection / Refraction
+
+    float3 SHColor = SampleSH9(_AmbientProbeData, normalWS);//EvaluateAmbientProbe(normalWS);
+    indirectDiffuse += diffuseFGD * SHColor * shadingData.diffuseColor;
+    // TODO: ModifyBakedDiffuseLighting Function
+
+
+    float3 reflectDirWS = reflect(-viewDirWS, normalWS);
+    // Env is cubemap
+    {
+        float3 specDominantDirWS = GetSpecularDominantDir(normalWS, reflectDirWS, shadingData.perceptualRoughness, clampedNdotV);
+        // When we are rough, we tend to see outward shifting of the reflection when at the boundary of the projection volume
+        // Also it appear like more sharp. To avoid these artifact and at the same time get better match to reference we lerp to original unmodified reflection.
+        // Formula is empirical.
+        reflectDirWS = lerp(specDominantDirWS, reflectDirWS, saturate(smoothstep(0, 1, shadingData.roughness2)));
+    }
+
+    float reflectionHierarchyWeight = 0.0; // Max: 1.0
+    
+    #if defined(_SCREEN_SPACE_REFLECTION)
+    // Evaluate ScreenSpaceReflection.
+    {
+        float4 ssrLighting = LOAD_TEXTURE2D(_SSRLightingTexture, posInput.positionSS);
+        UpdateLightingHierarchyWeights(reflectionHierarchyWeight, ssrLighting.a);
+        indirectSpecular += specularFGD * ssrLighting.rgb * ssrLighting.a;
+    }
+    #endif
+
+
+    // Evaluate Environment probes
+    if (reflectionHierarchyWeight < 1.0)
+    {
+        float3 envReflection = EvaluateEnvProbes(posInput, reflectDirWS, shadingData.perceptualRoughness, reflectionHierarchyWeight);
+        indirectSpecular += specularFGD * envReflection;
+    }
+    
+
+    // Evaluate SkyEnvironment
+    if (reflectionHierarchyWeight < 1.0)
+    {
+        float weight = 1.0;
+        UpdateLightingHierarchyWeights(reflectionHierarchyWeight, weight);
+        float3 skyReflection = SampleSkyEnvironment(reflectDirWS, shadingData.perceptualRoughness);
+        indirectSpecular += specularFGD * skyReflection * weight;
+    }
+
+    // Post evaluate indirect diffuse or energy.
+    indirectDiffuse *= shadingData.occlusion;
+    indirectSpecular *= shadingData.occlusion;
+    lightOutput.diffuseLighting = directDiffuse + indirectDiffuse;
+    lightOutput.specularLighting = directSpecular + indirectSpecular;
+    lightOutput.specularLighting *= 1.0 + shadingData.fresnel0 * energyCompensation;
+
+
+    return lightOutput;
+}
+
+
+#elif defined(DEFERRED_SIMPLELIT)
+//--------------------------------------------------------------------------------------------------
+// Implementation Shading Models: SimpleLit
+//--------------------------------------------------------------------------------------------------
+
+// Shading data decode from gbuffer
+struct ShadingData
+{
+    float3 albedo;
+};
+
+ShadingData DecodeShadingDataFromGBuffer(PositionInputs posInput)
+{
+    ShadingData shadingData;
+    ZERO_INITIALIZE(ShadingData, shadingData);
+
+    float4 gbuffer0 = LOAD_TEXTURE2D_X(_GBuffer0, posInput.positionSS);
+
+    shadingData.albedo = gbuffer0.rgb;
+    return shadingData;
+}
+
+DeferredLightingOutput DeferredSimpleLit(PositionInputs posInput, ShadingData shadingData)
+{
+    DeferredLightingOutput lightOutput;
+    ZERO_INITIALIZE(DeferredLightingOutput, lightOutput);
+
+    lightOutput.diffuseLighting = shadingData.albedo;
+
+    return lightOutput;
+}
+
+
+#elif defined(DEFERRED_CHARACTER)
+//--------------------------------------------------------------------------------------------------
+// Implementation Shading Models: Character
+//--------------------------------------------------------------------------------------------------
+
+// Shading data decode from gbuffer
+struct ShadingData
+{
+    float3 albedo;
+};
+
+ShadingData DecodeShadingDataFromGBuffer(PositionInputs posInput)
+{
+    ShadingData shadingData;
+    ZERO_INITIALIZE(ShadingData, shadingData);
+
+    float4 gbuffer0 = LOAD_TEXTURE2D_X(_GBuffer0, posInput.positionSS);
+
+    shadingData.albedo = gbuffer0.rgb;
+    return shadingData;
+}
+
+DeferredLightingOutput DeferredCharacter(PositionInputs posInput, ShadingData shadingData)
+{
+    DeferredLightingOutput lightOutput;
+    ZERO_INITIALIZE(DeferredLightingOutput, lightOutput);
+
+    lightOutput.diffuseLighting = shadingData.albedo;
+
+    return lightOutput;
+}
+#endif
+
+
+DeferredLightingOutput DeferredShading(PositionInputs posInput, ShadingData shadingData)
+{
+#if defined(DEFERRED_LIT)
+    return DeferredLit(posInput, shadingData);
+#elif defined(DEFERRED_SIMPLELIT)
+    return DeferredSimpleLit(posInput, shadingData);
+#elif defined(DEFERRED_CHARACTER)
+    return DeferredCharacter(posInput, shadingData);
+#endif
+}
+
+
+[numthreads(DEFERRED_LIGHTING_GROUP_SIZE, DEFERRED_LIGHTING_GROUP_SIZE, 1)]
+void DEFERRED_COMPUTE_ENTRY(uint3 dispatchThreadId : SV_DispatchThreadID, uint2 groupThreadId : SV_GroupThreadID, uint groupId : SV_GroupID)
+{
+    uint2 coordSS;
+    uint2 tileCoord;
+    InitializeDispatchThreadIdFromTileList(groupId, groupThreadId, tileCoord, coordSS);
+
+    // (0) Check valid first.
+    // Reject the sky/background
+    float depth = LoadSceneDepth(coordSS);
+    if (depth == UNITY_RAW_FAR_CLIP_VALUE)
+    {
+        return;
+    }
+    // Reject dismatch stencil
+    uint stencilVal = GetStencilValue(LOAD_TEXTURE2D_X(_StencilTexture, coordSS.xy));
+    uint targetShadingModel = _ShadingModelStencil;
+    if (StencilToShadingModel(stencilVal) != targetShadingModel)
+    {
+        return;
+    }
+
+    PositionInputs posInput = GetPositionInput(coordSS.xy, _ScreenSize.zw, depth, UNITY_MATRIX_I_VP, UNITY_MATRIX_V, tileCoord);
+
+    ShadingData shadingData = DecodeShadingDataFromGBuffer(posInput);
+
+    DeferredLightingOutput lightOutput = DeferredShading(posInput, shadingData);
+
+
+    float3 diffuseLighting = lightOutput.diffuseLighting;
+    float3 specularLighting = lightOutput.specularLighting;
+    float3 emission = _LightingTexture[coordSS].rgb;
+    _LightingTexture[coordSS] = float4(diffuseLighting + specularLighting + emission, 1.0);
+}
+
+#endif

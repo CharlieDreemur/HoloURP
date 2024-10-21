@@ -1,0 +1,27 @@
+{
+  "name": "com.unity.render-pipelines.danbaidong",
+  "description": "The Danbaidong Render Pipeline is a prebuilt Scriptable Render Pipeline, made by Unity.For PCs",
+  "version": "17.0.3",
+  "unity": "6000.0",
+  "displayName": "Danbaidong RP",
+  "dependencies": {
+    "com.unity.mathematics": "1.2.1",
+    "com.unity.burst": "1.8.9",
+    "com.unity.shadergraph": "17.0.3"
+  },
+  "keywords": [
+    "graphics",
+    "performance",
+    "rendering",
+    "Toon",
+    "mobile",
+    "render",
+    "pipeline"
+  ],
+  "author": {
+    "name": "Danbaidong",
+    "url": "https://github.com/danbaidong1111"
+  },
+  "samples": [],
+  "_fingerprint": "438a071df28be3f6b72aa2445ec699bbc6250e68"
+}

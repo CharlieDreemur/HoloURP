@@ -1,16 +1,5 @@
 {
   "dependencies": {
-    "com.danbaidong.smoothnormal": {
-      "version": "https://github.com/danbaidong1111/SmoothNormal.git",
-      "depth": 0,
-      "source": "git",
-      "dependencies": {
-        "com.unity.mathematics": "1.2.1",
-        "com.unity.burst": "1.8.4",
-        "com.unity.render-pipelines.core": "14.0.8"
-      },
-      "hash": "1989771513995f46579cfe878f6aa4ea40dd9b18"
-    },
     "com.unity.ai.navigation": {
       "version": "2.0.0",
       "depth": 0,
@@ -107,7 +96,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.render-pipelines.core": {
-      "version": "file:D:/Codeing/UnityProject/DanbaidongRPFull/DanbaidongRPCore-17.0.3_1",
+      "version": "file:../DanbaidongRPCore-17.0.3_1",
       "depth": 0,
       "source": "local",
       "dependencies": {
@@ -121,7 +110,7 @@
       }
     },
     "com.unity.render-pipelines.danbaidong": {
-      "version": "file:D:/Codeing/UnityProject/DanbaidongRPFull/DanbaidongRP-17.0.3_1",
+      "version": "file:../DanbaidongRP-17.0.3_1",
       "depth": 0,
       "source": "local",
       "dependencies": {
@@ -131,7 +120,7 @@
       }
     },
     "com.unity.render-pipelines.danbaidong-config": {
-      "version": "file:D:/Codeing/UnityProject/DanbaidongRPFull/DanbaidongRPConfig-urp17/DanbaidongRPConfig-urp17",
+      "version": "file:../DanbaidongRPConfig-urp17",
       "depth": 0,
       "source": "local",
       "dependencies": {}
