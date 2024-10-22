@@ -140,9 +140,12 @@
     <vertexScaleByHeightFlag>false</vertexScaleByHeightFlag>
     <vertexScaleByHeight>158</vertexScaleByHeight>
     <waitProcessExitting>false</waitProcessExitting>
-    <pmxAssetPath>Assets/Resources/Model/GawrGura.pmx</pmxAssetPath>
-    <vmdAssetPathList />
-    <fbxOutputPath>Assets/Resources/Model/GawrGura.fbx</fbxOutputPath>
+    <pmxAssetPath>Assets/Resources/Model/Gura/GawrGura.pmx</pmxAssetPath>
+    <vmdAssetPathList>
+      <string>Assets/Resources/Animation/Gura_Idle.vmd</string>
+      <string>Assets/Resources/Animation/Test_Final.vmd</string>
+    </vmdAssetPathList>
+    <fbxOutputPath>Assets/Resources/Model/Motion.fbx</fbxOutputPath>
     <bulletPhysicsVersion>_275</bulletPhysicsVersion>
     <useWineFlag>false</useWineFlag>
     <wine>Manual</wine>
@@ -180,5 +183,7 @@
       <selfShadowEnabled>true</selfShadowEnabled>
       <sphereMapEnabled>true</sphereMapEnabled>
     </materialGlobalProperty>
+    <materialProperyList />
+    <materialBlockPropertyList />
   </mmd4MecanimProperty>
 </PMX2FBXConfig>
