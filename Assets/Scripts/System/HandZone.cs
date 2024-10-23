@@ -24,6 +24,7 @@ public class HandZone : MonoBehaviour
     public TableZone tableZone;
     [SerializeField]
     private bool _isLockHideSequence = false;
+    private Sequence _currentHideSequence;
     public int CurrentCardIndex
     {
         get { return _currentCardIndex; }
@@ -195,35 +196,49 @@ public class HandZone : MonoBehaviour
 
     private void HideHand(UnityAction callback = null)
     {
-        if(_isLockHideSequence)
+        Debug.Log("Hiding hand");
+        if (_isLockHideSequence)
         {
             return;
         }
         _isHandHidden = true;
         _isLockHideSequence = true;
-        Sequence hideSequence = DOTween.Sequence();
-        hideSequence.Append(transform.DOMoveY(transform.position.y - verticalHideOffset, hideDuration).SetEase(Ease.OutCubic));
-        hideSequence.OnComplete(() =>
+        _currentHideSequence?.Kill();
+        _currentHideSequence = DOTween.Sequence();
+        _currentHideSequence.Append(transform.DOMoveY(_originalPos.y - verticalHideOffset, hideDuration).SetEase(Ease.OutCubic));
+        _currentHideSequence.OnComplete(() =>
         {
+            Debug.Log("Hiding hand complete");
+            _isLockHideSequence = false;
             callback?.Invoke();
+        });
+        _currentHideSequence.OnKill(() =>
+        {
             _isLockHideSequence = false;
         });
     }
 
     private void ShowHand(UnityAction callback = null)
     {
-        if(_isLockHideSequence)
+        Debug.Log("Showing hand");
+        if (_isLockHideSequence)
         {
             return;
         }
         _isHandHidden = false;
         _isLockHideSequence = true;
-        Sequence showSequence = DOTween.Sequence();
-        showSequence.Append(transform.DOMoveY(_originalPos.y, hideDuration).SetEase(Ease.OutCubic));
-        showSequence.OnComplete(() =>
+        _currentHideSequence?.Kill();
+        _currentHideSequence = DOTween.Sequence();
+        _currentHideSequence.Append(transform.DOMoveY(_originalPos.y, hideDuration).SetEase(Ease.OutCubic));
+        _currentHideSequence.OnComplete(() =>
         {
+            Debug.Log("Showing hand complete");
             ArrangeCardsInFan();
             callback?.Invoke();
+            _isLockHideSequence = false;
+        });
+        _currentHideSequence.OnKill(() =>
+        {
             _isLockHideSequence = false;
         });
     }
