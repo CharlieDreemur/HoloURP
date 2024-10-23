@@ -56,7 +56,7 @@ public partial class @InputControls: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""LookHandZone"",
+                    ""name"": ""HideHandZone"",
                     ""type"": ""Button"",
                     ""id"": ""f1ba0d36-48eb-4cd5-b651-1c94a6531f70"",
                     ""expectedControlType"": """",
@@ -320,7 +320,7 @@ public partial class @InputControls: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Keyboard&Mouse"",
-                    ""action"": ""LookHandZone"",
+                    ""action"": ""HideHandZone"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -331,7 +331,7 @@ public partial class @InputControls: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Gamepad"",
-                    ""action"": ""LookHandZone"",
+                    ""action"": ""HideHandZone"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -342,7 +342,7 @@ public partial class @InputControls: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""XR"",
-                    ""action"": ""LookHandZone"",
+                    ""action"": ""HideHandZone"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -977,7 +977,7 @@ public partial class @InputControls: IInputActionCollection2, IDisposable
         m_Player_Move = m_Player.FindAction("Move", throwIfNotFound: true);
         m_Player_Look = m_Player.FindAction("Look", throwIfNotFound: true);
         m_Player_PlayCard = m_Player.FindAction("PlayCard", throwIfNotFound: true);
-        m_Player_LookHandZone = m_Player.FindAction("LookHandZone", throwIfNotFound: true);
+        m_Player_HideHandZone = m_Player.FindAction("HideHandZone", throwIfNotFound: true);
         m_Player_NavigateLeft = m_Player.FindAction("NavigateLeft", throwIfNotFound: true);
         m_Player_NavigateRight = m_Player.FindAction("NavigateRight", throwIfNotFound: true);
         m_Player_Sprint = m_Player.FindAction("Sprint", throwIfNotFound: true);
@@ -1063,7 +1063,7 @@ public partial class @InputControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Move;
     private readonly InputAction m_Player_Look;
     private readonly InputAction m_Player_PlayCard;
-    private readonly InputAction m_Player_LookHandZone;
+    private readonly InputAction m_Player_HideHandZone;
     private readonly InputAction m_Player_NavigateLeft;
     private readonly InputAction m_Player_NavigateRight;
     private readonly InputAction m_Player_Sprint;
@@ -1074,7 +1074,7 @@ public partial class @InputControls: IInputActionCollection2, IDisposable
         public InputAction @Move => m_Wrapper.m_Player_Move;
         public InputAction @Look => m_Wrapper.m_Player_Look;
         public InputAction @PlayCard => m_Wrapper.m_Player_PlayCard;
-        public InputAction @LookHandZone => m_Wrapper.m_Player_LookHandZone;
+        public InputAction @HideHandZone => m_Wrapper.m_Player_HideHandZone;
         public InputAction @NavigateLeft => m_Wrapper.m_Player_NavigateLeft;
         public InputAction @NavigateRight => m_Wrapper.m_Player_NavigateRight;
         public InputAction @Sprint => m_Wrapper.m_Player_Sprint;
@@ -1096,9 +1096,9 @@ public partial class @InputControls: IInputActionCollection2, IDisposable
             @PlayCard.started += instance.OnPlayCard;
             @PlayCard.performed += instance.OnPlayCard;
             @PlayCard.canceled += instance.OnPlayCard;
-            @LookHandZone.started += instance.OnLookHandZone;
-            @LookHandZone.performed += instance.OnLookHandZone;
-            @LookHandZone.canceled += instance.OnLookHandZone;
+            @HideHandZone.started += instance.OnHideHandZone;
+            @HideHandZone.performed += instance.OnHideHandZone;
+            @HideHandZone.canceled += instance.OnHideHandZone;
             @NavigateLeft.started += instance.OnNavigateLeft;
             @NavigateLeft.performed += instance.OnNavigateLeft;
             @NavigateLeft.canceled += instance.OnNavigateLeft;
@@ -1121,9 +1121,9 @@ public partial class @InputControls: IInputActionCollection2, IDisposable
             @PlayCard.started -= instance.OnPlayCard;
             @PlayCard.performed -= instance.OnPlayCard;
             @PlayCard.canceled -= instance.OnPlayCard;
-            @LookHandZone.started -= instance.OnLookHandZone;
-            @LookHandZone.performed -= instance.OnLookHandZone;
-            @LookHandZone.canceled -= instance.OnLookHandZone;
+            @HideHandZone.started -= instance.OnHideHandZone;
+            @HideHandZone.performed -= instance.OnHideHandZone;
+            @HideHandZone.canceled -= instance.OnHideHandZone;
             @NavigateLeft.started -= instance.OnNavigateLeft;
             @NavigateLeft.performed -= instance.OnNavigateLeft;
             @NavigateLeft.canceled -= instance.OnNavigateLeft;
@@ -1318,7 +1318,7 @@ public partial class @InputControls: IInputActionCollection2, IDisposable
         void OnMove(InputAction.CallbackContext context);
         void OnLook(InputAction.CallbackContext context);
         void OnPlayCard(InputAction.CallbackContext context);
-        void OnLookHandZone(InputAction.CallbackContext context);
+        void OnHideHandZone(InputAction.CallbackContext context);
         void OnNavigateLeft(InputAction.CallbackContext context);
         void OnNavigateRight(InputAction.CallbackContext context);
         void OnSprint(InputAction.CallbackContext context);

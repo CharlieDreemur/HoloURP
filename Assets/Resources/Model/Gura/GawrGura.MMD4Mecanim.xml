@@ -142,10 +142,9 @@
     <waitProcessExitting>false</waitProcessExitting>
     <pmxAssetPath>Assets/Resources/Model/Gura/GawrGura.pmx</pmxAssetPath>
     <vmdAssetPathList>
-      <string>Assets/Resources/Animation/Gura_Idle.vmd</string>
-      <string>Assets/Resources/Animation/Test_Final.vmd</string>
+      <string>Assets/Resources/Animation/VMD/Gura_Idle_V2.vmd</string>
     </vmdAssetPathList>
-    <fbxOutputPath>Assets/Resources/Model/Motion.fbx</fbxOutputPath>
+    <fbxOutputPath>Assets/Resources/Model/Gura_Idle_v2.fbx</fbxOutputPath>
     <bulletPhysicsVersion>_275</bulletPhysicsVersion>
     <useWineFlag>false</useWineFlag>
     <wine>Manual</wine>
