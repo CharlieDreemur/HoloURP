@@ -1,5 +1,5 @@
 using UnityEngine;
-public interface ITurnState
+public interface IGameState
 {
     void Enter();
     void Execute();
@@ -11,8 +11,8 @@ public interface ITurnState
 /// </summary>
 public class CardGameManager : MonoBehaviour
 {
-    private ITurnState currentState;
-    public void SetState(ITurnState newState)
+    private IGameState currentState;
+    public void SetState(IGameState newState)
     {
         // Exit current state and enter new state
         if (currentState != null)

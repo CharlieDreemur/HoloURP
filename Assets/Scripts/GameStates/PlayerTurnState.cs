@@ -1,5 +1,5 @@
 using UnityEngine;
-public class PlayerTurnState : ITurnState
+public class PlayerTurnState : IGameState
 {
     private CardGameManager cardGameManager;
     private TurnManager turnManager;

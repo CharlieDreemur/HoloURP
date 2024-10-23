@@ -2,8 +2,36 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CardDeck
+public class CardDeck : MonoBehaviour
 {
+    [Header("Deck Settings")]
+    [SerializeField]
+    private int maxSize = 10;
+    [SerializeField]
+    private int currentSize = 10;
+    [Header("Deck Visuals")]
+    [SerializeField]
+    private GameObject deckBodyPrefab;
+    [SerializeField]
+    private float deckBodySpacing = 0.002f;
+    [Header("Debug")]
+    [SerializeField]
+    private List<GameObject> deckBodies = new List<GameObject>();
+    [SerializeField]
+    private int previousSize;
+    public int CurrentSize{
+        get { return currentSize; }
+        set { 
+            if(value > maxSize){
+                currentSize = maxSize;
+            }
+            if(value < 0)
+            {
+                currentSize = 0;
+            }
+            UpdateVisuals();
+        }
+    }
     private List<ICard> deck; 
     private const int Seed = 0;  // Seed for the random number generator
     private System.Random rng = new System.Random(Seed);
@@ -13,7 +41,32 @@ public class CardDeck
         deck = new List<ICard>(initialCards);
         ShuffleDeck(); 
     }
+    [ContextMenu("UpdateVisuals")]
+    private void UpdateVisuals()
+    {
+        if(currentSize == previousSize)
+        {
+            return;
+        }
 
+        if(currentSize > previousSize)
+        {
+            for(int i = previousSize; i < currentSize; i++)
+            {
+                GameObject newDeckBody = Instantiate(deckBodyPrefab, transform);
+                newDeckBody.transform.localPosition = new Vector3(0, 0, i * deckBodySpacing);
+                deckBodies.Add(newDeckBody);
+            }
+        }
+        else
+        {
+            for(int i = previousSize - 1; i >= currentSize; i--)
+            {
+                Destroy(deckBodies[i]);
+                deckBodies.RemoveAt(i);
+            }
+        }
+    }
     // Method to shuffle the deck
     public void ShuffleDeck()
     {

@@ -9,6 +9,7 @@ public class CardVisualizer : MonoBehaviour
     public float drawDuration = 1.0f;
     private Vector3 initialPosition;  
     private Quaternion initialRotation;
+    private Material cardMaterial;
     public bool IsSelected {
         get { return isSelected; }
         set { 
@@ -25,7 +26,9 @@ public class CardVisualizer : MonoBehaviour
     }
     private bool isSelected = false;
     private Vector3 defaultScale;
-    [ContextMenu("Init")]
+    void Awake(){
+        cardMaterial = GetComponent<Renderer>().material;
+    }
     void Start()
     {
         initialPosition = transform.position;
@@ -55,13 +58,13 @@ public class CardVisualizer : MonoBehaviour
     [ContextMenu("SelectCard")]
     public void SelectCard()
     {
-        transform.DOScale(defaultScale * 1.2f, 0.5f).SetEase(Ease.OutBounce);
+        cardMaterial.SetFloat("_InnerOutlineThickness", 3f);
     }
 
     [ContextMenu("DeselectCard")]
     public void DeselectCard()
     {
-        transform.DOScale(defaultScale, 0.5f).SetEase(Ease.OutBounce);
+        cardMaterial.SetFloat("_InnerOutlineThickness", 0.0f);
     }
 
     void OnMouseDown()
