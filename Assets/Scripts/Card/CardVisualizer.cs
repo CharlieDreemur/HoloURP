@@ -35,7 +35,10 @@ public class CardVisualizer : MonoBehaviour
         initialRotation = transform.rotation;
         defaultScale = transform.localScale;
     }
-
+    public void SetCard(ICard card)
+    {
+        
+    }
     [ContextMenu("DrawCard")]
     public void DrawCard(Vector3 targetPosition)
     {

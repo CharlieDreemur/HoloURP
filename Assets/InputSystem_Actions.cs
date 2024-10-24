@@ -83,10 +83,10 @@ public partial class @InputControls: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""Sprint"",
+                    ""name"": ""DrawCard"",
                     ""type"": ""Button"",
                     ""id"": ""641cd816-40e6-41b4-8c3d-04687c349290"",
-                    ""expectedControlType"": ""Button"",
+                    ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
@@ -283,11 +283,11 @@ public partial class @InputControls: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""f2e9ba44-c423-42a7-ad56-f20975884794"",
-                    ""path"": ""<Keyboard>/leftShift"",
+                    ""path"": ""<Keyboard>/r"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Keyboard&Mouse"",
-                    ""action"": ""Sprint"",
+                    ""action"": ""DrawCard"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -298,7 +298,7 @@ public partial class @InputControls: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Gamepad"",
-                    ""action"": ""Sprint"",
+                    ""action"": ""DrawCard"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -309,7 +309,7 @@ public partial class @InputControls: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""XR"",
-                    ""action"": ""Sprint"",
+                    ""action"": ""DrawCard"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -980,7 +980,7 @@ public partial class @InputControls: IInputActionCollection2, IDisposable
         m_Player_HideHandZone = m_Player.FindAction("HideHandZone", throwIfNotFound: true);
         m_Player_NavigateLeft = m_Player.FindAction("NavigateLeft", throwIfNotFound: true);
         m_Player_NavigateRight = m_Player.FindAction("NavigateRight", throwIfNotFound: true);
-        m_Player_Sprint = m_Player.FindAction("Sprint", throwIfNotFound: true);
+        m_Player_DrawCard = m_Player.FindAction("DrawCard", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -1066,7 +1066,7 @@ public partial class @InputControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_HideHandZone;
     private readonly InputAction m_Player_NavigateLeft;
     private readonly InputAction m_Player_NavigateRight;
-    private readonly InputAction m_Player_Sprint;
+    private readonly InputAction m_Player_DrawCard;
     public struct PlayerActions
     {
         private @InputControls m_Wrapper;
@@ -1077,7 +1077,7 @@ public partial class @InputControls: IInputActionCollection2, IDisposable
         public InputAction @HideHandZone => m_Wrapper.m_Player_HideHandZone;
         public InputAction @NavigateLeft => m_Wrapper.m_Player_NavigateLeft;
         public InputAction @NavigateRight => m_Wrapper.m_Player_NavigateRight;
-        public InputAction @Sprint => m_Wrapper.m_Player_Sprint;
+        public InputAction @DrawCard => m_Wrapper.m_Player_DrawCard;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -1105,9 +1105,9 @@ public partial class @InputControls: IInputActionCollection2, IDisposable
             @NavigateRight.started += instance.OnNavigateRight;
             @NavigateRight.performed += instance.OnNavigateRight;
             @NavigateRight.canceled += instance.OnNavigateRight;
-            @Sprint.started += instance.OnSprint;
-            @Sprint.performed += instance.OnSprint;
-            @Sprint.canceled += instance.OnSprint;
+            @DrawCard.started += instance.OnDrawCard;
+            @DrawCard.performed += instance.OnDrawCard;
+            @DrawCard.canceled += instance.OnDrawCard;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
@@ -1130,9 +1130,9 @@ public partial class @InputControls: IInputActionCollection2, IDisposable
             @NavigateRight.started -= instance.OnNavigateRight;
             @NavigateRight.performed -= instance.OnNavigateRight;
             @NavigateRight.canceled -= instance.OnNavigateRight;
-            @Sprint.started -= instance.OnSprint;
-            @Sprint.performed -= instance.OnSprint;
-            @Sprint.canceled -= instance.OnSprint;
+            @DrawCard.started -= instance.OnDrawCard;
+            @DrawCard.performed -= instance.OnDrawCard;
+            @DrawCard.canceled -= instance.OnDrawCard;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -1321,7 +1321,7 @@ public partial class @InputControls: IInputActionCollection2, IDisposable
         void OnHideHandZone(InputAction.CallbackContext context);
         void OnNavigateLeft(InputAction.CallbackContext context);
         void OnNavigateRight(InputAction.CallbackContext context);
-        void OnSprint(InputAction.CallbackContext context);
+        void OnDrawCard(InputAction.CallbackContext context);
     }
     public interface IUIActions
     {

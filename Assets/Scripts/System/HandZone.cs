@@ -155,13 +155,21 @@ public class HandZone : MonoBehaviour
         // Combine the card's self-rotation with its rotation facing outward
         return Quaternion.Euler(0, angle, rotateAngel);
     }
-
-    private void AddCard()
+    public void AddCards(List<CardBase> cards)
     {
-        GameObject newCard = Instantiate(cardPrefab, transform);
-        _cards.Add(newCard);
-        ArrangeCardsInFan();
+        foreach (CardBase card in cards)
+        {
+            AddCard(card);
+        }
     }
+    public void AddCard(CardBase card)
+    {
+
+        GameObject cardModel = Instantiate(cardPrefab, transform);
+        cardModel.GetComponent<CardVisualizer>().SetCard(card);
+        _cards.Add(cardModel);
+    }
+
 
 
     // Method to play a card and move it to the table with a throw effect
