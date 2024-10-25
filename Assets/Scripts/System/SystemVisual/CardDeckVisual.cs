@@ -37,7 +37,7 @@ public class CardDeckVisual : MonoBehaviour
             newDeckBody.transform.localPosition = new Vector3(0, 0, i * _deckBodySpacing);
             _deckVisuals.Add(newDeckBody);
             CardVisual cardVisual = newDeckBody.GetComponent<CardVisual>();
-            cardVisual.SetCard(_cardDeck.cards[i]);
+            cardVisual.SetCard(_cardDeck.cards[_cardDeck.cards.Count-i-1]);
         }
     }
 
