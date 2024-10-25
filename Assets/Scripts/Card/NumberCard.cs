@@ -5,7 +5,7 @@ using UnityEngine;
 public class NumberCard: CardBase
 {
     [SerializeField]
-    private int cardNumber = 1; //card number will be in the range of 1 to 4
+    public int cardNumber = 1; //card number will be in the range of 1 to 4
 
     protected ICardEffect cardEffect;
     public NumberCard(int cardNumber)

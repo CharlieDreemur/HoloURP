@@ -149,6 +149,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   drawDuration: 1
+  cardTextureSO: {fileID: 11400000, guid: 1a95b4fddfd28ac4e8054db469a35765, type: 2}
 --- !u!114 &3566049197135625979
 MonoBehaviour:
   m_ObjectHideFlags: 0

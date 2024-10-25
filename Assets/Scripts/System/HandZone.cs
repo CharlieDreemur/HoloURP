@@ -6,9 +6,11 @@ using UnityEngine.InputSystem;
 using UnityEngine.Events;
 public class HandZone : MonoBehaviour
 {
+    [SerializeField]
+    private PlayerStats _playerStats;
     [Header("Fan Settings")]
     public GameObject cardPrefab;
-    public int cardCount = 5;
+    public int initCardCount = 5;
     public float verticalSpacing = 0.1f;
     public float horizontalSpacing = 0.1f;
     public float fanAngle = 45.0f;
@@ -86,8 +88,8 @@ public class HandZone : MonoBehaviour
     void Start()
     {
         _cards = new List<GameObject>();
-        _previousCardCount = cardCount;
-        for (int i = 0; i < cardCount; i++)
+        _previousCardCount = initCardCount;
+        for (int i = 0; i < initCardCount; i++)
         {
             GameObject newCard = Instantiate(cardPrefab, transform);
             _cards.Add(newCard);
@@ -164,10 +166,10 @@ public class HandZone : MonoBehaviour
     }
     public void AddCard(CardBase card)
     {
-
         GameObject cardModel = Instantiate(cardPrefab, transform);
-        cardModel.GetComponent<CardVisualizer>().SetCard(card);
+        cardModel.GetComponent<CardVisual>().SetCard(card);
         _cards.Add(cardModel);
+        ArrangeCardsInFan();
     }
 
 
@@ -182,7 +184,7 @@ public class HandZone : MonoBehaviour
             return;
         }
         GameObject card = _cards[index];
-        card.GetComponent<CardVisualizer>().DeselectCard();
+        card.GetComponent<CardVisual>().DeselectCard();
         _cards.RemoveAt(index);
         card.transform.SetParent(tableTransform);
         CurrentCardIndex--;
@@ -256,9 +258,9 @@ public class HandZone : MonoBehaviour
         {
             return;
         }
-        _cards[CurrentCardIndex].GetComponent<CardVisualizer>().DeselectCard();
+        _cards[CurrentCardIndex].GetComponent<CardVisual>().DeselectCard();
         CurrentCardIndex--;
-        _cards[CurrentCardIndex].GetComponent<CardVisualizer>().SelectCard();
+        _cards[CurrentCardIndex].GetComponent<CardVisual>().SelectCard();
 
     }
 
@@ -268,9 +270,9 @@ public class HandZone : MonoBehaviour
         {
             return;
         }
-        _cards[CurrentCardIndex].GetComponent<CardVisualizer>().DeselectCard();
+        _cards[CurrentCardIndex].GetComponent<CardVisual>().DeselectCard();
         CurrentCardIndex++;
-        _cards[CurrentCardIndex].GetComponent<CardVisualizer>().SelectCard();
+        _cards[CurrentCardIndex].GetComponent<CardVisual>().SelectCard();
     }
 
 }

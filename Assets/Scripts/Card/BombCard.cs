@@ -13,17 +13,17 @@ public class BombCard : CardBase
     }
     public override void OnDiscard()
     {
-        throw new System.NotImplementedException();
+        Debug.Log($"Bomb Card discarded: {description}");
     }
 
     public override void OnDraw()
     {
-        throw new System.NotImplementedException();
+        Debug.Log($"Bomb Card drawn: {description}");
     }
 
     public override void Use()
     {
-        throw new System.NotImplementedException();
+        Debug.Log($"Bomb Card used: {description}");
     }
 
 }
