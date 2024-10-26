@@ -175,7 +175,7 @@ public class HandZoneVisual : MonoBehaviour
             slideSequence.OnComplete(() =>
             {
                 //List<CardBase> cards = new List<CardBase>{
-                //tableZone.AddCardToTable(card);
+                playZoneVisual.AddCardToTable(card);
             });
         }
     }

@@ -90,6 +90,15 @@ public partial class @InputControls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""EndTurn"",
+                    ""type"": ""Button"",
+                    ""id"": ""4579fba5-88ef-42b6-8611-8d6c1256aad3"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -310,6 +319,39 @@ public partial class @InputControls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": ""XR"",
                     ""action"": ""DrawCard"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""a58451ce-7472-4f5d-9f06-8f810dea6c92"",
+                    ""path"": ""<Keyboard>/space"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""EndTurn"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""0931a590-04a8-43a3-99f2-c8e024e97cbd"",
+                    ""path"": ""<Gamepad>/buttonWest"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""EndTurn"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""9250d7f6-ee9d-4a76-87fe-10804ed2e0e7"",
+                    ""path"": ""<XRController>/trigger"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""XR"",
+                    ""action"": ""EndTurn"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -981,6 +1023,7 @@ public partial class @InputControls: IInputActionCollection2, IDisposable
         m_Player_NavigateLeft = m_Player.FindAction("NavigateLeft", throwIfNotFound: true);
         m_Player_NavigateRight = m_Player.FindAction("NavigateRight", throwIfNotFound: true);
         m_Player_DrawCard = m_Player.FindAction("DrawCard", throwIfNotFound: true);
+        m_Player_EndTurn = m_Player.FindAction("EndTurn", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -1067,6 +1110,7 @@ public partial class @InputControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_NavigateLeft;
     private readonly InputAction m_Player_NavigateRight;
     private readonly InputAction m_Player_DrawCard;
+    private readonly InputAction m_Player_EndTurn;
     public struct PlayerActions
     {
         private @InputControls m_Wrapper;
@@ -1078,6 +1122,7 @@ public partial class @InputControls: IInputActionCollection2, IDisposable
         public InputAction @NavigateLeft => m_Wrapper.m_Player_NavigateLeft;
         public InputAction @NavigateRight => m_Wrapper.m_Player_NavigateRight;
         public InputAction @DrawCard => m_Wrapper.m_Player_DrawCard;
+        public InputAction @EndTurn => m_Wrapper.m_Player_EndTurn;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -1108,6 +1153,9 @@ public partial class @InputControls: IInputActionCollection2, IDisposable
             @DrawCard.started += instance.OnDrawCard;
             @DrawCard.performed += instance.OnDrawCard;
             @DrawCard.canceled += instance.OnDrawCard;
+            @EndTurn.started += instance.OnEndTurn;
+            @EndTurn.performed += instance.OnEndTurn;
+            @EndTurn.canceled += instance.OnEndTurn;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
@@ -1133,6 +1181,9 @@ public partial class @InputControls: IInputActionCollection2, IDisposable
             @DrawCard.started -= instance.OnDrawCard;
             @DrawCard.performed -= instance.OnDrawCard;
             @DrawCard.canceled -= instance.OnDrawCard;
+            @EndTurn.started -= instance.OnEndTurn;
+            @EndTurn.performed -= instance.OnEndTurn;
+            @EndTurn.canceled -= instance.OnEndTurn;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -1322,6 +1373,7 @@ public partial class @InputControls: IInputActionCollection2, IDisposable
         void OnNavigateLeft(InputAction.CallbackContext context);
         void OnNavigateRight(InputAction.CallbackContext context);
         void OnDrawCard(InputAction.CallbackContext context);
+        void OnEndTurn(InputAction.CallbackContext context);
     }
     public interface IUIActions
     {

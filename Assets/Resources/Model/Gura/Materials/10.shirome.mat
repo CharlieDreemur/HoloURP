@@ -8,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: 10.shirome
-  m_Shader: {fileID: 4800000, guid: d2504132f75c1ad48881097bd6121a38, type: 3}
+  m_Shader: {fileID: 4800000, guid: 3d6c575ee75ce8c4b9376cfe040f1c1a, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
@@ -182,6 +182,9 @@ Material:
     - _OutlinePunctualLightingOffset: 0
     - _OutlineWidth: 1
     - _Parallax: 0.02
+    - _ParallaxMaskEdge: 0.8
+    - _ParallaxMaskEdgeOffset: 0.2
+    - _ParallaxScale: 1
     - _PunctualRimWidth: 2.75
     - _QueueOffset: 0
     - _ReceiveShadows: 1

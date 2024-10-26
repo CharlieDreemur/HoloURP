@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 /// <summary>
 /// PlayZone represents the area on the table where cards are placed after being played.
 /// </summary>
@@ -14,6 +15,7 @@ public class PlayZone : MonoBehaviour
     [SerializeReference]
     private List<CardBase> cards = new List<CardBase>();
     public CardEvent AddCardToPlayZoneEvent = new CardEvent();
+    public UnityEvent AddCardsIntoDeckEvent = new UnityEvent();
     void Awake(){
         _playerStats.PlayCardEvent.AddListener(AddCardToTable);
     }
@@ -25,19 +27,13 @@ public class PlayZone : MonoBehaviour
         AddCardToPlayZoneEvent?.Invoke(cards);
     }
 
-    public void AddIntoCardDeck(List<CardBase> cards)
+    public void AddCardsIntoDeck(List<CardBase> cards)
     {
         _cardDeck.AddCards(cards);
         //clear the cards
         cards.Clear();
-        //desotry all child card models under its transform
-        foreach (Transform child in transform)
-        {
-            if(child.gameObject.GetComponent<CardVisual>() != null)
-            {
-                Destroy(child.gameObject);
-            }
-        }
+        AddCardsIntoDeckEvent?.Invoke();
+
     }
 
 }

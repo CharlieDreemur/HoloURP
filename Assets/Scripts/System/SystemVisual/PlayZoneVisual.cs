@@ -11,15 +11,20 @@ public class PlayZoneVisual : MonoBehaviour
     // Add a card to the table
     public void AddCardToTable(GameObject card)
     {
+        card.transform.SetParent(transform);
         cardModels.Add(card);
-        //Debug.Log("Card added to the table.");
     }
 
+
+
     // Remove all cards from the table and return them
-    public List<GameObject> ClearTable()
+    public void ClearTable()
     {
-        List<GameObject> clearedCards = new List<GameObject>(cardModels);
-        cardModels.Clear();
-        return clearedCards;
+        for(int i = 0; i < cardModels.Count; i++)
+        {
+            Destroy(cardModels[i]);
+        }
     }
+
+    
 }
