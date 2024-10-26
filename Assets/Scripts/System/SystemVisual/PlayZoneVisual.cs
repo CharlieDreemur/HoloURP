@@ -12,7 +12,7 @@ public class PlayZoneVisual : MonoBehaviour
     public void AddCardToTable(GameObject card)
     {
         cardModels.Add(card);
-        Debug.Log("Card added to the table.");
+        //Debug.Log("Card added to the table.");
     }
 
     // Remove all cards from the table and return them

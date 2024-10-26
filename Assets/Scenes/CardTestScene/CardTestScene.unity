@@ -640,8 +640,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2dbcb8f64d6a7a640a973b2df934eb10, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  nextEdgeMaterial_Pass4: {fileID: 1922572275}
-  nextEdgeMaterial_Pass8: {fileID: 997031091}
+  nextEdgeMaterial_Pass4: {fileID: 952888622}
+  nextEdgeMaterial_Pass8: {fileID: 2030312143}
   nextEdgePass: 0
   nextEdgeSize: 1
   nextEdgeColor: {r: 0.4, g: 1, b: 1, a: 1}
@@ -2352,6 +2352,7 @@ GameObject:
   m_Component:
   - component: {fileID: 439035821}
   - component: {fileID: 439035820}
+  - component: {fileID: 439035822}
   m_Layer: 0
   m_Name: PlayZone
   m_TagString: Untagged
@@ -2371,7 +2372,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eeabc256167530c4eb83f3775c6ab194, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cardModels: []
+  _playerStats: {fileID: 1985906579}
+  _cardDeck: {fileID: 0}
+  cards: []
+  references:
+    version: 2
+    RefIds: []
 --- !u!4 &439035821
 Transform:
   m_ObjectHideFlags: 0
@@ -2387,6 +2393,19 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1662011328}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &439035822
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 439035819}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: df303e32e8517784f9fbf09cc6c6baa3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cardModels: []
 --- !u!1 &446865627 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -2570278884788933203, guid: 762c941c019a7b24fa3d4b73ef0fd6d0, type: 3}
@@ -3842,6 +3861,37 @@ MonoBehaviour:
   boneID: 119
   ikEnabled: 0
   ikWeight: 1
+--- !u!21 &952888622
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: MMD4Mecanim/MMDLit-NEXTEdge-Pass4
+  m_Shader: {fileID: 4800000, guid: 684f8af9b4ff4bc459588db5b0f6275d, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: 2001
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs: []
+    m_Ints: []
+    m_Floats:
+    - _EdgeSize: 0.005
+    - _PostfixRenderQueue: 1
+    m_Colors:
+    - _EdgeColor: {r: 0.39999998, g: 1, b: 1, a: 1}
+  m_BuildTextureStacks: []
+  m_AllowLocking: 1
 --- !u!1 &954462178 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -7126713226877250669, guid: 762c941c019a7b24fa3d4b73ef0fd6d0, type: 3}
@@ -4031,37 +4081,6 @@ MonoBehaviour:
   boneID: 107
   ikEnabled: 0
   ikWeight: 1
---- !u!21 &997031091
-Material:
-  serializedVersion: 8
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: MMD4Mecanim/MMDLit-NEXTEdge-Pass8
-  m_Shader: {fileID: 4800000, guid: ff1e1d0bbf6980244a107d25ff535f9a, type: 3}
-  m_Parent: {fileID: 0}
-  m_ModifiedSerializedProperties: 0
-  m_ValidKeywords: []
-  m_InvalidKeywords: []
-  m_LightmapFlags: 4
-  m_EnableInstancingVariants: 0
-  m_DoubleSidedGI: 0
-  m_CustomRenderQueue: 2001
-  stringTagMap: {}
-  disabledShaderPasses: []
-  m_LockedProperties: 
-  m_SavedProperties:
-    serializedVersion: 3
-    m_TexEnvs: []
-    m_Ints: []
-    m_Floats:
-    - _EdgeSize: 0.005
-    - _PostfixRenderQueue: 1
-    m_Colors:
-    - _EdgeColor: {r: 0.39999998, g: 1, b: 1, a: 1}
-  m_BuildTextureStacks: []
-  m_AllowLocking: 1
 --- !u!1 &998550287 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -2797295083580753822, guid: 762c941c019a7b24fa3d4b73ef0fd6d0, type: 3}
@@ -7085,37 +7104,6 @@ MonoBehaviour:
   boneID: 157
   ikEnabled: 0
   ikWeight: 1
---- !u!21 &1922572275
-Material:
-  serializedVersion: 8
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: MMD4Mecanim/MMDLit-NEXTEdge-Pass4
-  m_Shader: {fileID: 4800000, guid: 684f8af9b4ff4bc459588db5b0f6275d, type: 3}
-  m_Parent: {fileID: 0}
-  m_ModifiedSerializedProperties: 0
-  m_ValidKeywords: []
-  m_InvalidKeywords: []
-  m_LightmapFlags: 4
-  m_EnableInstancingVariants: 0
-  m_DoubleSidedGI: 0
-  m_CustomRenderQueue: 2001
-  stringTagMap: {}
-  disabledShaderPasses: []
-  m_LockedProperties: 
-  m_SavedProperties:
-    serializedVersion: 3
-    m_TexEnvs: []
-    m_Ints: []
-    m_Floats:
-    - _EdgeSize: 0.005
-    - _PostfixRenderQueue: 1
-    m_Colors:
-    - _EdgeColor: {r: 0.39999998, g: 1, b: 1, a: 1}
-  m_BuildTextureStacks: []
-  m_AllowLocking: 1
 --- !u!1 &1948385171 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 5724935661125398198, guid: 762c941c019a7b24fa3d4b73ef0fd6d0, type: 3}
@@ -7332,7 +7320,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _playerStats: {fileID: 1985906579}
   cardPrefab: {fileID: 20054391598115386, guid: e7b198c8f7fc7214a8a544b4f81c1b24, type: 3}
-  initCardCount: 1
   verticalSpacing: 0.03
   horizontalSpacing: 0.06
   fanAngle: 0
@@ -7343,11 +7330,10 @@ MonoBehaviour:
   hideDuration: 0.5
   randomTableOffset: 0.1
   tableTransform: {fileID: 439035821}
-  tableZone: {fileID: 439035820}
+  playZoneVisual: {fileID: 0}
   _isLockHideSequence: 0
   _currentCardIndex: 0
-  _previousCardCount: 0
-  _cards: []
+  _cardModels: []
   _originalPos: {x: 0, y: 0, z: 0}
   _isHandHidden: 0
 --- !u!114 &1985906579
@@ -7362,18 +7348,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bba2f21f65842ef46995c549ff0c5cb4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  initCardCount: 3
   HandCards: []
   _maxHealth: 3
   HealthEvent:
     m_PersistentCalls:
       m_Calls: []
-  AddCardEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  RemoveCardEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  PlayCardEvent:
+  PlayCardAnimationEvent:
     m_PersistentCalls:
       m_Calls: []
   references:
@@ -7442,6 +7423,37 @@ MonoBehaviour:
   boneID: 208
   ikEnabled: 0
   ikWeight: 1
+--- !u!21 &2030312143
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: MMD4Mecanim/MMDLit-NEXTEdge-Pass8
+  m_Shader: {fileID: 4800000, guid: ff1e1d0bbf6980244a107d25ff535f9a, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: 2001
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs: []
+    m_Ints: []
+    m_Floats:
+    - _EdgeSize: 0.005
+    - _PostfixRenderQueue: 1
+    m_Colors:
+    - _EdgeColor: {r: 0.39999998, g: 1, b: 1, a: 1}
+  m_BuildTextureStacks: []
+  m_AllowLocking: 1
 --- !u!1 &2031782200 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3308458151755479256, guid: 762c941c019a7b24fa3d4b73ef0fd6d0, type: 3}

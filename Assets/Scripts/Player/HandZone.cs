@@ -65,7 +65,7 @@ public class HandZone : MonoBehaviour
 
     public void PlayCard(int index)
     {
-        Debug.Log("Play card at index: " + index);
+        //Debug.Log("Play card at index: " + index);
         if (index < 0 || index >= HandCards.Count || HandCards.Count == 0)
         {
             return;

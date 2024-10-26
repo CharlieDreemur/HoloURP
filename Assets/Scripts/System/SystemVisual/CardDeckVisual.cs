@@ -52,7 +52,7 @@ public class CardDeckVisual : MonoBehaviour
         for (int i = 0; i < n; i++)
         {
             GameObject topCard = _deckVisuals[_deckVisuals.Count - 1];
-            Debug.Log("Drawing card from deck:" + topCard);
+            //Debug.Log("Drawing card from deck:" + topCard);
             _deckVisuals.RemoveAt(_deckVisuals.Count - 1);
             Vector3 targetPosition = _playerHandTransform.position + new Vector3(startOffset + (i * _drawCardHorizontalSpacing), 0, 0);
             Sequence drawSequence = DOTween.Sequence();
