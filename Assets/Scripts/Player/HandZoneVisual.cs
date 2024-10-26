@@ -34,15 +34,15 @@ public class HandZoneVisual : MonoBehaviour
         {
             if (value < 0)
             {
-                value = _cards.Count - 1;
+                value = _cardModels.Count - 1;
             }
-            _currentCardIndex = Mathf.Clamp(value, 0, _cards.Count - 1);
+            _currentCardIndex = Mathf.Clamp(value, 0, _cardModels.Count - 1);
         }
     }
     [SerializeField]
     private int _currentCardIndex = 0;
     [SerializeField]
-    private List<GameObject> _cards;
+    private List<GameObject> _cardModels;
     private InputControls _controls;
     [SerializeField]
     private Vector3 _originalPos;
@@ -84,7 +84,7 @@ public class HandZoneVisual : MonoBehaviour
         _controls.Player.HideHandZone.performed += ctx => IsHandHidden = !IsHandHidden;
         _originalPos = transform.position;
         _playerStats.AddCardEvent.AddListener(AddCardVisuals);
-        _playerStats.PlayCardEvent.AddListener(RunPlayCardAnimation);
+        _playerStats.PlayCardAnimationEvent.AddListener(RunPlayCardAnimation);
     }
 
     void Start()
@@ -95,39 +95,39 @@ public class HandZoneVisual : MonoBehaviour
     [ContextMenu("ArrangeCardsInFan")]
     public void ArrangeCardsInFan()
     {
-        if (_cards == null || _cards.Count == 0) return;
+        if (_cardModels == null || _cardModels.Count == 0) return;
         // Special case when there is only one card
-        if (_cards.Count == 1)
+        if (_cardModels.Count == 1)
         {
             Vector3 cardPosition = new Vector3(0, 0, 0) + transform.position;
             Quaternion cardRotation = Quaternion.Euler(0, 0, 0);
-            _cards[0].transform.DOMove(cardPosition, arrangeDuration).SetEase(Ease.OutCubic);
-            _cards[0].transform.DORotateQuaternion(cardRotation, arrangeDuration).SetEase(Ease.OutCubic);
+            _cardModels[0].transform.DOMove(cardPosition, arrangeDuration).SetEase(Ease.OutCubic);
+            _cardModels[0].transform.DORotateQuaternion(cardRotation, arrangeDuration).SetEase(Ease.OutCubic);
             return;
         }
 
         // Calculate the angle step based on the number of cards
-        float angleStep = fanAngle / (_cards.Count - 1);
+        float angleStep = fanAngle / (_cardModels.Count - 1);
         float startAngle = -fanAngle / 2;
 
-        for (int i = 0; i < _cards.Count; i++)
+        for (int i = 0; i < _cardModels.Count; i++)
         {
             float angle = startAngle + (i * angleStep);
             Vector3 cardPosition = CalculateCardPosition(i);
             Quaternion cardRotation = CalculateCardRotation(angle, i);
 
-            _cards[i].transform.DOMove(cardPosition, arrangeDuration).SetEase(Ease.OutCubic);
-            _cards[i].transform.DORotateQuaternion(cardRotation, arrangeDuration).SetEase(Ease.OutCubic);
+            _cardModels[i].transform.DOMove(cardPosition, arrangeDuration).SetEase(Ease.OutCubic);
+            _cardModels[i].transform.DORotateQuaternion(cardRotation, arrangeDuration).SetEase(Ease.OutCubic);
         }
     }
 
     private Vector3 CalculateCardPosition(int index)
     {
         // Calculate horizontal position based on index and horizontalSpacing
-        float x = (index - (_cards.Count - 1) / 2.0f) * horizontalSpacing;
+        float x = (index - (_cardModels.Count - 1) / 2.0f) * horizontalSpacing;
 
         // Calculate vertical offset, with the middle card having the most displacement
-        float verticalEffectFactor = Mathf.Abs(index - (_cards.Count - 1) / 2.0f) / (_cards.Count - 1) * 2;
+        float verticalEffectFactor = Mathf.Abs(index - (_cardModels.Count - 1) / 2.0f) / (_cardModels.Count - 1) * 2;
         float y = Mathf.Lerp(verticalSpacing, 0, verticalEffectFactor);
         return new Vector3(x, y, 0) + transform.position;
     }
@@ -135,7 +135,7 @@ public class HandZoneVisual : MonoBehaviour
     private Quaternion CalculateCardRotation(float angle, int index)
     {
         // Determine the proportion of the self-rotation based on the card's index in the fan
-        float proportion = 1 - (float)index / (_cards.Count - 1);
+        float proportion = 1 - (float)index / (_cardModels.Count - 1);
         float rotateAngel = Mathf.Lerp(-maxSelfRotation, maxSelfRotation, proportion);
 
         // Combine the card's self-rotation with its rotation facing outward
@@ -147,22 +147,21 @@ public class HandZoneVisual : MonoBehaviour
         {
             GameObject cardModel = Instantiate(cardPrefab, transform);
             cardModel.GetComponent<CardVisual>().SetCard(card);
-            _cards.Add(cardModel);
+            _cardModels.Add(cardModel);
         }
         ArrangeCardsInFan();
     }
 
 
     // Method to play a card and move it to the table with a throw effect
-    public void RunPlayCardAnimation(List<CardBase> cards)
-    {
-        for (int i = 0; i < cards.Count; i++)
+    public void RunPlayCardAnimation(List<int> indexes)
+    {   
+        for (int i = 0; i < indexes.Count; i++)
         {
-
-            Debug.Log("Playing card " + i);
-            GameObject card = _cards[i];
+            int index = indexes[i];
+            GameObject card = _cardModels[index];
             card.GetComponent<CardVisual>().DeselectCard();
-            _cards.RemoveAt(i);
+            _cardModels.RemoveAt(index);
             card.transform.SetParent(tableTransform);
             CurrentCardIndex--;
             Sequence slideSequence = DOTween.Sequence();
@@ -231,25 +230,25 @@ public class HandZoneVisual : MonoBehaviour
     }
     private void NavigateLeft()
     {
-        if (_cards.Count == 0)
+        if (_cardModels.Count == 0)
         {
             return;
         }
-        _cards[CurrentCardIndex].GetComponent<CardVisual>().DeselectCard();
+        _cardModels[CurrentCardIndex].GetComponent<CardVisual>().DeselectCard();
         CurrentCardIndex--;
-        _cards[CurrentCardIndex].GetComponent<CardVisual>().SelectCard();
+        _cardModels[CurrentCardIndex].GetComponent<CardVisual>().SelectCard();
 
     }
 
     private void NavigateRight()
     {
-        if (_cards.Count == 0)
+        if (_cardModels.Count == 0)
         {
             return;
         }
-        _cards[CurrentCardIndex].GetComponent<CardVisual>().DeselectCard();
+        _cardModels[CurrentCardIndex].GetComponent<CardVisual>().DeselectCard();
         CurrentCardIndex++;
-        _cards[CurrentCardIndex].GetComponent<CardVisual>().SelectCard();
+        _cardModels[CurrentCardIndex].GetComponent<CardVisual>().SelectCard();
     }
 
 }

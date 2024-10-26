@@ -34,13 +34,13 @@ public class CardDeckVisual : MonoBehaviour
 
     private void InitVisual()
     {
-        for (int i = 0; i < _cardDeck.cards.Count; i++)
+        for (int i = 0; i < _cardDeck.cardDecks.Count; i++)
         {
             GameObject newDeckBody = Instantiate(_deckBodyPrefab, transform);
             newDeckBody.transform.localPosition = new Vector3(0, 0, i * _deckBodySpacing);
             _deckVisuals.Add(newDeckBody);
             CardVisual cardVisual = newDeckBody.GetComponent<CardVisual>();
-            cardVisual.SetCard(_cardDeck.cards[_cardDeck.cards.Count - i - 1]);
+            cardVisual.SetCard(_cardDeck.cardDecks[_cardDeck.cardDecks.Count - i - 1]);
         }
     }
 

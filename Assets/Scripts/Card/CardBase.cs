@@ -11,11 +11,20 @@ public interface ICard
     void OnDiscard();
 }
 
+public enum OwnerType
+{
+    None,
+    Player,
+    AI
+}
+
 [System.Serializable]
 public abstract class CardBase: ICard
 {
     [SerializeField]
     protected string description = "CardBase";
+    [SerializeField]
+    protected OwnerType ownerType = OwnerType.None;
     public virtual void Use()
     {
         Debug.Log($"CardBase used");

@@ -13,7 +13,7 @@ public class CardDeck : MonoBehaviour
     [Header("Debug")]
     [SerializeField]
     [SerializeReference]
-    public List<CardBase> cards;
+    public List<CardBase> cardDecks;
     [SerializeField]
     private System.Random rng = new System.Random(0);
     public const int MAX_CARD_NUMBER = 4;
@@ -31,10 +31,13 @@ public class CardDeck : MonoBehaviour
     }
     void Start()
     {
-        cards = GenerateStartDeck();
+        cardDecks = GenerateStartDeck();
         InitFinishEvent?.Invoke();
     }
-
+    public void AddCards(List<CardBase> cards)
+    {
+        cardDecks.AddRange(cards);
+    }
     public void DrawCards(int n)
     {
         List<CardBase> drawCards = TryDrawCards(n);
@@ -99,12 +102,12 @@ public class CardDeck : MonoBehaviour
         List<CardBase> drawnCards = new List<CardBase>();
 
         // Ensure we don't draw more cards than available in the deck
-        int drawCount = Mathf.Min(n, cards.Count);
+        int drawCount = Mathf.Min(n, cardDecks.Count);
 
         for (int i = 0; i < drawCount; i++)
         {
-            CardBase drawnCard = cards[0];
-            cards.RemoveAt(0);
+            CardBase drawnCard = cardDecks[0];
+            cardDecks.RemoveAt(0);
             drawnCards.Add(drawnCard);
             drawnCard.OnDraw();
             Debug.Log($"Drew card: {drawnCard.GetType().Name}");
@@ -124,7 +127,7 @@ public class CardDeck : MonoBehaviour
     /// <returns></returns>
     public bool IsDeckEmpty()
     {
-        return cards.Count == 0;
+        return cardDecks.Count == 0;
     }
 
     /// <summary>
@@ -133,6 +136,6 @@ public class CardDeck : MonoBehaviour
     /// <returns></returns>
     public int RemainingCardCount()
     {
-        return cards.Count;
+        return cardDecks.Count;
     }
 }
