@@ -1,25 +1,25 @@
 using System.Collections.Generic;
 using UnityEngine;
 /// <summary>
-/// TableZone represents the area on the table where cards are placed after being played.
+/// PlayZone represents the area on the table where cards are placed after being played.
 /// </summary>
-public class TableZone : MonoBehaviour
+public class PlayZoneVisual : MonoBehaviour
 {
     [SerializeField]
-    private List<GameObject> cardsOnTable = new List<GameObject>();
+    private List<GameObject> cardModels = new List<GameObject>();
 
     // Add a card to the table
     public void AddCardToTable(GameObject card)
     {
-        cardsOnTable.Add(card);
+        cardModels.Add(card);
         Debug.Log("Card added to the table.");
     }
 
     // Remove all cards from the table and return them
     public List<GameObject> ClearTable()
     {
-        List<GameObject> clearedCards = new List<GameObject>(cardsOnTable);
-        cardsOnTable.Clear();
+        List<GameObject> clearedCards = new List<GameObject>(cardModels);
+        cardModels.Clear();
         return clearedCards;
     }
 }

@@ -4,13 +4,13 @@ using UnityEngine;
 using DG.Tweening;
 using UnityEngine.InputSystem;
 using UnityEngine.Events;
-public class HandZone : MonoBehaviour
+public class HandZoneVisual : MonoBehaviour
 {
     [SerializeField]
-    private PlayerStats _playerStats;
+    private HandZone _playerStats;
     [Header("Fan Settings")]
     public GameObject cardPrefab;
-    public int initCardCount = 5;
+
     public float verticalSpacing = 0.1f;
     public float horizontalSpacing = 0.1f;
     public float fanAngle = 45.0f;
@@ -23,7 +23,7 @@ public class HandZone : MonoBehaviour
     public float hideDuration = 0.5f; // Duration of the hide animation
     public float randomTableOffset = 0.1f; // Random offset for the table position
     public Transform tableTransform; // Position on the table where played cards will go
-    public TableZone tableZone;
+    public PlayZoneVisual playZoneVisual;
     [SerializeField]
     private bool _isLockHideSequence = false;
     private Sequence _currentHideSequence;
@@ -41,8 +41,6 @@ public class HandZone : MonoBehaviour
     }
     [SerializeField]
     private int _currentCardIndex = 0;
-    [SerializeField]
-    private int _previousCardCount;
     [SerializeField]
     private List<GameObject> _cards;
     private InputControls _controls;
@@ -78,34 +76,20 @@ public class HandZone : MonoBehaviour
     void Awake()
     {
         _controls = new InputControls();
-        _controls.Player.PlayCard.performed += ctx => PlayCard(CurrentCardIndex);
+        _controls.Player.PlayCard.performed += ctx => {
+            _playerStats.PlayCard(CurrentCardIndex);
+        };
         _controls.Player.NavigateLeft.performed += ctx => NavigateLeft();
         _controls.Player.NavigateRight.performed += ctx => NavigateRight();
         _controls.Player.HideHandZone.performed += ctx => IsHandHidden = !IsHandHidden;
         _originalPos = transform.position;
+        _playerStats.AddCardEvent.AddListener(AddCardVisuals);
+        _playerStats.PlayCardEvent.AddListener(RunPlayCardAnimation);
     }
 
     void Start()
     {
-        _cards = new List<GameObject>();
-        _previousCardCount = initCardCount;
-        for (int i = 0; i < initCardCount; i++)
-        {
-            GameObject newCard = Instantiate(cardPrefab, transform);
-            _cards.Add(newCard);
-        }
-        ArrangeCardsInFan();
-        //cards[CurrentCardIndex].GetComponent<CardVisualizer>().SelectCard();
     }
-
-    // void Update()
-    // {
-    //     if (cardCount != _previousCardCount)
-    //     {
-    //         UpdateCardList();
-    //         _previousCardCount = cardCount;
-    //     }
-    //     ArrangeCardsInFan();
 
     // }
     [ContextMenu("ArrangeCardsInFan")]
@@ -157,51 +141,44 @@ public class HandZone : MonoBehaviour
         // Combine the card's self-rotation with its rotation facing outward
         return Quaternion.Euler(0, angle, rotateAngel);
     }
-    public void AddCards(List<CardBase> cards)
+    public void AddCardVisuals(List<CardBase> cards)
     {
         foreach (CardBase card in cards)
         {
-            AddCard(card);
+            GameObject cardModel = Instantiate(cardPrefab, transform);
+            cardModel.GetComponent<CardVisual>().SetCard(card);
+            _cards.Add(cardModel);
         }
-    }
-    public void AddCard(CardBase card)
-    {
-        GameObject cardModel = Instantiate(cardPrefab, transform);
-        cardModel.GetComponent<CardVisual>().SetCard(card);
-        _cards.Add(cardModel);
         ArrangeCardsInFan();
     }
 
 
-
     // Method to play a card and move it to the table with a throw effect
-    public void PlayCard(int index)
+    public void RunPlayCardAnimation(List<CardBase> cards)
     {
-        Debug.Log("Playing card " + index);
-        if (index < 0 || index >= _cards.Count)
+        for (int i = 0; i < cards.Count; i++)
         {
-            Debug.LogError("Invalid card index.");
-            return;
+
+            Debug.Log("Playing card " + i);
+            GameObject card = _cards[i];
+            card.GetComponent<CardVisual>().DeselectCard();
+            _cards.RemoveAt(i);
+            card.transform.SetParent(tableTransform);
+            CurrentCardIndex--;
+            Sequence slideSequence = DOTween.Sequence();
+            //do a random offset for the table position
+            Vector3 randomDestPos = tableTransform.position + new Vector3(Random.Range(-randomTableOffset, randomTableOffset), 0, Random.Range(-randomTableOffset, randomTableOffset));
+            slideSequence.Append(card.transform.DOMove(randomDestPos, playDuration).SetEase(Ease.OutCubic));
+
+            slideSequence.Join(card.transform.DORotate(new Vector3(90, 0, Random.Range(-20f, 20f)), playDuration, RotateMode.FastBeyond360).SetEase(Ease.OutCubic));
+            HideHand();
+            // After throw, add the card to the table's list of cards
+            slideSequence.OnComplete(() =>
+            {
+                //List<CardBase> cards = new List<CardBase>{
+                //tableZone.AddCardToTable(card);
+            });
         }
-        GameObject card = _cards[index];
-        card.GetComponent<CardVisual>().DeselectCard();
-        _cards.RemoveAt(index);
-        card.transform.SetParent(tableTransform);
-        CurrentCardIndex--;
-        Sequence slideSequence = DOTween.Sequence();
-        //do a random offset for the table position
-        Vector3 randomDestPos = tableTransform.position + new Vector3(Random.Range(-randomTableOffset, randomTableOffset), 0, Random.Range(-randomTableOffset, randomTableOffset));
-        slideSequence.Append(card.transform.DOMove(randomDestPos, playDuration).SetEase(Ease.OutCubic));
-
-        slideSequence.Join(card.transform.DORotate(new Vector3(90, 0, Random.Range(-20f, 20f)), playDuration, RotateMode.FastBeyond360).SetEase(Ease.OutCubic));
-        HideHand();
-        // After throw, add the card to the table's list of cards
-        slideSequence.OnComplete(() =>
-        {
-            tableZone.AddCardToTable(card);
-        });
-
-        //ShowHand();
     }
 
     private void HideHand(UnityAction callback = null)
