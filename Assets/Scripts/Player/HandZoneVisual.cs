@@ -7,7 +7,7 @@ using UnityEngine.Events;
 public class HandZoneVisual : MonoBehaviour
 {
     [SerializeField]
-    private HandZone _playerStats;
+    private CardPlayer _playerStats;
     [Header("Fan Settings")]
     public GameObject cardPrefab;
 
@@ -43,45 +43,12 @@ public class HandZoneVisual : MonoBehaviour
     private int _currentCardIndex = 0;
     [SerializeField]
     private List<GameObject> _cardModels;
-    private InputControls _controls;
     [SerializeField]
     private Vector3 _originalPos;
-    public bool IsHandHidden
-    {
-        get { return _isHandHidden; }
-        set
-        {
-            if (value)
-            {
-                HideHand();
-            }
-            else
-            {
-                ShowHand();
-            }
-            _isHandHidden = value;
-        }
-    }
     [SerializeField]
     private bool _isHandHidden = false;
-    private void OnEnable()
-    {
-        _controls.Enable();
-    }
-
-    private void OnDisable()
-    {
-        _controls.Disable();
-    }
     void Awake()
     {
-        _controls = new InputControls();
-        _controls.Player.PlayCard.performed += ctx => {
-            _playerStats.PlayCard(CurrentCardIndex);
-        };
-        _controls.Player.NavigateLeft.performed += ctx => NavigateLeft();
-        _controls.Player.NavigateRight.performed += ctx => NavigateRight();
-        _controls.Player.HideHandZone.performed += ctx => IsHandHidden = !IsHandHidden;
         _originalPos = transform.position;
         _playerStats.AddCardEvent.AddListener(AddCardVisuals);
         _playerStats.PlayCardAnimationEvent.AddListener(RunPlayCardAnimation);
@@ -152,10 +119,9 @@ public class HandZoneVisual : MonoBehaviour
         ArrangeCardsInFan();
     }
 
-
     // Method to play a card and move it to the table with a throw effect
-    public void RunPlayCardAnimation(List<int> indexes)
-    {   
+    private void RunPlayCardAnimation(List<int> indexes)
+    {
         for (int i = 0; i < indexes.Count; i++)
         {
             int index = indexes[i];
@@ -175,12 +141,22 @@ public class HandZoneVisual : MonoBehaviour
             slideSequence.OnComplete(() =>
             {
                 //List<CardBase> cards = new List<CardBase>{
-                playZoneVisual.AddCardToTable(card);
+                playZoneVisual.AddCardModelsToTable(card);
             });
         }
     }
-
-    private void HideHand(UnityAction callback = null)
+    public void HideShowHand()
+    {
+        if (_isHandHidden)
+        {
+            ShowHand();
+        }
+        else
+        {
+            HideHand();
+        }
+    }
+    public void HideHand(UnityAction callback = null)
     {
         Debug.Log("Hiding hand");
         if (_isLockHideSequence)
@@ -204,7 +180,7 @@ public class HandZoneVisual : MonoBehaviour
         });
     }
 
-    private void ShowHand(UnityAction callback = null)
+    public void ShowHand(UnityAction callback = null)
     {
         Debug.Log("Showing hand");
         if (_isLockHideSequence)
@@ -228,7 +204,7 @@ public class HandZoneVisual : MonoBehaviour
             _isLockHideSequence = false;
         });
     }
-    private void NavigateLeft()
+    public void NavigateLeft()
     {
         if (_cardModels.Count == 0)
         {
@@ -240,7 +216,7 @@ public class HandZoneVisual : MonoBehaviour
 
     }
 
-    private void NavigateRight()
+    public void NavigateRight()
     {
         if (_cardModels.Count == 0)
         {

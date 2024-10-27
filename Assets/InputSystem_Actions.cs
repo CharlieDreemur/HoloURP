@@ -97,7 +97,7 @@ public partial class @InputControls: IInputActionCollection2, IDisposable
                     ""id"": ""4579fba5-88ef-42b6-8611-8d6c1256aad3"",
                     ""expectedControlType"": """",
                     ""processors"": """",
-                    ""interactions"": """",
+                    ""interactions"": ""Hold"",
                     ""initialStateCheck"": false
                 }
             ],
@@ -325,7 +325,7 @@ public partial class @InputControls: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""a58451ce-7472-4f5d-9f06-8f810dea6c92"",
-                    ""path"": ""<Keyboard>/space"",
+                    ""path"": ""<Keyboard>/f"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Keyboard&Mouse"",

@@ -9,7 +9,7 @@ public class CardDeck : MonoBehaviour
     [SerializeField]
     public int MaxSize = 10;
     [SerializeField]
-    private HandZone _playerStats;
+    private CardPlayer _playerStats;
     [Header("Debug")]
     [SerializeField]
     [SerializeReference]
@@ -18,17 +18,10 @@ public class CardDeck : MonoBehaviour
     private System.Random rng = new System.Random(0);
     public const int MAX_CARD_NUMBER = 4;
     public UnityEvent DrawCardEvent;
-    private InputControls _controls;
     public UnityEvent<int, UnityAction> DrawCardAnimationEvent;
     public UnityEvent InitFinishEvent;
     [SerializeField]
     private int _drawCardCount = 1;
-    void Awake()
-    {
-        _controls = new InputControls();
-        _controls.Enable();
-        _controls.Player.DrawCard.performed += _ => DrawCards(_drawCardCount);
-    }
     void Start()
     {
         cardDecks = GenerateStartDeck();
@@ -37,6 +30,9 @@ public class CardDeck : MonoBehaviour
     public void AddCards(List<CardBase> cards)
     {
         cardDecks.AddRange(cards);
+    }
+    public void DrawCards(){
+        DrawCards(_drawCardCount);
     }
     public void DrawCards(int n)
     {

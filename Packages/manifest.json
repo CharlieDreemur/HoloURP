@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "com.danbaidong.smoothnormal": "https://github.com/danbaidong1111/SmoothNormal.git",
     "com.unity.2d.sprite": "1.0.0",
     "com.unity.ai.navigation": "2.0.0",
     "com.unity.collab-proxy": "2.5.2",

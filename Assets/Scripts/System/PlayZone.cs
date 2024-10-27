@@ -7,7 +7,7 @@ using UnityEngine.Events;
 public class PlayZone : MonoBehaviour
 {
     [SerializeField]
-    private HandZone _playerStats;
+    private CardPlayer _playerStats;
     [SerializeField]
     private CardDeck _cardDeck;
     [Header("Debug")]
@@ -27,7 +27,7 @@ public class PlayZone : MonoBehaviour
         AddCardToPlayZoneEvent?.Invoke(cards);
     }
 
-    public void AddCardsIntoDeck(List<CardBase> cards)
+    public void AddCardsIntoDeck()
     {
         _cardDeck.AddCards(cards);
         //clear the cards

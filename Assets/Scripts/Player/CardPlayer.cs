@@ -3,8 +3,13 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
+public interface IPlayer
+{
+    void AddCards(List<CardBase> cards);
+    void PlayCards(List<CardBase> cards);
+}
 public class CardEvent : UnityEvent<List<CardBase>> { }
-public class HandZone : MonoBehaviour
+public class CardPlayer : MonoBehaviour, IPlayer
 {
     [SerializeField]
     public int initCardCount = 5;
