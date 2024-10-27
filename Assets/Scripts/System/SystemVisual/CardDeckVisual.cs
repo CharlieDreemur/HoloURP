@@ -24,23 +24,23 @@ public class CardDeckVisual : MonoBehaviour
     private float _drawCardHorizontalSpacing = 0.1f;
     [Header("Debug")]
     [SerializeField]
-    private List<GameObject> _deckVisuals = new List<GameObject>();
+    private List<GameObject> _cardModels = new List<GameObject>();
 
     void Awake()
     {
         _cardDeck.DrawCardAnimationEvent.AddListener(PlayDrawCardAnimatin);
-        _cardDeck.InitFinishEvent.AddListener(InitVisual);
+        _cardDeck.AddCardsEvent.AddListener(AddCardVisuals);
     }
 
-    private void InitVisual()
+
+     public void AddCardVisuals(List<CardBase> cards)
     {
-        for (int i = 0; i < _cardDeck.cardDecks.Count; i++)
+        for (int i = 0; i < cards.Count; i++)
         {
-            GameObject newDeckBody = Instantiate(_deckBodyPrefab, transform);
-            newDeckBody.transform.localPosition = new Vector3(0, 0, i * _deckBodySpacing);
-            _deckVisuals.Add(newDeckBody);
-            CardVisual cardVisual = newDeckBody.GetComponent<CardVisual>();
-            cardVisual.SetCard(_cardDeck.cardDecks[_cardDeck.cardDecks.Count - i - 1]);
+            GameObject cardModel = Instantiate(_deckBodyPrefab, transform);
+            cardModel.transform.localPosition = new Vector3(0, 0, -i * _deckBodySpacing);
+            cardModel.GetComponent<CardVisual>().SetCard(cards[i]);
+            _cardModels.Add(cardModel);
         }
     }
 
@@ -51,13 +51,13 @@ public class CardDeckVisual : MonoBehaviour
         float startOffset = -totalWidth / 2;
         for (int i = 0; i < n; i++)
         {
-            GameObject topCard = _deckVisuals[_deckVisuals.Count - 1];
+            GameObject topCard = _cardModels[_cardModels.Count - 1];
             //Debug.Log("Drawing card from deck:" + topCard);
-            _deckVisuals.RemoveAt(_deckVisuals.Count - 1);
+            _cardModels.RemoveAt(_cardModels.Count - 1);
             Vector3 targetPosition = _playerHandTransform.position + new Vector3(startOffset + (i * _drawCardHorizontalSpacing), 0, 0);
             Sequence drawSequence = DOTween.Sequence();
             drawSequence.Append(topCard.transform.DOMove(targetPosition, _drawDuration).SetEase(Ease.OutCubic));
-            drawSequence.Join(topCard.transform.DORotateQuaternion(_playerHandTransform.rotation, _drawDuration).SetEase(Ease.OutCubic));
+            drawSequence.Join(topCard.transform.DORotate(new Vector3(0, 0f, 0f), _drawDuration).SetEase(Ease.OutCubic));
             //if it's the last card, invoke the callback
             if (i == n - 1)
             {

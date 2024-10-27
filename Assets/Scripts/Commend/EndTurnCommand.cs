@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class EndTurnCommand : ICommand<PlayerContext>
@@ -7,6 +8,7 @@ public class EndTurnCommand : ICommand<PlayerContext>
         Debug.Log("End Turn");
         context.playZone.AddCardsIntoDeck();
         context.handZoneVisual.HideHand();
-        context.playerTurnState.Exit();
+        context.cardGameManager.AdvanceTurn();
     }
+
 }

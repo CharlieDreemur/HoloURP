@@ -21,19 +21,18 @@ public class TurnTextAnimator : MonoBehaviour
     private float fadeDuration = 0.5f;
     [SerializeField]
     private float dilateDuration = 0.5f;
-    [SerializeField]
     private Material textMaterial;
     private Vector3 originalScale;
     private void Awake()
     {
         originalScale = transform.localScale;
-        textMaterial = uiText.fontMaterial;
         TryGetComponent(out uiText);
         if (uiText == null)
         {
             Debug.LogError("TurnTextAnimator: No TextMeshPro component found on this object.");
         }
-
+        uiText.fontMaterial = new Material(uiText.fontMaterial); //Material Instance
+        textMaterial = uiText.fontMaterial;
         // Set the initial alpha of the text to 0 (invisible)
         SetTextAlpha(0);
 
@@ -43,7 +42,7 @@ public class TurnTextAnimator : MonoBehaviour
     [ContextMenu("AnimateText")]
     public void AnimateText()
     {
-        Sequence textSequence = DOTween.Sequence(); 
+        Sequence textSequence = DOTween.Sequence();
         textMaterial.SetFloat("_FaceDilate", 1f);
         //Scale up and show
         textSequence.Append(uiText.DOFade(1, showDuration).SetEase(Ease.InOutCubic));

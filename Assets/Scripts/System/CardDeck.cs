@@ -19,17 +19,19 @@ public class CardDeck : MonoBehaviour
     public const int MAX_CARD_NUMBER = 4;
     public UnityEvent DrawCardEvent;
     public UnityEvent<int, UnityAction> DrawCardAnimationEvent;
-    public UnityEvent InitFinishEvent;
+    public CardEvent AddCardsEvent = new CardEvent();
     [SerializeField]
     private int _drawCardCount = 1;
     void Start()
     {
         cardDecks = GenerateStartDeck();
-        InitFinishEvent?.Invoke();
+        AddCardsEvent?.Invoke(cardDecks);
     }
     public void AddCards(List<CardBase> cards)
     {
+        Debug.Log("AddCards"+cards.Count);
         cardDecks.AddRange(cards);
+        AddCardsEvent?.Invoke(cards);
     }
     public void DrawCards(){
         DrawCards(_drawCardCount);

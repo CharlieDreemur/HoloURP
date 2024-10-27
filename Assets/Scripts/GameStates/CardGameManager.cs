@@ -34,7 +34,7 @@ public class CardGameManager : MonoBehaviour
 
     void Awake()
     {
-        SetState(new PlayerTurnState(this));
+        SetState(new EmptyState());
     }
     void Start()
     {
@@ -47,8 +47,6 @@ public class CardGameManager : MonoBehaviour
             {
                 turnQueue.Enqueue(player);
             }
-
-            // Set the first state
             AdvanceTurn();
         }
         else
@@ -69,12 +67,11 @@ public class CardGameManager : MonoBehaviour
     {
         // Rotate to the next player in the queue
         PlayerInfo currentPlayer = turnQueue.Dequeue();
+        Debug.Log("Current Player: " + currentPlayer.playerName);
         turnQueue.Enqueue(currentPlayer);
-
         // Create a state for the current player
         IGameState playerTurnState = StateFactory.CreateState(this, currentPlayer);
         SetState(playerTurnState);
-        UIManager.Instance.ShowTurnText();
         turnCount++;
     }
 }
