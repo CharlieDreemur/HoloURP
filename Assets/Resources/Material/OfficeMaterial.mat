@@ -8,18 +8,16 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: OfficeMaterial
-  m_Shader: {fileID: 4800000, guid: 933532a4fcc9baf4fa0491de14d08ed7, type: 3}
+  m_Shader: {fileID: -6465566751694194690, guid: 6eb231ce89cf0264699c805e24eb51bd, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
-  m_ValidKeywords:
-  - _SPECULAR_SETUP
+  m_ValidKeywords: []
   m_InvalidKeywords: []
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 1
-  m_CustomRenderQueue: 2000
-  stringTagMap:
-    RenderType: Opaque
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
   disabledShaderPasses:
   - CharacterTransparent
   - CharacterOutline
@@ -158,6 +156,7 @@ Material:
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
+    - _GridOpacity: 0
     - _INDIR_CUBEMAP: 0
     - _IndirDiffIntensity: 1
     - _IndirDiffUpDirSH: 0
@@ -182,9 +181,11 @@ Material:
     - _ParallaxMaskEdgeOffset: 0.2
     - _ParallaxScale: 1
     - _PunctualRimWidth: 2.75
+    - _QueueControl: 0
     - _QueueOffset: 0
     - _ReceiveShadows: 1
     - _SHADOW_RAMP: 0
+    - _Scale: 10
     - _ShadowOffset: 0.5
     - _ShadowSmoothNdotL: 0.25
     - _ShadowSmoothScene: 0.1
@@ -197,6 +198,7 @@ Material:
     - _SrcBlendAlpha: 1
     - _StockingsPow: 1.5
     - _Surface: 0
+    - _Thickness: 0.1
     - _ToonFlagsKeywords: -1
     - _UVSec: 0
     - _WorkflowMode: 0
@@ -204,7 +206,7 @@ Material:
     m_Colors:
     - _BaseColor: {r: 0.5825027, g: 0.63903093, b: 0.6603774, a: 1}
     - _BaseColorOutter: {r: 1, g: 1, b: 1, a: 1}
-    - _Color: {r: 0.58250266, g: 0.63903093, b: 0.6603774, a: 1}
+    - _Color: {r: 0.4811321, g: 0.4811321, b: 0.4811321, a: 1}
     - _DirectRimBackCol: {r: 0.2, g: 0.2, b: 0.2, a: 0.5}
     - _DirectRimFrontCol: {r: 1, g: 1, b: 1, a: 0.5}
     - _EmissionCol: {r: 0, g: 0, b: 0, a: 1}
@@ -219,6 +221,7 @@ Material:
     - _SpecColor: {r: 0, g: 0, b: 0, a: 1}
     - _StockingsColorInside: {r: 1, g: 1, b: 1, a: 1}
     - _StockingsColorOutside: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+    - _Vector3: {r: 0, g: 0, b: 0, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
 --- !u!114 &6086710396871794944
