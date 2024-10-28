@@ -1,5 +1,16 @@
 {
   "dependencies": {
+    "com.danbaidong.smoothnormal": {
+      "version": "https://github.com/danbaidong1111/SmoothNormal.git",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {
+        "com.unity.mathematics": "1.2.1",
+        "com.unity.burst": "1.8.4",
+        "com.unity.render-pipelines.core": "14.0.8"
+      },
+      "hash": "1989771513995f46579cfe878f6aa4ea40dd9b18"
+    },
     "com.unity.2d.sprite": {
       "version": "1.0.0",
       "depth": 0,

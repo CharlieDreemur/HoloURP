@@ -1,13 +1,16 @@
 using UnityEngine;
-
-public class DrawCardCommand : ICommand
+// ICommand represents a command that can be executed and undone by player
+public interface ICommand<T> where T : IContext
 {
-    public void Execute()
+    void Execute(T context);
+
+}
+
+public class DrawCardCommand : ICommand<PlayerContext>
+{
+    public void Execute(PlayerContext context)
     {
-        Debug.Log("Draw a card");
+        context.cardDeck.DrawCards();
     }
-    public void Undo()
-    {
-        Debug.Log("Undo draw a card");
-    }
+
 }

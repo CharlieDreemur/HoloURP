@@ -1,5 +1,4 @@
 using UnityEngine;
-
 public interface ICardEffect
 {
     void ApplyEffect();
@@ -12,33 +11,33 @@ public interface ICard
     void OnDiscard();
 }
 
+public enum OwnerType
+{
+    None,
+    Player,
+    AI
+}
+
+[System.Serializable]
 public abstract class CardBase: ICard
 {
-    public string CardName { get; private set; }
-    public string Description { get; private set; }
-
-    protected ICardEffect cardEffect;
-
-    public CardBase(string cardName, string description, ICardEffect effect)
+    [SerializeField]
+    protected string description = "CardBase";
+    [SerializeField]
+    protected OwnerType ownerType = OwnerType.None;
+    public virtual void Use()
     {
-        this.CardName = cardName;
-        this.Description = description;
-        this.cardEffect = effect;
-    }
-    public void Use()
-    {
-        Debug.Log($"{CardName} used: {Description}");
-        cardEffect.ApplyEffect();
+        Debug.Log($"CardBase used");
     }
 
 
     public virtual void OnDraw()
     {
-        Debug.Log($"{CardName} was drawn.");
+        Debug.Log($"CardBase used");
     }
     public virtual void OnDiscard()
     {
-        Debug.Log($"{CardName} was discarded.");
+        Debug.Log($"CardBase used");
     }
     
 }

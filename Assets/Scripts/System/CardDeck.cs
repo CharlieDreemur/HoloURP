@@ -1,58 +1,120 @@
 using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening;
 using UnityEngine;
-
-public class CardDeck
+using UnityEngine.Events;
+public class CardDeck : MonoBehaviour
 {
-    private List<ICard> deck; 
-    private const int Seed = 0;  // Seed for the random number generator
-    private System.Random rng = new System.Random(Seed);
-
-    public CardDeck(List<ICard> initialCards)
+    [Header("Deck Settings")]
+    [SerializeField]
+    public int MaxSize = 10;
+    [SerializeField]
+    private CardPlayer _playerStats;
+    [Header("Debug")]
+    [SerializeField]
+    [SerializeReference]
+    public List<CardBase> cardDecks;
+    [SerializeField]
+    private System.Random rng = new System.Random(0);
+    public const int MAX_CARD_NUMBER = 4;
+    public UnityEvent DrawCardEvent;
+    public UnityEvent<int, UnityAction> DrawCardAnimationEvent;
+    public CardEvent AddCardsEvent = new CardEvent();
+    [SerializeField]
+    private int _drawCardCount = 1;
+    void Start()
     {
-        deck = new List<ICard>(initialCards);
-        ShuffleDeck(); 
+        cardDecks = GenerateStartDeck();
+        AddCardsEvent?.Invoke(cardDecks);
+    }
+    public void AddCards(List<CardBase> cards)
+    {
+        Debug.Log("AddCards"+cards.Count);
+        cardDecks.AddRange(cards);
+        AddCardsEvent?.Invoke(cards);
+    }
+    public void DrawCards(){
+        DrawCards(_drawCardCount);
+    }
+    public void DrawCards(int n)
+    {
+        List<CardBase> drawCards = TryDrawCards(n);
+        if (drawCards == null)
+        {
+            return;
+        }
+        UnityAction callback = () =>
+        {
+            _playerStats.AddCards(drawCards);
+        };
+        DrawCardAnimationEvent?.Invoke(n, callback);
+    }
+
+    private List<CardBase> GenerateStartDeck()
+    {
+        if (MaxSize <= 0)
+        {
+            return null;
+        }
+
+        List<CardBase> cards = new List<CardBase>
+        {
+            new BombCard(rng)
+        };
+
+        int numberedCardCount = MaxSize - 1; // Subtract 1 for the bomb card
+
+        // Distribute the numbered cards evenly between 1 and a
+        for (int i = 0; i < numberedCardCount; i++)
+        {
+            int cardNumber = (i % MAX_CARD_NUMBER) + 1; // Cycles through numbers 1 to a
+            NumberCard card = new NumberCard(cardNumber);
+            cards.Add(card);
+        }
+
+        // Shuffle the deck randomly
+        ShuffleDeck(cards);
+
+        return cards;
     }
 
     // Method to shuffle the deck
-    public void ShuffleDeck()
+    private void ShuffleDeck(List<CardBase> cards)
     {
-        int n = deck.Count;
+        int n = cards.Count;
         while (n > 1)
         {
             n--;
             int k = rng.Next(n + 1);
-            ICard value = deck[k];
-            deck[k] = deck[n];
-            deck[n] = value;
+            (cards[n], cards[k]) = (cards[k], cards[n]); // Swap the cards at indices n and k
         }
         Debug.Log("Deck shuffled");
     }
-
     /// <summary>
     /// Draw n cards from the deck.
     /// </summary>
     /// <param name="n"></param>
     /// <returns></returns>
-    public List<ICard> DrawCards(int n)
+    public List<CardBase> TryDrawCards(int n)
     {
-        List<ICard> drawnCards = new List<ICard>();
+        List<CardBase> drawnCards = new List<CardBase>();
 
         // Ensure we don't draw more cards than available in the deck
-        int drawCount = Mathf.Min(n, deck.Count);
+        int drawCount = Mathf.Min(n, cardDecks.Count);
 
         for (int i = 0; i < drawCount; i++)
         {
-            ICard drawnCard = deck[0];  // Get the top card
-            deck.RemoveAt(0);           // Remove it from the deck
-            drawnCards.Add(drawnCard);  // Add it to the drawn cards list
-            drawnCard.OnDraw();         // Call the OnDraw method of the card
+            CardBase drawnCard = cardDecks[0];
+            cardDecks.RemoveAt(0);
+            drawnCards.Add(drawnCard);
+            drawnCard.OnDraw();
             Debug.Log($"Drew card: {drawnCard.GetType().Name}");
         }
 
         if (drawCount < n)
         {
             Debug.Log("Not enough cards left in the deck.");
+            return null;
         }
 
         return drawnCards;
@@ -63,7 +125,7 @@ public class CardDeck
     /// <returns></returns>
     public bool IsDeckEmpty()
     {
-        return deck.Count == 0;
+        return cardDecks.Count == 0;
     }
 
     /// <summary>
@@ -72,6 +134,6 @@ public class CardDeck
     /// <returns></returns>
     public int RemainingCardCount()
     {
-        return deck.Count;
+        return cardDecks.Count;
     }
 }

@@ -1,13 +1,11 @@
 using UnityEngine;
-public class AITurnState : ITurnState
+public class AITurnState : IGameState
 {
     private CardGameManager cardGameManager;
-    private TurnManager turnManager;
 
-    public AITurnState(CardGameManager cardGameManager, TurnManager turnManager)
+    public AITurnState(CardGameManager cardGameManager)
     {
         this.cardGameManager = cardGameManager;
-        this.turnManager = turnManager;
     }
 
     public void Enter()
@@ -19,11 +17,10 @@ public class AITurnState : ITurnState
     public void Execute()
     {
         // Execute AI actions (simplified as an example)
-        ICommand aiActionCommand = new DrawCardCommand();
-        turnManager.ExecuteCommand(aiActionCommand);
+        //ICommand aiActionCommand = new DrawCardCommand();
 
         // After AI finishes, switch back to player’s turn
-        cardGameManager.SetState(new PlayerTurnState(cardGameManager, turnManager));
+        cardGameManager.SetState(new PlayerTurnState(cardGameManager));
     }
 
     public void Exit()

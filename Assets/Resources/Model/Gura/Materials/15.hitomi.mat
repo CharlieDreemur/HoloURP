@@ -21,7 +21,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: 15.hitomi
-  m_Shader: {fileID: 4800000, guid: d2504132f75c1ad48881097bd6121a38, type: 3}
+  m_Shader: {fileID: 4800000, guid: 8583003cad9ed354e9facaf4c3233da3, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
@@ -65,7 +65,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _EmissionMap:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: f8c0a042bfaf4a64f8a27a4a9ce41fc5, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _FaceLightMap:
@@ -153,7 +153,7 @@ Material:
     - _DstBlendAlpha: 0
     - _EdgeScale: 0.001
     - _EdgeSize: 0.001
-    - _EnvColorLerp: 0.5
+    - _EnvColorLerp: 1
     - _EnvironmentReflections: 1
     - _FoldoutDirectLight: 0
     - _FoldoutDirectLightEnd: 0
@@ -195,6 +195,9 @@ Material:
     - _OutlinePunctualLightingOffset: 0
     - _OutlineWidth: 1
     - _Parallax: 0.02
+    - _ParallaxMaskEdge: 0.8
+    - _ParallaxMaskEdgeOffset: 0.2
+    - _ParallaxScale: 0
     - _PunctualRimWidth: 2.75
     - _QueueOffset: 0
     - _ReceiveShadows: 1
@@ -227,7 +230,7 @@ Material:
     - _DirectRimBackCol: {r: 0.2, g: 0.2, b: 0.2, a: 0.5}
     - _DirectRimFrontCol: {r: 1, g: 1, b: 1, a: 0.5}
     - _EdgeColor: {r: 0, g: 0, b: 0, a: 1}
-    - _EmissionCol: {r: 0, g: 0, b: 0, a: 1}
+    - _EmissionCol: {r: 2.1185472, g: 2.1185472, b: 2.1185472, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _Emissive: {r: 0, g: 0, b: 0, a: 0}
     - _NoseSpecColor: {r: 0, g: 0, b: 0, a: 1}
