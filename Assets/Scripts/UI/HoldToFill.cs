@@ -14,6 +14,7 @@ public class HoldToFill : MonoBehaviour
 
     private bool isHolding = false;
     private float holdTime = 0f;
+    private Material imgMaterial;
 
     private void OnEnable()
     {
@@ -22,11 +23,11 @@ public class HoldToFill : MonoBehaviour
         fillText.color = new Color(fillText.color.r, fillText.color.g, fillText.color.b, 0f);
         holdActionReference.action.started += OnHoldStarted;
         holdActionReference.action.canceled += OnHoldCanceled;
+        imgMaterial = fillImage.material;
     }
 
     private void OnDisable()
     {
-        // Disable the action and unsubscribe from the events
         holdActionReference.action.started -= OnHoldStarted;
         holdActionReference.action.canceled -= OnHoldCanceled;
     }
@@ -35,11 +36,9 @@ public class HoldToFill : MonoBehaviour
     {
         if (isHolding)
         {
-            // Increment the hold time and update the fill amount
             holdTime += Time.deltaTime;
-            fillImage.fillAmount = Mathf.Clamp01(holdTime / holdDuration);
+            imgMaterial.SetFloat("_Lerp", holdTime / holdDuration);
 
-            // If the hold duration is reached, trigger the action
             if (holdTime >= holdDuration)
             {
                 OnHoldCompleted();
@@ -53,7 +52,7 @@ public class HoldToFill : MonoBehaviour
         // Start holding when the button is pressed
         isHolding = true;
         holdTime = 0f;
-        fillImage.fillAmount = 0f;
+        imgMaterial.SetFloat("_Lerp", 0f);
         fillImage.DOFade(1f, fadeDuration).SetEase(Ease.InOutCubic);
         fillText.DOFade(1f, fadeDuration).SetEase(Ease.InOutCubic);
     }

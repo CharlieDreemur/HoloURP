@@ -2,12 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
-using UnityEngine.InputSystem;
 using UnityEngine.Events;
-public class HandZoneVisual : MonoBehaviour
+public class AIHandZoneVisual : MonoBehaviour
 {
     [SerializeField]
-    private PlayerBase _player;
+    private AIPlayer _player;
     [SerializeField]
     private Transform _handTransform;
     [Header("Fan Settings")]
@@ -88,7 +87,7 @@ public class HandZoneVisual : MonoBehaviour
         for (int i = 0; i < _cardModels.Count; i++)
         {
             float angle = startAngle + (i * angleStep);
-            //Debug.Log("angle: " + angle);
+            Debug.Log("angle: " + angle);
             Vector3 cardPosition = CalculateCardPosition(i);
             Quaternion cardRotation = CalculateCardRotation(angle, i);
             Quaternion finalRotation = _handTransform.rotation * cardRotation;
@@ -122,7 +121,6 @@ public class HandZoneVisual : MonoBehaviour
         // Combine the card's self-rotation with its rotation facing outward
         return Quaternion.Euler(0, angle, rotateAngel);
     }
-
     public void AddCardVisuals(List<CardBase> cards)
     {
         foreach (CardBase card in cards)

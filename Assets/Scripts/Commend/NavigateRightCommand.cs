@@ -1,8 +1,8 @@
 using UnityEngine;
 
-public class NavigateRightCommand : ICommand<PlayerContext>
+public class NavigateRightCommand : ICommand<GameContext>
 {
- public void Execute(PlayerContext context)
+ public void Execute(GameContext context)
     {
         context.handZoneVisual.NavigateRight();
     }

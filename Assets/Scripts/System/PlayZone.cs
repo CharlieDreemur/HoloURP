@@ -7,7 +7,7 @@ using UnityEngine.Events;
 public class PlayZone : MonoBehaviour
 {
     [SerializeField]
-    private CardPlayer _player;
+    private PlayerBase _player;
     [SerializeField]
     private CardDeck _cardDeck;
     [Header("Debug")]

@@ -3,12 +3,14 @@ using System.Collections;
 using Unity.VisualScripting;
 using UnityEngine;
 [System.Serializable]
-public struct PlayerContext : IContext
+public struct GameContext : IContext
 {
     [SerializeField]
     public CardGameManager cardGameManager;
     [SerializeField]
     public CardPlayer player;
+    [SerializeField]
+    public AIPlayer aiPlayer;
     [SerializeField]
     public HandZoneVisual handZoneVisual;
     [SerializeField]
@@ -19,7 +21,7 @@ public struct PlayerContext : IContext
 public class PlayerTurnState : IGameState
 {
     private CardGameManager cardGameManager;
-    private PlayerContext playerContext;
+    private GameContext gameContext;
     private InputControls _controls;
     private readonly DrawCardCommand _drawCardCommand = new DrawCardCommand();
     private readonly PlayCardCommand _playCardCommand = new PlayCardCommand();
@@ -31,8 +33,8 @@ public class PlayerTurnState : IGameState
     public PlayerTurnState(CardGameManager cardGameManager)
     {
         this.cardGameManager = cardGameManager;
-        playerContext = cardGameManager.playerContext;
-        playerContext.cardGameManager = cardGameManager;
+        gameContext = cardGameManager.playerContext;
+        gameContext.cardGameManager = cardGameManager;
         _controls = new InputControls();
         InitKeyCommandMap();
 
@@ -51,18 +53,18 @@ public class PlayerTurnState : IGameState
         yield return new WaitForSeconds(seconds);
         _controls.Enable();
         var drawCardCommand = new DrawCardCommand();
-        drawCardCommand.Execute(playerContext);
-        playerContext.handZoneVisual.ShowHand();
+        drawCardCommand.Execute(gameContext);
+        gameContext.handZoneVisual.ShowHand();
     }
 
     public void InitKeyCommandMap()
     {
-        _controls.Player.DrawCard.performed += ctx => _drawCardCommand.Execute(playerContext);
-        _controls.Player.PlayCard.performed += ctx => _playCardCommand.Execute(playerContext);
-        _controls.Player.EndTurn.performed += ctx => _endTurnCommand.Execute(playerContext);
-        _controls.Player.HideHandZone.performed += ctx => _hideShowCardCommand.Execute(playerContext);
-        _controls.Player.NavigateLeft.performed += ctx => _navigateLeftCommand.Execute(playerContext);
-        _controls.Player.NavigateRight.performed += ctx => _navigateRightCommand.Execute(playerContext);
+        _controls.Player.DrawCard.performed += ctx => _drawCardCommand.Execute(gameContext);
+        _controls.Player.PlayCard.performed += ctx => _playCardCommand.Execute(gameContext);
+        _controls.Player.EndTurn.performed += ctx => _endTurnCommand.Execute(gameContext);
+        _controls.Player.HideHandZone.performed += ctx => _hideShowCardCommand.Execute(gameContext);
+        _controls.Player.NavigateLeft.performed += ctx => _navigateLeftCommand.Execute(gameContext);
+        _controls.Player.NavigateRight.performed += ctx => _navigateRightCommand.Execute(gameContext);
     }
 
     public void Execute()

@@ -6,11 +6,11 @@ public interface ICommand<T> where T : IContext
 
 }
 
-public class DrawCardCommand : ICommand<PlayerContext>
+public class DrawCardCommand : ICommand<GameContext>
 {
-    public void Execute(PlayerContext context)
+    public void Execute(GameContext context)
     {
-        context.cardDeck.DrawCards();
+        context.cardDeck.DrawCards(context.player);
     }
 
 }

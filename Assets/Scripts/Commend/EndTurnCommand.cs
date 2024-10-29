@@ -1,9 +1,9 @@
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class EndTurnCommand : ICommand<PlayerContext>
+public class EndTurnCommand : ICommand<GameContext>
 {
-    public void Execute(PlayerContext context)
+    public void Execute(GameContext context)
     {
         Debug.Log("End Turn");
         context.playZone.AddCardsIntoDeck();

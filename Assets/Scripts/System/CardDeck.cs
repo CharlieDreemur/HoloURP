@@ -8,8 +8,6 @@ public class CardDeck : MonoBehaviour
     [Header("Deck Settings")]
     [SerializeField]
     public int MaxSize = 10;
-    [SerializeField]
-    private CardPlayer _playerStats;
     [Header("Debug")]
     [SerializeField]
     [SerializeReference]
@@ -18,7 +16,7 @@ public class CardDeck : MonoBehaviour
     private System.Random rng = new System.Random(0);
     public const int MAX_CARD_NUMBER = 4;
     public UnityEvent DrawCardEvent;
-    public UnityEvent<int, UnityAction> DrawCardAnimationEvent;
+    public UnityEvent<PlayerBase, int, UnityAction> DrawCardAnimationEvent;
     public CardEvent AddCardsEvent = new CardEvent();
     [SerializeField]
     private int _drawCardCount = 1;
@@ -33,10 +31,10 @@ public class CardDeck : MonoBehaviour
         cardDecks.AddRange(cards);
         AddCardsEvent?.Invoke(cards);
     }
-    public void DrawCards(){
-        DrawCards(_drawCardCount);
+    public void DrawCards(PlayerBase player){
+        DrawCards(player, _drawCardCount);
     }
-    public void DrawCards(int n)
+    public void DrawCards(PlayerBase player, int n)
     {
         List<CardBase> drawCards = TryDrawCards(n);
         if (drawCards == null)
@@ -45,9 +43,9 @@ public class CardDeck : MonoBehaviour
         }
         UnityAction callback = () =>
         {
-            _playerStats.AddCards(drawCards);
+            player.AddCards(drawCards);
         };
-        DrawCardAnimationEvent?.Invoke(n, callback);
+        DrawCardAnimationEvent?.Invoke(player, n, callback);
     }
 
     private List<CardBase> GenerateStartDeck()

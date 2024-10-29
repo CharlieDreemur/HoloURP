@@ -30,7 +30,9 @@ public class CardGameManager : MonoBehaviour
     [SerializeField]
     private int turnCount = 0;
     [SerializeField]
-    public PlayerContext playerContext;
+    private PlayerInfo currentPlayerInfo;
+    [SerializeField]
+    public GameContext playerContext;
 
     void Awake()
     {
@@ -67,7 +69,7 @@ public class CardGameManager : MonoBehaviour
     {
         // Rotate to the next player in the queue
         PlayerInfo currentPlayer = turnQueue.Dequeue();
-        Debug.Log("Current Player: " + currentPlayer.playerName);
+        currentPlayerInfo = currentPlayer;
         turnQueue.Enqueue(currentPlayer);
         // Create a state for the current player
         IGameState playerTurnState = StateFactory.CreateState(this, currentPlayer);
