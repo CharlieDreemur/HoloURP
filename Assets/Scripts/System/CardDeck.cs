@@ -20,6 +20,9 @@ public class CardDeck : MonoBehaviour
     public CardEvent AddCardsEvent = new CardEvent();
     [SerializeField]
     private int _drawCardCount = 1;
+    void Awake(){
+        
+    }
     void Start()
     {
         cardDecks = GenerateStartDeck();

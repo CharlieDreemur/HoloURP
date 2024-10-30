@@ -1,10 +1,15 @@
 using UnityEngine;
 
-public class PlayCardCommand : ICommand<GameContext>
+public class PlayCardCommand : ICommand<PlayerContext>
 {
-    public void Execute(GameContext context)
+    public void Execute(PlayerContext context)
     {
-        context.player.PlayCard(context.handZoneVisual.CurrentCardIndex);
+        CardPlayer player = context.playerBase as CardPlayer;
+        bool result = player.PlayCard();
+        if(result==true) context.cardGameManager.AdvanceRound();   
+        else{
+            UIManager.Instance.ShowMessage("You can't play this card");
+        }
     }
 
 }

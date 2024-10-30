@@ -1,10 +1,11 @@
 using UnityEngine;
 
-public class HideShowCardCommand : ICommand<GameContext>
+public class HideShowCardCommand : ICommand<PlayerContext>
 {
-    public void Execute(GameContext context)
+    public void Execute(PlayerContext context)
     {
-        context.handZoneVisual.HideShowHand();
+        CardPlayer player = context.playerBase as CardPlayer;
+        player.handZoneVisual.HideShowHand();
     }
 
 }

@@ -2,26 +2,12 @@ using System;
 using System.Collections;
 using Unity.VisualScripting;
 using UnityEngine;
-[System.Serializable]
-public struct GameContext : IContext
-{
-    [SerializeField]
-    public CardGameManager cardGameManager;
-    [SerializeField]
-    public CardPlayer player;
-    [SerializeField]
-    public AIPlayer aiPlayer;
-    [SerializeField]
-    public HandZoneVisual handZoneVisual;
-    [SerializeField]
-    public CardDeck cardDeck;
-    [SerializeField]
-    public PlayZone playZone;
-}
+
 public class PlayerTurnState : IGameState
 {
-    private CardGameManager cardGameManager;
-    private GameContext gameContext;
+    private CardGameManager _cardGameManager;
+    private PlayerContext playerInfo;
+    private CardPlayer player => (CardPlayer)playerInfo.playerBase;
     private InputControls _controls;
     private readonly DrawCardCommand _drawCardCommand = new DrawCardCommand();
     private readonly PlayCardCommand _playCardCommand = new PlayCardCommand();
@@ -29,12 +15,11 @@ public class PlayerTurnState : IGameState
     private readonly HideShowCardCommand _hideShowCardCommand = new HideShowCardCommand();
     private readonly NavigateLeftCommand _navigateLeftCommand = new NavigateLeftCommand();
     private readonly NavigateRightCommand _navigateRightCommand = new NavigateRightCommand();
-
-    public PlayerTurnState(CardGameManager cardGameManager)
+    
+    public PlayerTurnState(CardGameManager cardGameManager, PlayerContext playerInfo)
     {
-        this.cardGameManager = cardGameManager;
-        gameContext = cardGameManager.playerContext;
-        gameContext.cardGameManager = cardGameManager;
+        this._cardGameManager = cardGameManager;
+        this.playerInfo = playerInfo;
         _controls = new InputControls();
         InitKeyCommandMap();
 
@@ -45,26 +30,24 @@ public class PlayerTurnState : IGameState
         Debug.Log("Player's Turn Started");
         UIManager.Instance.ShowTurnText();
         //wait for 1 s
-        cardGameManager.StartCoroutine(DelayInit(1f));
+        _cardGameManager.StartCoroutine(DelayInit(1f));
     }
 
     private IEnumerator DelayInit(float seconds)
     {
         yield return new WaitForSeconds(seconds);
         _controls.Enable();
-        var drawCardCommand = new DrawCardCommand();
-        drawCardCommand.Execute(gameContext);
-        gameContext.handZoneVisual.ShowHand();
+        player.handZoneVisual.ShowHand();
     }
 
     public void InitKeyCommandMap()
     {
-        _controls.Player.DrawCard.performed += ctx => _drawCardCommand.Execute(gameContext);
-        _controls.Player.PlayCard.performed += ctx => _playCardCommand.Execute(gameContext);
-        _controls.Player.EndTurn.performed += ctx => _endTurnCommand.Execute(gameContext);
-        _controls.Player.HideHandZone.performed += ctx => _hideShowCardCommand.Execute(gameContext);
-        _controls.Player.NavigateLeft.performed += ctx => _navigateLeftCommand.Execute(gameContext);
-        _controls.Player.NavigateRight.performed += ctx => _navigateRightCommand.Execute(gameContext);
+        _controls.Player.DrawCard.performed += ctx => _drawCardCommand.Execute(playerInfo);
+        _controls.Player.PlayCard.performed += ctx => _playCardCommand.Execute(playerInfo);
+        _controls.Player.EndTurn.performed += ctx => _endTurnCommand.Execute(playerInfo);
+        _controls.Player.HideHandZone.performed += ctx => _hideShowCardCommand.Execute(playerInfo);
+        _controls.Player.NavigateLeft.performed += ctx => _navigateLeftCommand.Execute(playerInfo);
+        _controls.Player.NavigateRight.performed += ctx => _navigateRightCommand.Execute(playerInfo);
     }
 
     public void Execute()

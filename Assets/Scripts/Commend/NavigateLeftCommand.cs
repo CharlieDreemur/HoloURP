@@ -1,10 +1,11 @@
 using UnityEngine;
 
-public class NavigateLeftCommand : ICommand<GameContext>
+public class NavigateLeftCommand : ICommand<PlayerContext>
 {
-    public void Execute(GameContext context)
+    public void Execute(PlayerContext context)
     {
-        context.handZoneVisual.NavigateLeft();
+        CardPlayer player = context.playerBase as CardPlayer;
+        player.handZoneVisual.NavigateLeft();
     }
 
 }

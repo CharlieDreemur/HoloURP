@@ -168,10 +168,7 @@ public class HandZoneVisual : MonoBehaviour
         }
         if(hideAfterPlay)
         {
-            slideSequence.OnComplete(() =>
-            {
-                HideHand();
-            });
+            HideHand();
         }
         else{
             slideSequence.OnComplete(() =>

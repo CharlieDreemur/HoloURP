@@ -8,23 +8,7 @@ public class CardVisual : MonoBehaviour
     [Header("Card Settings")]
     [SerializeField]
     private CardSpriteSO cardTextureSO;
-    private Vector3 initialPosition;  
-    private Quaternion initialRotation;
     private Material cardMaterial;
-    public bool IsSelected {
-        get { return isSelected; }
-        set { 
-            isSelected = value; 
-            if (isSelected)
-            {
-                SelectCard();
-            }
-            else
-            {
-                DeselectCard();
-            }
-        }
-    }
     private bool isSelected = false;
     private SpriteRenderer spriteRenderer;
     void Awake(){
@@ -33,15 +17,13 @@ public class CardVisual : MonoBehaviour
     }
     void Start()
     {
-        initialPosition = transform.position;
-        initialRotation = transform.rotation;
     }
     public void SetCard(ICard card)
     {
         if (card is NumberCard){
             NumberCard numberCard = (NumberCard)card;
             //Debug.Log("Set card number: " + numberCard.cardNumber);
-            spriteRenderer.sprite = cardTextureSO.numberCardSprite[numberCard.cardNumber-1]; //minus 1 because the card number is in the range of 1 to 4
+            spriteRenderer.sprite = cardTextureSO.numberCardSprite[numberCard.Number-1]; //minus 1 because the card number is in the range of 1 to 4
         }
         else if (card is BombCard)
         {
@@ -64,11 +46,5 @@ public class CardVisual : MonoBehaviour
     public void DeselectCard()
     {
         cardMaterial.SetFloat("_InnerOutlineThickness", 0.0f);
-    }
-
-    void OnMouseDown()
-    {
-        Debug.Log("Card clicked!");
-        IsSelected = !IsSelected;
     }
 }

@@ -3,11 +3,12 @@ using TMPro;
 using DG.Tweening;
 using UnityEngine.Events;
 [RequireComponent(typeof(TMP_Text))]
-public class TurnTextAnimator : MonoBehaviour
+public class TextIndicator : MonoBehaviour
 {
     [SerializeField]
     private TMP_Text uiText;
-
+    [SerializeField]
+    private string text = "Your Turn!";
     [SerializeField]
     private float scaleDuration = 1.0f;
 
@@ -31,17 +32,16 @@ public class TurnTextAnimator : MonoBehaviour
         {
             Debug.LogError("TurnTextAnimator: No TextMeshPro component found on this object.");
         }
+        uiText.text = text;
         uiText.fontMaterial = new Material(uiText.fontMaterial); //Material Instance
         textMaterial = uiText.fontMaterial;
         // Set the initial alpha of the text to 0 (invisible)
         SetTextAlpha(0);
-
-        // Listen for the event to show the turn text
-        UIManager.Instance.OnShowTurnText.AddListener(AnimateText);
     }
     [ContextMenu("AnimateText")]
-    public void AnimateText()
+    public void AnimateText(string text)
     {
+        uiText.text = text;
         Sequence textSequence = DOTween.Sequence();
         textMaterial.SetFloat("_FaceDilate", 1f);
         //Scale up and show

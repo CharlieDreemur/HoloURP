@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
-
 public abstract class PlayerBase : MonoBehaviour
 {
     [SerializeField]
@@ -16,6 +15,10 @@ public abstract class PlayerBase : MonoBehaviour
     [Header("Transforms Settings")]
     [SerializeField]
     public Transform _handTransform;
+    [SerializeField]
+    public CardDeck cardDeck;
+    [SerializeField]
+    public PlayZone playZone;
     public int Health
     {
         get => _currHealth;
@@ -31,7 +34,7 @@ public abstract class PlayerBase : MonoBehaviour
     public CardEvent AddCardEvent = new CardEvent();
     public CardEvent RemoveCardEvent = new CardEvent();
     public UnityEvent<List<int>> PlayCardAnimationEvent = new UnityEvent<List<int>>();
-    public CardEvent PlayCardEvent = new CardEvent();
+    public UnityEvent<CardBase> PlayCardEvent = new UnityEvent<CardBase>();
     void Awake()
     {
 
@@ -47,6 +50,11 @@ public abstract class PlayerBase : MonoBehaviour
         }
         AddCards(cards);
     }
+    public virtual void DrawCards(int n = 1)
+    {
+        cardDeck.DrawCards(this, n);
+    }
+
     public void AddCards(List<CardBase> cards)
     {
         for (int i = 0; i < cards.Count; i++)
@@ -65,24 +73,37 @@ public abstract class PlayerBase : MonoBehaviour
         }
         RemoveCardEvent?.Invoke(cards);
     }
-
-    public void PlayCard(int index)
+    public bool PlayCard(CardBase card)
+    {
+        return PlayCardAtIndex(HandCards.IndexOf(card));
+    }
+    public bool PlayCardAtIndex(int index)
     {
         //Debug.Log("Play card at index: " + index);
         if (index < 0 || index >= HandCards.Count || HandCards.Count == 0)
         {
-            return;
+            return false;
         }
         CardBase card = HandCards[index];
-        List<int> indexes = new List<int> { index };
+        if (card is BombCard)
+        {
+            Debug.Log("You can't play a bomb card");
+            return false;
+        }
+        NumberCard numberCard = card as NumberCard;
+        if(!playZone.TryAddCardToPlayZone(this, numberCard)){
+            return false;
+        }
         HandCards.Remove(HandCards[index]);
+        List<int> indexes = new List<int> { index };
         PlayCardAnimationEvent?.Invoke(indexes);
-        PlayCardEvent?.Invoke(new List<CardBase> {card});
+        PlayCardEvent?.Invoke(card);
+        return true;
     }
 
     public void PlayCards(List<CardBase> cards)
     {
-        if(cards.Count == 0 || HandCards.Count == 0)
+        if (cards.Count == 0 || HandCards.Count == 0)
         {
             return;
         }
@@ -94,7 +115,7 @@ public abstract class PlayerBase : MonoBehaviour
         }
         RemoveCards(cards);
         PlayCardAnimationEvent?.Invoke(indexes);
-        PlayCardEvent?.Invoke(cards);
+        //PlayCardEvent?.Invoke(card);
     }
 
 }

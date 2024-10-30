@@ -1,13 +1,13 @@
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class EndTurnCommand : ICommand<GameContext>
+public class EndTurnCommand : ICommand<PlayerContext>
 {
-    public void Execute(GameContext context)
+    public void Execute(PlayerContext context)
     {
         Debug.Log("End Turn");
-        context.playZone.AddCardsIntoDeck();
-        context.handZoneVisual.HideHand();
+        CardPlayer player = context.playerBase as CardPlayer;
+        player.handZoneVisual.HideHand();
         context.cardGameManager.AdvanceTurn();
     }
 
