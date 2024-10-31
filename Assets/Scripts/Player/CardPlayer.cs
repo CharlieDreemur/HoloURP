@@ -12,7 +12,11 @@ public class CardPlayer : PlayerBase
     {
         return base.PlayCardAtIndex(handZoneVisual.CurrentCardIndex);
     }
-
+    [ContextMenu("DrawCards")]
+    public void TestDrawCards()
+    {
+        DrawCards();
+    }
     public override void DrawCards(int n = 1)
     {
         handZoneVisual.ShowHand();

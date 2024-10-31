@@ -8,7 +8,7 @@ public class PlayCardCommand : ICommand<PlayerContext>
         bool result = player.PlayCard();
         if(result==true) context.cardGameManager.AdvanceRound();   
         else{
-            UIManager.Instance.ShowMessage("You can't play this card");
+            UIManager.Instance.ShowMessage("You can't play a smaller card");
         }
     }
 

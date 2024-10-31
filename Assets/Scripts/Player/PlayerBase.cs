@@ -43,12 +43,6 @@ public abstract class PlayerBase : MonoBehaviour
     }
     void Start()
     {
-        List<CardBase> cards = new List<CardBase>();
-        for (int i = 1; i <= initCardCount; i++)
-        {
-            cards.Add(new NumberCard(i));
-        }
-        AddCards(cards);
     }
     public virtual void DrawCards(int n = 1)
     {
@@ -118,4 +112,20 @@ public abstract class PlayerBase : MonoBehaviour
         //PlayCardEvent?.Invoke(card);
     }
 
+    public virtual void PunishOpponent(PlayerBase opponent)
+    {
+
+    }
+
+    public bool HasLargerCard(NumberCard card){
+        foreach(var handCard in HandCards){
+            if(handCard is NumberCard){
+                NumberCard numberCard = handCard as NumberCard;
+                if(numberCard.LargerThan(card)){
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 }

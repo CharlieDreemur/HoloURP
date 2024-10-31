@@ -8,7 +8,7 @@ public class EndTurnCommand : ICommand<PlayerContext>
         Debug.Log("End Turn");
         CardPlayer player = context.playerBase as CardPlayer;
         player.handZoneVisual.HideHand();
-        context.cardGameManager.AdvanceTurn();
+        context.cardGameManager.EndTurn();
     }
 
 }

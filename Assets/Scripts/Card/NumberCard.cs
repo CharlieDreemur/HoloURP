@@ -5,7 +5,7 @@ using UnityEngine;
 public class NumberCard: CardBase
 {
     [SerializeField]
-    public int Number = 1; //card number will be in the range of 1 to 4
+    public int Number = 2; //card number will be in the range of 2 to 5
 
     protected ICardEffect cardEffect;
     public NumberCard(int cardNumber)
@@ -23,7 +23,7 @@ public class NumberCard: CardBase
 
     public bool LargerThan(NumberCard other)
     {
-        return this.Number > other.Number;
+        return this.Number >= other.Number;
     }
 
     public override void Use()

@@ -76,6 +76,13 @@ public class CardGameManager : MonoBehaviour
         currentState = newState;
         currentState.Enter();
     }
+
+    public void EndTurn()
+    {
+        //Determine the winner
+        PunishPlayer(turnQueue.Peek(), currentPlayerInfo);
+    }
+
     public void AdvanceTurn()
     {
         playZone.AddCardsIntoDeck();
@@ -91,6 +98,11 @@ public class CardGameManager : MonoBehaviour
         };
         StartCoroutine(WaitForSeconds(callback, 1f));
 
+    }
+    public void PunishPlayer(PlayerContext winner, PlayerContext loser)
+    {
+        Debug.Log("Winner: " + winner.playerBase.name + " Loser: " + loser.playerBase.name);
+        winner.playerBase.PunishOpponent(loser.playerBase);
     }
     public void AdvanceRound()
     {

@@ -12,7 +12,7 @@ public class AIPlayer : PlayerBase
             if (card == null)
             {
                 Debug.Log("AIPlayer:PlayRandomCard:PlayCardAtIndex:Failed");
-                context.cardGameManager.StartCoroutine(context.cardGameManager.WaitForSeconds(() => context.cardGameManager.AdvanceTurn(), 1.5f));
+                context.cardGameManager.StartCoroutine(context.cardGameManager.WaitForSeconds(() => context.cardGameManager.EndTurn(), 1.5f));
             }
             else
             {
@@ -24,7 +24,7 @@ public class AIPlayer : PlayerBase
                 else
                 {
                     Debug.Log("Should not reach here");
-                    context.cardGameManager.StartCoroutine(context.cardGameManager.WaitForSeconds(() => context.cardGameManager.AdvanceTurn(), 1.5f));
+                    context.cardGameManager.StartCoroutine(context.cardGameManager.WaitForSeconds(() => context.cardGameManager.EndTurn(), 1.5f));
                 }
             }
 
@@ -32,7 +32,25 @@ public class AIPlayer : PlayerBase
         }
     }
 
-    public NumberCard FindBestCard()
+    public override void PunishOpponent(PlayerBase opponent)
+    {
+        Debug.Log("AIPlayer:PunishOpponent");
+        //draw one card from opponent
+        if (opponent.HandCards.Count > 0)
+        {
+            CardBase card = opponent.HandCards[0];
+            opponent.HandCards.Remove(card);
+            HandCards.Add(card);
+            opponent.RemoveCardEvent?.Invoke(new List<CardBase> { card });
+            AddCardEvent?.Invoke(new List<CardBase> { card });
+        }
+        else
+        {
+            Debug.Log("Opponent has no card to draw");
+        }
+    }
+
+    private NumberCard FindBestCard()
     {
         int lastCardNumber = playZone.GetLastCardNumber();
         NumberCard bestCard = null;

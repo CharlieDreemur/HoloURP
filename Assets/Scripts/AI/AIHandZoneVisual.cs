@@ -87,7 +87,7 @@ public class AIHandZoneVisual : MonoBehaviour
         for (int i = 0; i < _cardModels.Count; i++)
         {
             float angle = startAngle + (i * angleStep);
-            Debug.Log("angle: " + angle);
+            //Debug.Log("angle: " + angle);
             Vector3 cardPosition = CalculateCardPosition(i);
             Quaternion cardRotation = CalculateCardRotation(angle, i);
             Quaternion finalRotation = _handTransform.rotation * cardRotation;

@@ -58,17 +58,12 @@ public class CardDeck : MonoBehaviour
             return null;
         }
 
-        List<CardBase> cards = new List<CardBase>
-        {
-            new BombCard(rng)
-        };
+        List<CardBase> cards = new List<CardBase>();
 
-        int numberedCardCount = MaxSize - 1; // Subtract 1 for the bomb card
-
-        // Distribute the numbered cards evenly between 1 and a
-        for (int i = 0; i < numberedCardCount; i++)
+        // Distribute the numbered cards evenly between 2 and a
+        for (int i = 0; i < MaxSize; i++)
         {
-            int cardNumber = (i % MAX_CARD_NUMBER) + 1; // Cycles through numbers 1 to a
+            int cardNumber = (i % MAX_CARD_NUMBER) + 2; // Cycles through numbers 2 to a
             NumberCard card = new NumberCard(cardNumber);
             cards.Add(card);
         }

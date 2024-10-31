@@ -23,7 +23,7 @@ public class CardVisual : MonoBehaviour
         if (card is NumberCard){
             NumberCard numberCard = (NumberCard)card;
             //Debug.Log("Set card number: " + numberCard.cardNumber);
-            spriteRenderer.sprite = cardTextureSO.numberCardSprite[numberCard.Number-1]; //minus 1 because the card number is in the range of 1 to 4
+            spriteRenderer.sprite = cardTextureSO.numberCardSprite[numberCard.Number-2]; //minus 1 because the card number is in the range of 1 to 4
         }
         else if (card is BombCard)
         {

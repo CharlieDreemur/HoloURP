@@ -695,7 +695,7 @@ MonoBehaviour:
   pphEnabledNoAnimation: 1
   pphShoulderEnabled: 1
   pphShoulderFixRate: 0.7
-  ikEnabled: 0
+  ikEnabled: 1
   fullBodyIKEnabled: 0
   vertexMorphEnabled: 1
   materialMorphEnabled: 1
@@ -1552,7 +1552,7 @@ MonoBehaviour:
     restitution: -1
     friction: -1
   animList: []
-  editorViewPage: 3
+  editorViewPage: 2
   editorViewMorphBits: 15
   editorViewRigidBodies: 0
   editorViewMorphNameType: 0
@@ -2121,7 +2121,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   model: {fileID: 142904734}
   boneID: 21
-  ikEnabled: 0
+  ikEnabled: 1
   ikWeight: 1
 --- !u!1 &310391603 stripped
 GameObject:
@@ -3397,7 +3397,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   model: {fileID: 142904734}
   boneID: 15
-  ikEnabled: 0
+  ikEnabled: 1
   ikWeight: 1
 --- !u!1 &692150291 stripped
 GameObject:
@@ -3892,7 +3892,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   model: {fileID: 142904734}
   boneID: 20
-  ikEnabled: 0
+  ikEnabled: 1
   ikWeight: 1
 --- !u!1 &816741691 stripped
 GameObject:
@@ -8778,7 +8778,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   model: {fileID: 142904734}
   boneID: 16
-  ikEnabled: 0
+  ikEnabled: 1
   ikWeight: 1
 --- !u!1 &2104053273 stripped
 GameObject:
