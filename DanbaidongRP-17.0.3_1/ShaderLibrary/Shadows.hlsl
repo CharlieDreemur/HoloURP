@@ -290,23 +290,23 @@ real SampleShadowmapArrayFilteredHighQuality(TEXTURE2D_ARRAY_SHADOW_PARAM(Shadow
     real fetchesWeights[16];
     real2 fetchesUV[16];
     SampleShadow_ComputeSamples_Tent_7x7(samplingData.shadowmapSize, shadowCoord.xy, fetchesWeights, fetchesUV);
-
-    return fetchesWeights[0] * SAMPLE_TEXTURE2D_ARRAY_SHADOW(ShadowMap, sampler_ShadowMap, float3(fetchesUV[0].xy, shadowCoord.z), shadowCoord.w)
-                + fetchesWeights[1] * SAMPLE_TEXTURE2D_ARRAY_SHADOW(ShadowMap, sampler_ShadowMap, float3(fetchesUV[1].xy, shadowCoord.z), shadowCoord.w)
-                + fetchesWeights[2] * SAMPLE_TEXTURE2D_ARRAY_SHADOW(ShadowMap, sampler_ShadowMap, float3(fetchesUV[2].xy, shadowCoord.z), shadowCoord.w)
-                + fetchesWeights[3] * SAMPLE_TEXTURE2D_ARRAY_SHADOW(ShadowMap, sampler_ShadowMap, float3(fetchesUV[3].xy, shadowCoord.z), shadowCoord.w)
-                + fetchesWeights[4] * SAMPLE_TEXTURE2D_ARRAY_SHADOW(ShadowMap, sampler_ShadowMap, float3(fetchesUV[4].xy, shadowCoord.z), shadowCoord.w)
-                + fetchesWeights[5] * SAMPLE_TEXTURE2D_ARRAY_SHADOW(ShadowMap, sampler_ShadowMap, float3(fetchesUV[5].xy, shadowCoord.z), shadowCoord.w)
-                + fetchesWeights[6] * SAMPLE_TEXTURE2D_ARRAY_SHADOW(ShadowMap, sampler_ShadowMap, float3(fetchesUV[6].xy, shadowCoord.z), shadowCoord.w)
-                + fetchesWeights[7] * SAMPLE_TEXTURE2D_ARRAY_SHADOW(ShadowMap, sampler_ShadowMap, float3(fetchesUV[7].xy, shadowCoord.z), shadowCoord.w)
-                + fetchesWeights[8] * SAMPLE_TEXTURE2D_ARRAY_SHADOW(ShadowMap, sampler_ShadowMap, float3(fetchesUV[8].xy, shadowCoord.z), shadowCoord.w)
-                + fetchesWeights[9] * SAMPLE_TEXTURE2D_ARRAY_SHADOW(ShadowMap, sampler_ShadowMap, float3(fetchesUV[9].xy, shadowCoord.z), shadowCoord.w)
-                + fetchesWeights[10] * SAMPLE_TEXTURE2D_ARRAY_SHADOW(ShadowMap, sampler_ShadowMap, float3(fetchesUV[10].xy, shadowCoord.z), shadowCoord.w)
-                + fetchesWeights[11] * SAMPLE_TEXTURE2D_ARRAY_SHADOW(ShadowMap, sampler_ShadowMap, float3(fetchesUV[11].xy, shadowCoord.z), shadowCoord.w)
-                + fetchesWeights[12] * SAMPLE_TEXTURE2D_ARRAY_SHADOW(ShadowMap, sampler_ShadowMap, float3(fetchesUV[12].xy, shadowCoord.z), shadowCoord.w)
-                + fetchesWeights[13] * SAMPLE_TEXTURE2D_ARRAY_SHADOW(ShadowMap, sampler_ShadowMap, float3(fetchesUV[13].xy, shadowCoord.z), shadowCoord.w)
-                + fetchesWeights[14] * SAMPLE_TEXTURE2D_ARRAY_SHADOW(ShadowMap, sampler_ShadowMap, float3(fetchesUV[14].xy, shadowCoord.z), shadowCoord.w)
-                + fetchesWeights[15] * SAMPLE_TEXTURE2D_ARRAY_SHADOW(ShadowMap, sampler_ShadowMap, float3(fetchesUV[15].xy, shadowCoord.z), shadowCoord.w);
+    return 0;
+    // return fetchesWeights[0] * SAMPLE_TEXTURE2D_ARRAY_SHADOW(ShadowMap, sampler_ShadowMap, float3(fetchesUV[0].xy, shadowCoord.z), shadowCoord.w)
+    //             + fetchesWeights[1] * SAMPLE_TEXTURE2D_ARRAY_SHADOW(ShadowMap, sampler_ShadowMap, float3(fetchesUV[1].xy, shadowCoord.z), shadowCoord.w)
+    //             + fetchesWeights[2] * SAMPLE_TEXTURE2D_ARRAY_SHADOW(ShadowMap, sampler_ShadowMap, float3(fetchesUV[2].xy, shadowCoord.z), shadowCoord.w)
+    //             + fetchesWeights[3] * SAMPLE_TEXTURE2D_ARRAY_SHADOW(ShadowMap, sampler_ShadowMap, float3(fetchesUV[3].xy, shadowCoord.z), shadowCoord.w)
+    //             + fetchesWeights[4] * SAMPLE_TEXTURE2D_ARRAY_SHADOW(ShadowMap, sampler_ShadowMap, float3(fetchesUV[4].xy, shadowCoord.z), shadowCoord.w)
+    //             + fetchesWeights[5] * SAMPLE_TEXTURE2D_ARRAY_SHADOW(ShadowMap, sampler_ShadowMap, float3(fetchesUV[5].xy, shadowCoord.z), shadowCoord.w)
+    //             + fetchesWeights[6] * SAMPLE_TEXTURE2D_ARRAY_SHADOW(ShadowMap, sampler_ShadowMap, float3(fetchesUV[6].xy, shadowCoord.z), shadowCoord.w)
+    //             + fetchesWeights[7] * SAMPLE_TEXTURE2D_ARRAY_SHADOW(ShadowMap, sampler_ShadowMap, float3(fetchesUV[7].xy, shadowCoord.z), shadowCoord.w)
+    //             + fetchesWeights[8] * SAMPLE_TEXTURE2D_ARRAY_SHADOW(ShadowMap, sampler_ShadowMap, float3(fetchesUV[8].xy, shadowCoord.z), shadowCoord.w)
+    //             + fetchesWeights[9] * SAMPLE_TEXTURE2D_ARRAY_SHADOW(ShadowMap, sampler_ShadowMap, float3(fetchesUV[9].xy, shadowCoord.z), shadowCoord.w)
+    //             + fetchesWeights[10] * SAMPLE_TEXTURE2D_ARRAY_SHADOW(ShadowMap, sampler_ShadowMap, float3(fetchesUV[10].xy, shadowCoord.z), shadowCoord.w)
+    //             + fetchesWeights[11] * SAMPLE_TEXTURE2D_ARRAY_SHADOW(ShadowMap, sampler_ShadowMap, float3(fetchesUV[11].xy, shadowCoord.z), shadowCoord.w)
+    //             + fetchesWeights[12] * SAMPLE_TEXTURE2D_ARRAY_SHADOW(ShadowMap, sampler_ShadowMap, float3(fetchesUV[12].xy, shadowCoord.z), shadowCoord.w)
+    //             + fetchesWeights[13] * SAMPLE_TEXTURE2D_ARRAY_SHADOW(ShadowMap, sampler_ShadowMap, float3(fetchesUV[13].xy, shadowCoord.z), shadowCoord.w)
+    //             + fetchesWeights[14] * SAMPLE_TEXTURE2D_ARRAY_SHADOW(ShadowMap, sampler_ShadowMap, float3(fetchesUV[14].xy, shadowCoord.z), shadowCoord.w)
+    //             + fetchesWeights[15] * SAMPLE_TEXTURE2D_ARRAY_SHADOW(ShadowMap, sampler_ShadowMap, float3(fetchesUV[15].xy, shadowCoord.z), shadowCoord.w);
 }
 
 real SampleShadowmapFiltered(TEXTURE2D_SHADOW_PARAM(ShadowMap, sampler_ShadowMap), float4 shadowCoord, ShadowSamplingData samplingData)
@@ -384,10 +384,12 @@ real SampleShadowmapArray(TEXTURE2D_ARRAY_SHADOW_PARAM(ShadowMap, sampler_Shadow
         }
         else
         {
-            attenuation = real(SAMPLE_TEXTURE2D_ARRAY_SHADOW(ShadowMap, sampler_ShadowMap, shadowCoord.xyz, shadowCoord.w));
+            //attenuation = real(SAMPLE_TEXTURE2D_ARRAY_SHADOW(ShadowMap, sampler_ShadowMap, shadowCoord.xyz, shadowCoord.w));
+            attenuation = 0;
         }
     #else
-        attenuation = real(SAMPLE_TEXTURE2D_ARRAY_SHADOW(ShadowMap, sampler_ShadowMap, shadowCoord.xyz, shadowCoord.w));
+        attenuation = 0;
+        // attenuation = real(SAMPLE_TEXTURE2D_ARRAY_SHADOW(ShadowMap, sampler_ShadowMap, shadowCoord.xyz, shadowCoord.w));
     #endif
 
     attenuation = LerpWhiteTo(attenuation, shadowStrength);

@@ -34,10 +34,10 @@ public class PlayerTurnState : IGameState
             _controls.Player.Enable();
             player.handZoneVisual.ShowHand();
         }, 1f));
-        _cardGameManager.StartCoroutine(_cardGameManager.WaitForSeconds(() => HintLose(), 2f));
+        HintLose();
     }
 
-    public void PunishOpponent(PlayerBase opponent)
+    public void DrawOpponent(PlayerBase opponent)
     {
         UIManager.Instance.ShowMessage("You Lose, draw one card from your opponent");
         _controls.Player.NavigateLeft.Enable();
@@ -56,7 +56,8 @@ public class PlayerTurnState : IGameState
         }
         else
         {
-            UIManager.Instance.ShowMessage("Hold F to end your turn");
+            UIManager.Instance.ShowMessage("You don't have any card that is equal or larger than the last card");
+            _cardGameManager.StartCoroutine(_cardGameManager.WaitForSeconds(() => UIManager.Instance.ShowMessage("Hold F to end your turn"), 2f));
             return true;
         }
     }

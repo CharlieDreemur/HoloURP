@@ -17,4 +17,4 @@ MonoBehaviour:
   - {fileID: -2080498871, guid: ba219dfcab1a3904d80048541ef13178, type: 3}
   - {fileID: 340147230, guid: ba219dfcab1a3904d80048541ef13178, type: 3}
   - {fileID: 1830044750, guid: ba219dfcab1a3904d80048541ef13178, type: 3}
-  bombCardSprite: {fileID: -308841145, guid: ba219dfcab1a3904d80048541ef13178, type: 3}
+  bombCardSprite: {fileID: -1347615276, guid: ba219dfcab1a3904d80048541ef13178, type: 3}

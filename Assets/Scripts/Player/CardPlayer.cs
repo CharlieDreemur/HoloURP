@@ -9,6 +9,11 @@ public class CardPlayer : PlayerBase
 {
     public HandZoneVisual handZoneVisual;
     public  DrawOpponentCard drawOpponentCard;
+    void Awake(){
+        DeathEvent.AddListener(() => {
+            UIManager.Instance.ShowMessage("Gameover!");
+        });
+    }
     public bool PlayCard()
     {
         return base.PlayCardAtIndex(handZoneVisual.CurrentCardIndex);
@@ -24,19 +29,4 @@ public class CardPlayer : PlayerBase
         cardDeck.DrawCards(this, n);
     }
 
-    public override void PunishOpponent(PlayerBase opponent)
-    {
-        Debug.Log("CardPlayer:PunishOpponent");
-        //draw one card from opponent
-        if (opponent.HandCards.Count > 0)
-        {
-            CardBase card = opponent.HandCards[handZoneVisual.CurrentCardIndex];
-            opponent.RemoveCard(card);
-            AddCard(card);
-        }
-        else
-        {
-            Debug.Log("Opponent has no card to draw");
-        }
-    }
 }

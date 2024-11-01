@@ -162,7 +162,7 @@ Material:
     - _AlphaClip: 0
     - _AlphaCutoffValue: 0.25
     - _AlphaOutlineBlend: 1
-    - _AlphaOutlineGlow: 100
+    - _AlphaOutlineGlow: 18.6
     - _AlphaOutlineMinAlpha: 0
     - _AlphaOutlinePower: 1
     - _AlphaRoundThreshold: 0.5
@@ -207,7 +207,7 @@ Material:
     - _DistortTexYSpeed: 5
     - _DstBlend: 0
     - _DstBlendAlpha: 0
-    - _EditorDrawers: 6
+    - _EditorDrawers: 7
     - _EnvColorLerp: 0.5
     - _EnvironmentReflections: 1
     - _FadeAmount: -0.1
@@ -362,7 +362,7 @@ Material:
     - _WaveY: 0.5
     - _WorkflowMode: 1
     - _ZTestMode: 4
-    - _ZWrite: 1
+    - _ZWrite: 0
     - _ZoomUvAmount: 0.5
     m_Colors:
     - _AlphaOutlineColor: {r: 0.33578205, g: 0, b: 1, a: 1}

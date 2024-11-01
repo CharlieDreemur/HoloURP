@@ -3,15 +3,33 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.XR;
 public abstract class PlayerBase : MonoBehaviour
 {
-    [SerializeField]
-    public int initCardCount = 5;
     [SerializeField]
     [SerializeReference]
     public List<CardBase> HandCards = new List<CardBase>();
     [SerializeField]
+    public int MaxHealth
+    {
+        get => _maxHealth;
+        set
+        {
+            _maxHealth = value;
+        }
+    }
+    public int CurrentHealth
+    {
+        get => _currHealth;
+        set
+        {
+            _currHealth = value;
+        }
+    }
+    [SerializeField]
     private int _maxHealth = 3;
+    [SerializeField]
+    private int _currHealth = 3;
     [Header("Transforms Settings")]
     [SerializeField]
     public Transform _handTransform;
@@ -25,24 +43,46 @@ public abstract class PlayerBase : MonoBehaviour
         set
         {
             _currHealth = Mathf.Clamp(value, 0, _maxHealth);
-            HealthEvent?.Invoke();
         }
     }
-    private int _currHealth = 3;
+
     //HealthEvent
-    public UnityEvent HealthEvent = new UnityEvent();
     public CardEvent AddCardEvent = new CardEvent();
     public UnityEvent<List<int>> RemoveCardEvent = new UnityEvent<List<int>>();
     public UnityEvent<List<int>> PlayCardAnimationEvent = new UnityEvent<List<int>>();
     public UnityEvent<CardBase> PlayCardEvent = new UnityEvent<CardBase>();
+    public UnityEvent HurtEvent = new UnityEvent();
+    public UnityEvent DeathEvent = new UnityEvent();
+    public UnityEvent ClearEvent = new UnityEvent();
     void Awake()
     {
-
         Health = _maxHealth;
-        HealthEvent.AddListener(() => Debug.Log("Health: " + Health));
     }
     void Start()
     {
+        InitStartCard();
+    }
+    public virtual void InitStartCard(){
+        HandCards = new List<CardBase>{
+            new BombCard(),
+        };
+        //randomly insert 3 number cards
+        for (int i = 0; i < 3; i++)
+        {
+            HandCards.Add(new NumberCard(Random.Range(2, 5)));
+        }
+        //shuffle the cards
+        CardsUtils.Shuffle(ref HandCards);
+        AddCardEvent?.Invoke(HandCards);
+    }
+    public virtual void Hurt()
+    {
+        Health--;
+        if (Health == 0)
+        {
+            DeathEvent?.Invoke();
+        }
+        HurtEvent?.Invoke();
     }
     public virtual void DrawCards(int n = 1)
     {
@@ -66,7 +106,7 @@ public abstract class PlayerBase : MonoBehaviour
     {
         int index = HandCards.IndexOf(card);
         HandCards.Remove(card);
-        RemoveCardEvent?.Invoke(new List<int> {index});
+        RemoveCardEvent?.Invoke(new List<int> { index });
     }
     public void RemoveCards(List<CardBase> cards)
     {
@@ -92,11 +132,13 @@ public abstract class PlayerBase : MonoBehaviour
         CardBase card = HandCards[index];
         if (card is BombCard)
         {
-            Debug.Log("You can't play a bomb card");
+            UIManager.Instance.ShowMessage("You can't play bomb card");
             return false;
         }
         NumberCard numberCard = card as NumberCard;
-        if(!playZone.TryAddCardToPlayZone(this, numberCard)){
+        if (!playZone.TryAddCardToPlayZone(this, numberCard))
+        {
+            UIManager.Instance.ShowMessage("You can't play a smaller card");
             return false;
         }
         HandCards.Remove(HandCards[index]);
@@ -122,17 +164,28 @@ public abstract class PlayerBase : MonoBehaviour
         PlayCardAnimationEvent?.Invoke(indexes);
         //PlayCardEvent?.Invoke(card);
     }
-
-    public virtual void PunishOpponent(PlayerBase opponent)
+    [ContextMenu("Clear")]
+    public void Clear()
     {
-
+        HandCards.Clear();
+        ClearEvent?.Invoke();
+        InitStartCard();
     }
 
-    public bool HasLargerCard(NumberCard card){
-        foreach(var handCard in HandCards){
-            if(handCard is NumberCard){
+    public virtual CardBase DrawOpponent(PlayerBase opponent)
+    {
+        return null;
+    }
+
+    public bool HasLargerCard(NumberCard card)
+    {
+        foreach (var handCard in HandCards)
+        {
+            if (handCard is NumberCard)
+            {
                 NumberCard numberCard = handCard as NumberCard;
-                if(numberCard.LargerThan(card)){
+                if (numberCard.LargerThan(card))
+                {
                     return true;
                 }
             }

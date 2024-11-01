@@ -9,27 +9,30 @@ public class PlayCardCommand : ICommand<PlayerContext>
         if (!context.isDrawOpponent)
         {
             bool result = player.PlayCard();
-            if (result == true){
+            if (result == true)
+            {
                 Debug.Log("PlayCardCommand player.PlayCard() == true");
                 context.cardGameManager.AdvanceRound();
             }
-            else
-            {
-                UIManager.Instance.ShowMessage("You can't play a smaller card");
-            }
+
         }
         else
         {
-           CardBase card = player.drawOpponentCard.DrawCard();
-           if(card is NumberCard)
-           {
-               NumberCard numberCard = card as NumberCard;
-               context.cardGameManager.StartCoroutine(context.cardGameManager.WaitForSeconds(() => context.cardGameManager.AdvanceTurn(), 1.5f));
-           }
-           else
-           {
-               UIManager.Instance.ShowMessage("You draw a bomb card");
-           }
+            player.drawOpponentCard.EnableExpressionSwitcher();
+            CardBase card = player.drawOpponentCard.DrawCard();
+            player.drawOpponentCard.DisableExpressionSwitcher();
+            if (card is NumberCard)
+            {
+                NumberCard numberCard = card as NumberCard;
+                context.cardGameManager.StartCoroutine(context.cardGameManager.WaitForSeconds(() => context.cardGameManager.AdvanceTurn(), 1.5f));
+            }
+            else
+            {
+                CameraController.Instance.ShakeCamera();
+                UIManager.Instance.ShowMessage("You draw a bomb card!");
+                context.cardGameManager.StartCoroutine(context.cardGameManager.WaitForSeconds(() =>player.Hurt(), 1f));
+                context.cardGameManager.StartCoroutine(context.cardGameManager.WaitForSeconds(() => context.cardGameManager.Reset(), 1.5f));
+            }
         }
     }
 
