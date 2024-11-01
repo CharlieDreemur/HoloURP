@@ -2,44 +2,46 @@ using UnityEngine;
 
 
 [System.Serializable]
-public class NumberCard: CardBase
+public class NumberCard : CardBase
 {
     [SerializeField]
-    public int Number = 1; //card number will be in the range of 1 to 4
+    public int Number = 2; //card number will be in the range of 2 to 5
 
-    protected ICardEffect cardEffect;
     public NumberCard(int cardNumber)
     {
         this.Number = cardNumber;
         this.description = $"Number Card {cardNumber}";
     }
-    public NumberCard(int cardNumber, string description, ICardEffect effect)
+    public NumberCard(int cardNumber, string description)
     {
         this.Number = cardNumber;
         this.description = description;
-        this.cardEffect = effect;
     }
-
 
     public bool LargerThan(NumberCard other)
     {
-        return this.Number > other.Number;
+        return LargerThan(other.Number);
     }
 
-    public override void Use()
+    public bool LargerThan(int other)
     {
-        Debug.Log($"{Number} used: {description}");
-        cardEffect.ApplyEffect();
+        return this.Number >= other;
+    }
+
+
+    public override void OnUse()
+    {
+        //Debug.Log($"{Number} used: {description}");
     }
 
 
     public override void OnDraw()
     {
-        Debug.Log($"{Number} was drawn.");
+        //Debug.Log($"{Number} was drawn.");
     }
-    public override void OnDiscard()
+    public override void OnRemove()
     {
-        Debug.Log($"{Number} was discarded.");
+        //Debug.Log($"{Number} was discarded.");
     }
-    
+
 }

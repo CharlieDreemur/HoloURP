@@ -142,10 +142,9 @@
     <waitProcessExitting>false</waitProcessExitting>
     <pmxAssetPath>Assets/Resources/Model/Gura/GawrGura.pmx</pmxAssetPath>
     <vmdAssetPathList>
-      <string>Assets/Resources/Animation/VMD/Gura_Idle_V3.vmd</string>
-      <string>Assets/Resources/Animation/VMD/Gura_Idle_Card_V1.vmd</string>
+      <string>Assets/Resources/Animation/VMD/Gura_blink_animation.vmd</string>
     </vmdAssetPathList>
-    <fbxOutputPath>Assets/Resources/Model/Gura_Idle_v3.fbx</fbxOutputPath>
+    <fbxOutputPath>Assets/Resources/Model/Gura_blink_v2.fbx</fbxOutputPath>
     <bulletPhysicsVersion>_275</bulletPhysicsVersion>
     <useWineFlag>false</useWineFlag>
     <wine>Manual</wine>

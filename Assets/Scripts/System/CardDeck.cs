@@ -13,7 +13,6 @@ public class CardDeck : MonoBehaviour
     [SerializeReference]
     public List<CardBase> cardDecks;
     [SerializeField]
-    private System.Random rng = new System.Random(0);
     public const int MAX_CARD_NUMBER = 4;
     public UnityEvent DrawCardEvent;
     public UnityEvent<PlayerBase, int, UnityAction> DrawCardAnimationEvent;
@@ -58,39 +57,22 @@ public class CardDeck : MonoBehaviour
             return null;
         }
 
-        List<CardBase> cards = new List<CardBase>
-        {
-            new BombCard(rng)
-        };
+        List<CardBase> cards = new List<CardBase>();
 
-        int numberedCardCount = MaxSize - 1; // Subtract 1 for the bomb card
-
-        // Distribute the numbered cards evenly between 1 and a
-        for (int i = 0; i < numberedCardCount; i++)
+        // Distribute the numbered cards evenly between 2 and a
+        for (int i = 0; i < MaxSize; i++)
         {
-            int cardNumber = (i % MAX_CARD_NUMBER) + 1; // Cycles through numbers 1 to a
+            int cardNumber = (i % MAX_CARD_NUMBER) + 2; // Cycles through numbers 2 to a
             NumberCard card = new NumberCard(cardNumber);
             cards.Add(card);
         }
 
         // Shuffle the deck randomly
-        ShuffleDeck(cards);
+        CardsUtils.Shuffle(ref cards);
 
         return cards;
     }
 
-    // Method to shuffle the deck
-    private void ShuffleDeck(List<CardBase> cards)
-    {
-        int n = cards.Count;
-        while (n > 1)
-        {
-            n--;
-            int k = rng.Next(n + 1);
-            (cards[n], cards[k]) = (cards[k], cards[n]); // Swap the cards at indices n and k
-        }
-        Debug.Log("Deck shuffled");
-    }
     /// <summary>
     /// Draw n cards from the deck.
     /// </summary>

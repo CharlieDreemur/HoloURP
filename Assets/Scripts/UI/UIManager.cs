@@ -7,9 +7,9 @@ using UnityEngine.UI;
 public class UIManager : MonoBehaviour
 {
     public static UIManager Instance;
-    public UnityEvent OnShowTurnText = new UnityEvent();
     public TextIndicator turnIndicator;
     public TextIndicator messageIndicator;
+    public GameObject holdCircle;
     private void Awake()
     {
         if (Instance == null)
@@ -27,7 +27,6 @@ public class UIManager : MonoBehaviour
     }
     public void ShowTurnText()
     {
-        OnShowTurnText?.Invoke();
         turnIndicator.AnimateText("Your Turn");
     }
 

@@ -15,7 +15,6 @@ public class PlayerTurnState : IGameState
     private readonly HideShowCardCommand _hideShowCardCommand = new HideShowCardCommand();
     private readonly NavigateLeftCommand _navigateLeftCommand = new NavigateLeftCommand();
     private readonly NavigateRightCommand _navigateRightCommand = new NavigateRightCommand();
-    
     public PlayerTurnState(CardGameManager cardGameManager, PlayerContext playerInfo)
     {
         this._cardGameManager = cardGameManager;
@@ -27,19 +26,41 @@ public class PlayerTurnState : IGameState
 
     public void Enter()
     {
-        Debug.Log("Player's Turn Started");
         UIManager.Instance.ShowTurnText();
+        UIManager.Instance.holdCircle.gameObject.SetActive(true);
         //wait for 1 s
-        _cardGameManager.StartCoroutine(DelayInit(1f));
+        _cardGameManager.StartCoroutine(_cardGameManager.WaitForSeconds(() =>
+        {
+            _controls.Player.Enable();
+            player.handZoneVisual.ShowHand();
+        }, 1f));
+        HintLose();
     }
 
-    private IEnumerator DelayInit(float seconds)
+    public void PunishOpponent(PlayerBase opponent)
     {
-        yield return new WaitForSeconds(seconds);
-        _controls.Enable();
-        player.handZoneVisual.ShowHand();
+        UIManager.Instance.ShowMessage("You Lose, draw one card from your opponent");
+        _controls.Player.NavigateLeft.Enable();
+        _controls.Player.NavigateRight.Enable();
+        _controls.Player.PlayCard.Enable();
     }
-
+    private bool HintLose()
+    {
+        if (player.playZone.LastCardInfo == null)
+        {
+            return false;
+        }
+        if (player.HasLargerCard(player.playZone.LastCardInfo.card))
+        {
+            return false;
+        }
+        else
+        {
+            UIManager.Instance.ShowMessage("You don't have any card that is equal or larger than the last card");
+            _cardGameManager.StartCoroutine(_cardGameManager.WaitForSeconds(() => UIManager.Instance.ShowMessage("Hold F to end your turn"), 2f));
+            return true;
+        }
+    }
     public void InitKeyCommandMap()
     {
         _controls.Player.DrawCard.performed += ctx => _drawCardCommand.Execute(playerInfo);
@@ -50,13 +71,10 @@ public class PlayerTurnState : IGameState
         _controls.Player.NavigateRight.performed += ctx => _navigateRightCommand.Execute(playerInfo);
     }
 
-    public void Execute()
-    {
-        //Debug.Log("Player's Turn Ongoing");
-    }
     public void Exit()
     {
         Debug.Log("Player's Turn Ended");
-        _controls.Disable();
+        UIManager.Instance.holdCircle.gameObject.SetActive(false);
+        _controls.Player.Disable();
     }
 }

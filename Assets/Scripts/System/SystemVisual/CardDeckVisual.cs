@@ -47,10 +47,10 @@ public class CardDeckVisual : MonoBehaviour
         float startOffset = -totalWidth / 2;
         for (int i = 0; i < n; i++)
         {
-            GameObject topCard = _cardModels[_cardModels.Count - 1];
+            GameObject topCard = _cardModels[0];
             //Debug.Log("Drawing card from deck:" + topCard);
-            _cardModels.RemoveAt(_cardModels.Count - 1);
-            Debug.Log("Player hand transform:" + player._handTransform);
+            _cardModels.RemoveAt(0);
+            //Debug.Log("Player hand transform:" + player._handTransform);
             Vector3 targetPosition = player._handTransform.position + new Vector3(startOffset + (i * _drawCardHorizontalSpacing), 0, 0);
             Sequence drawSequence = DOTween.Sequence();
             drawSequence.Append(topCard.transform.DOMove(targetPosition, _drawDuration).SetEase(Ease.OutCubic));
