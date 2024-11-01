@@ -1870,13 +1870,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 207539345}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.725, z: 0.31}
+  m_LocalRotation: {x: 0.73429763, y: -0.28382322, z: -0.5954132, w: -0.1604201}
+  m_LocalPosition: {x: -0.0659, y: -0.0732, z: 0.0044}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 493230719}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Father: {fileID: 987928562}
+  m_LocalEulerAnglesHint: {x: 215, y: 73, z: 16}
 --- !u!1 &219893180
 GameObject:
   m_ObjectHideFlags: 0
@@ -2803,7 +2803,6 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 142904736}
-  - {fileID: 207539346}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
 --- !u!1 &499367656 stripped
@@ -3062,6 +3061,9 @@ MonoBehaviour:
   cardDeck: {fileID: 2119859123}
   playZone: {fileID: 439035820}
   HealthEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  RemoveCardEvent:
     m_PersistentCalls:
       m_Calls: []
   PlayCardAnimationEvent:
@@ -4940,6 +4942,11 @@ MonoBehaviour:
   boneID: 107
   ikEnabled: 0
   ikWeight: 1
+--- !u!4 &987928562 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -7248907948106527880, guid: 762c941c019a7b24fa3d4b73ef0fd6d0, type: 3}
+  m_PrefabInstance: {fileID: 1812480051}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &998550287 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -2797295083580753822, guid: 762c941c019a7b24fa3d4b73ef0fd6d0, type: 3}
@@ -5037,16 +5044,19 @@ MonoBehaviour:
     playerName: Dreemur
     playerBase: {fileID: 1985906579}
     cardGameManager: {fileID: 0}
+    isDrawOpponent: 0
   - playerType: 1
     playerName: Gura
     playerBase: {fileID: 559348404}
     cardGameManager: {fileID: 0}
+    isDrawOpponent: 0
   turnCount: 0
   currentPlayerInfo:
     playerType: 0
     playerName: 
     playerBase: {fileID: 0}
     cardGameManager: {fileID: 0}
+    isDrawOpponent: 0
   playZone: {fileID: 439035820}
 --- !u!4 &1029666926
 Transform:
@@ -7213,7 +7223,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: -7248907948106527880, guid: 762c941c019a7b24fa3d4b73ef0fd6d0, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 207539346}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 762c941c019a7b24fa3d4b73ef0fd6d0, type: 3}
       insertIndex: -1
@@ -8337,6 +8350,7 @@ GameObject:
   - component: {fileID: 1985906577}
   - component: {fileID: 1985906578}
   - component: {fileID: 1985906579}
+  - component: {fileID: 1985906580}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -8414,6 +8428,9 @@ MonoBehaviour:
   HealthEvent:
     m_PersistentCalls:
       m_Calls: []
+  RemoveCardEvent:
+    m_PersistentCalls:
+      m_Calls: []
   PlayCardAnimationEvent:
     m_PersistentCalls:
       m_Calls: []
@@ -8421,9 +8438,28 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   handZoneVisual: {fileID: 1985906578}
+  drawOpponentCard: {fileID: 1985906580}
   references:
     version: 2
     RefIds: []
+--- !u!114 &1985906580
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1985906576}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d1e5453228bb47d4a9d84f3bf2ba2999, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  aiPlayer: {fileID: 559348404}
+  aiHand: {fileID: 559348405}
+  player: {fileID: 1985906579}
+  playerHandTransform: {fileID: 49204793}
+  _drawCardDuration: 0.5
+  _currentCardIndex: 0
 --- !u!1 &1997184617 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 6877149577737294398, guid: 762c941c019a7b24fa3d4b73ef0fd6d0, type: 3}
@@ -8967,11 +9003,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f3cb997bdaccf47479149979f41e1dc2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OnShowTurnText:
-    m_PersistentCalls:
-      m_Calls: []
   turnIndicator: {fileID: 2052382823}
   messageIndicator: {fileID: 868576142}
+  holdCircle: {fileID: 393689892}
 --- !u!1 &2143759480 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3092719652812085690, guid: 762c941c019a7b24fa3d4b73ef0fd6d0, type: 3}

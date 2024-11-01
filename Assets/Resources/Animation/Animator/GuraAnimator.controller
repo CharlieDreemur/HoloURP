@@ -103,7 +103,7 @@ AnimatorController:
   - serializedVersion: 5
     m_Name: Expression
     m_StateMachine: {fileID: 4871818853735632674}
-    m_Mask: {fileID: 0}
+    m_Mask: {fileID: 31900000, guid: d02378f2ea7a5d948b65eb10c60c9b14, type: 2}
     m_Motions: []
     m_Behaviours: []
     m_BlendingMode: 0
@@ -159,10 +159,10 @@ AnimatorStateMachine:
   m_ChildStates:
   - serializedVersion: 1
     m_State: {fileID: -7104206269015479116}
-    m_Position: {x: 390, y: 170, z: 0}
+    m_Position: {x: 430, y: 190, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 6819581575640813599}
-    m_Position: {x: 350, y: 100, z: 0}
+    m_Position: {x: 280, y: 80, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 6367412368350999795}
     m_Position: {x: 80, y: 190, z: 0}
@@ -225,7 +225,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: 4035d765826f00f42bcc78d5a664e95d, type: 2}
+  m_Motion: {fileID: 0}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 

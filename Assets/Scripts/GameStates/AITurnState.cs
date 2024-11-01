@@ -19,12 +19,14 @@ public class AITurnState : IGameState
         cardGameManager.StartCoroutine(cardGameManager.WaitForSeconds(() => aiPlayer.PlayRandomCard(context), 1.5f));
     }
 
-     public void PunishOpponent(PlayerBase opponent)
+    public void PunishOpponent(PlayerBase opponent)
     {
-
-    }
-    public void Execute()
-    {
+        Debug.Log("AI's Turn PunishOpponent");
+        AIPlayer aiPlayer = (AIPlayer)context.playerBase;
+        CardPlayer cardPlayer = (CardPlayer)opponent;
+        cardPlayer.handZoneVisual.ShowHand();
+        cardGameManager.StartCoroutine(cardGameManager.WaitForSeconds(() => aiPlayer.PunishOpponent(opponent), 1.5f));
+        cardGameManager.StartCoroutine(cardGameManager.WaitForSeconds(() => cardGameManager.AdvanceTurn(), 2f));
     }
 
     public void Exit()

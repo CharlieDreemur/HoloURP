@@ -8,11 +8,10 @@ public class CardVisual : MonoBehaviour
     [Header("Card Settings")]
     [SerializeField]
     private CardSpriteSO cardTextureSO;
-    private Material cardMaterial;
-    private bool isSelected = false;
+    private Material cardFrontMaterial;
     private SpriteRenderer spriteRenderer;
     void Awake(){
-        cardMaterial = GetComponent<SpriteRenderer>().material;
+        cardFrontMaterial = GetComponent<SpriteRenderer>().material;
         spriteRenderer = GetComponent<SpriteRenderer>();
     }
     void Start()
@@ -39,12 +38,12 @@ public class CardVisual : MonoBehaviour
     [ContextMenu("SelectCard")]
     public void SelectCard()
     {
-        cardMaterial.SetFloat("_InnerOutlineThickness", 3f);
+        cardFrontMaterial.SetFloat("_InnerOutlineThickness", 3f);
     }
 
     [ContextMenu("DeselectCard")]
     public void DeselectCard()
     {
-        cardMaterial.SetFloat("_InnerOutlineThickness", 0.0f);
+        cardFrontMaterial.SetFloat("_InnerOutlineThickness", 0.0f);
     }
 }

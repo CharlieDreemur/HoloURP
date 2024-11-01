@@ -2,14 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.Playables;
 public interface IGameState
 {
     void Enter();
-    void PunishOpponent(PlayerBase opponent)
-    {
-
-    }
-    void Execute();
+    void PunishOpponent(PlayerBase opponent) { }
     void Exit();
 }
 
@@ -30,7 +27,7 @@ public class PlayerContext : IContext
     public string playerName;
     public PlayerBase playerBase;
     public CardGameManager cardGameManager;
-    public bool isPunished = false;
+    public bool isDrawOpponent = false;
 }
 
 /// <summary>
@@ -40,6 +37,8 @@ public class CardGameManager : MonoBehaviour
 {
     [SerializeField]
     private List<PlayerContext> players = new List<PlayerContext>();
+    [SerializeField] private List<PlayerContext> turnQueueList = new List<PlayerContext>();
+
     private Queue<PlayerContext> turnQueue = new Queue<PlayerContext>();
     [SerializeField]
     private int turnCount = 0;
@@ -47,6 +46,8 @@ public class CardGameManager : MonoBehaviour
     private PlayerContext currentPlayerInfo;
     [SerializeField]
     private PlayZone playZone;
+    [SerializeField]
+    private IGameState currentState;
     void Awake()
     {
         for (int i = 0; i < players.Count; i++)
@@ -65,6 +66,7 @@ public class CardGameManager : MonoBehaviour
             foreach (var player in players)
             {
                 turnQueue.Enqueue(player);
+                turnQueueList.Add(player);
             }
             AdvanceTurn();
         }
@@ -74,7 +76,6 @@ public class CardGameManager : MonoBehaviour
         }
     }
 
-    private IGameState currentState;
     public void SetState(IGameState newState)
     {
         currentState?.Exit();
@@ -84,12 +85,15 @@ public class CardGameManager : MonoBehaviour
 
     public void EndTurn()
     {
+
+        currentState.Exit();
         //Determine the winner
-        PunishPlayer(turnQueue.Peek(), currentPlayerInfo);
+        PunishPlayer(currentPlayerInfo, turnQueue.Peek());
     }
 
     public void AdvanceTurn()
     {
+        currentPlayerInfo.isDrawOpponent = false;
         playZone.AddCardsIntoDeck();
         playZone.LastCardInfo = null;
         turnCount++;
@@ -97,6 +101,7 @@ public class CardGameManager : MonoBehaviour
         {
             foreach (var player in players)
             {
+
                 player.playerBase.DrawCards(3);
             }
             AdvanceRound();
@@ -106,20 +111,18 @@ public class CardGameManager : MonoBehaviour
     }
     public void PunishPlayer(PlayerContext winner, PlayerContext loser)
     {
-        Debug.Log("Winner: " + winner.playerBase.name + " Loser: " + loser.playerBase.name);
-        PlayerContext currentPlayer = turnQueue.Dequeue();
-        currentPlayerInfo = currentPlayer;
-        turnQueue.Enqueue(currentPlayer);
-        // Create a state for the current player
-        IGameState playerTurnState = StateFactory.CreateState(this, currentPlayer);
+        winner.isDrawOpponent = true;
+        IGameState playerTurnState = StateFactory.CreateState(this, winner);
         playerTurnState.PunishOpponent(loser.playerBase);
     }
     public void AdvanceRound()
     {
         // Rotate to the next player in the queue
         PlayerContext currentPlayer = turnQueue.Dequeue();
+        turnQueueList.Remove(currentPlayer);
         currentPlayerInfo = currentPlayer;
         turnQueue.Enqueue(currentPlayer);
+        turnQueueList.Add(currentPlayer);
         // Create a state for the current player
         IGameState playerTurnState = StateFactory.CreateState(this, currentPlayer);
         SetState(playerTurnState);

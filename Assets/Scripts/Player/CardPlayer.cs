@@ -8,6 +8,7 @@ public class CardEvent : UnityEvent<List<CardBase>> { }
 public class CardPlayer : PlayerBase
 {
     public HandZoneVisual handZoneVisual;
+    public  DrawOpponentCard drawOpponentCard;
     public bool PlayCard()
     {
         return base.PlayCardAtIndex(handZoneVisual.CurrentCardIndex);

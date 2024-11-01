@@ -27,17 +27,19 @@ public class PlayerTurnState : IGameState
     public void Enter()
     {
         UIManager.Instance.ShowTurnText();
+        UIManager.Instance.holdCircle.gameObject.SetActive(true);
         //wait for 1 s
         _cardGameManager.StartCoroutine(_cardGameManager.WaitForSeconds(() =>
         {
-            _controls.Enable();
+            _controls.Player.Enable();
             player.handZoneVisual.ShowHand();
         }, 1f));
-        _cardGameManager.StartCoroutine(_cardGameManager.WaitForSeconds(() => HintLose(), 6f));
+        _cardGameManager.StartCoroutine(_cardGameManager.WaitForSeconds(() => HintLose(), 2f));
     }
 
     public void PunishOpponent(PlayerBase opponent)
     {
+        UIManager.Instance.ShowMessage("You Lose, draw one card from your opponent");
         _controls.Player.NavigateLeft.Enable();
         _controls.Player.NavigateRight.Enable();
         _controls.Player.PlayCard.Enable();
@@ -68,13 +70,10 @@ public class PlayerTurnState : IGameState
         _controls.Player.NavigateRight.performed += ctx => _navigateRightCommand.Execute(playerInfo);
     }
 
-    public void Execute()
-    {
-        //Debug.Log("Player's Turn Ongoing");
-    }
     public void Exit()
     {
         Debug.Log("Player's Turn Ended");
-        _controls.Disable();
+        UIManager.Instance.holdCircle.gameObject.SetActive(false);
+        _controls.Player.Disable();
     }
 }

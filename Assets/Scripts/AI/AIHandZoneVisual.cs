@@ -43,6 +43,10 @@ public class AIHandZoneVisual : MonoBehaviour
     }
     [SerializeField]
     private int _currentCardIndex = 0;
+    public List<GameObject> CardModels
+    {
+        get { return _cardModels; }
+    }
     [SerializeField]
     private List<GameObject> _cardModels;
     [SerializeField]
@@ -54,12 +58,20 @@ public class AIHandZoneVisual : MonoBehaviour
         _originalPos = _handTransform.position;
         _player.AddCardEvent.AddListener(AddCardVisuals);
         _player.PlayCardAnimationEvent.AddListener(RunPlayCardAnimation);
+        _player.RemoveCardEvent.AddListener(OnRemoveCard);
     }
 
     void Start()
     {
     }
-
+    public void OnRemoveCard(List<int> indexes)
+    {
+        for (int i = 0; i < indexes.Count; i++)
+        {
+            _cardModels.RemoveAt(indexes[i]);
+        }
+        ArrangeCardsInFan();
+    }
     // }
     [ContextMenu("ArrangeCardsInFan")]
     public void ArrangeCardsInFan()
@@ -131,7 +143,7 @@ public class AIHandZoneVisual : MonoBehaviour
         }
         if (_isHandHidden)
         {
-            ShowHand();
+            //ShowHand();
         }
         else
         {
@@ -160,96 +172,17 @@ public class AIHandZoneVisual : MonoBehaviour
             // After throw, add the card to the table's list of cards
             slideSequence.OnComplete(() =>
             {
-                //List<CardBase> cards = new List<CardBase>{
+                Debug.Log("PlayZoneVisual.AddCardModelsToTable");
                 playZoneVisual.AddCardModelsToTable(card);
             });
         }
         if(hideAfterPlay)
         {
-            slideSequence.OnComplete(() =>
-            {
-                HideHand();
-            });
         }
         else{
-            slideSequence.OnComplete(() =>
-            {
-                ArrangeCardsInFan();
-            });
-        }
-    }
-    public void HideShowHand()
-    {
-        if (_isHandHidden)
-        {
-            ShowHand();
-        }
-        else
-        {
-            HideHand();
-        }
-    }
-    public void HideHand(UnityAction callback = null)
-    {
-        if (_isPlaySequence || _isHandHidden)
-        {
-            return;
-        }
-        //Debug.Log("Hiding hand");
-        _isHandHidden = true;
-        _isPlaySequence = true;
-        Sequence hideSequence = DOTween.Sequence();
-        hideSequence.Append(_handTransform.DOMoveY(_originalPos.y - verticalHideOffset, hideDuration).SetEase(Ease.OutCubic));
-        hideSequence.OnComplete(() =>
-        {
-            //Debug.Log("Hiding hand complete");
-            _isPlaySequence = false;
-            callback?.Invoke();
-        });
-    }
-
-    public void ShowHand(UnityAction callback = null)
-    {
-        if (_isPlaySequence || !_isHandHidden)
-        {
-            return;
-        }
-        //Debug.Log("Showing hand");
-        _isHandHidden = false;
-        _isPlaySequence = true;
-        Sequence showSequence = DOTween.Sequence();
-        showSequence.Append(_handTransform.DOMoveY(_originalPos.y, hideDuration).SetEase(Ease.OutCubic));
-        showSequence.OnComplete(() =>
-        {
-            //Debug.Log("Showing hand complete");
             ArrangeCardsInFan();
-            callback?.Invoke();
-
-        });
-    }
-    public void NavigateLeft()
-    {
-        if (_cardModels.Count == 0)
-        {
-            return;
         }
-        //Debug.Log("NavigateLeft");
-        _cardModels[CurrentCardIndex].GetComponent<CardVisual>().DeselectCard();
-        CurrentCardIndex--;
-        _cardModels[CurrentCardIndex].GetComponent<CardVisual>().SelectCard();
-
     }
 
-    public void NavigateRight()
-    {
-        if (_cardModels.Count == 0)
-        {
-            return;
-        }
-        //Debug.Log("NavigateRight");
-        _cardModels[CurrentCardIndex].GetComponent<CardVisual>().DeselectCard();
-        CurrentCardIndex++;
-        _cardModels[CurrentCardIndex].GetComponent<CardVisual>().SelectCard();
-    }
 
 }

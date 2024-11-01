@@ -32,7 +32,7 @@ public abstract class PlayerBase : MonoBehaviour
     //HealthEvent
     public UnityEvent HealthEvent = new UnityEvent();
     public CardEvent AddCardEvent = new CardEvent();
-    public CardEvent RemoveCardEvent = new CardEvent();
+    public UnityEvent<List<int>> RemoveCardEvent = new UnityEvent<List<int>>();
     public UnityEvent<List<int>> PlayCardAnimationEvent = new UnityEvent<List<int>>();
     public UnityEvent<CardBase> PlayCardEvent = new UnityEvent<CardBase>();
     void Awake()
@@ -64,16 +64,19 @@ public abstract class PlayerBase : MonoBehaviour
 
     public void RemoveCard(CardBase card)
     {
+        int index = HandCards.IndexOf(card);
         HandCards.Remove(card);
-        RemoveCardEvent?.Invoke(new List<CardBase> { card });
+        RemoveCardEvent?.Invoke(new List<int> {index});
     }
     public void RemoveCards(List<CardBase> cards)
     {
+        List<int> indexes = new List<int>();
         for (int i = 0; i < cards.Count; i++)
         {
+            indexes.Add(HandCards.IndexOf(cards[i]));
             HandCards.Remove(cards[i]);
         }
-        RemoveCardEvent?.Invoke(cards);
+        RemoveCardEvent?.Invoke(indexes);
     }
     public bool PlayCard(CardBase card)
     {

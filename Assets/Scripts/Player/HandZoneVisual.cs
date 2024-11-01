@@ -44,6 +44,10 @@ public class HandZoneVisual : MonoBehaviour
     }
     [SerializeField]
     private int _currentCardIndex = 0;
+    public List<GameObject> CardModels
+    {
+        get { return _cardModels; }
+    }
     [SerializeField]
     private List<GameObject> _cardModels;
     [SerializeField]
@@ -55,12 +59,21 @@ public class HandZoneVisual : MonoBehaviour
         _originalPos = _handTransform.position;
         _player.AddCardEvent.AddListener(AddCardVisuals);
         _player.PlayCardAnimationEvent.AddListener(RunPlayCardAnimation);
+        _player.RemoveCardEvent.AddListener(OnRemoveCard);
     }
 
     void Start()
     {
     }
 
+    public void OnRemoveCard(List<int> indexes)
+    {
+        for (int i = 0; i < indexes.Count; i++)
+        {
+            _cardModels.RemoveAt(indexes[i]);
+        }
+        ArrangeCardsInFan();
+    }
     // }
     [ContextMenu("ArrangeCardsInFan")]
     public void ArrangeCardsInFan()
@@ -171,10 +184,7 @@ public class HandZoneVisual : MonoBehaviour
             HideHand();
         }
         else{
-            slideSequence.OnComplete(() =>
-            {
-                ArrangeCardsInFan();
-            });
+            ArrangeCardsInFan();
         }
     }
     public void HideShowHand()
