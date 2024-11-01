@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class AudioManager : MonoBehaviour
 {
+    public static AudioManager Instance;
     [System.Serializable]
     public class Sound
     {
@@ -17,6 +18,14 @@ public class AudioManager : MonoBehaviour
 
     void Awake()
     {
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
         // Initialize the dictionary
         soundDictionary = new Dictionary<string, AudioClip>();
         foreach (Sound sound in sounds)
@@ -44,22 +53,28 @@ public class AudioManager : MonoBehaviour
     {
         if (soundDictionary.TryGetValue(soundName, out AudioClip clip))
         {
-            // Find an available audio source in the pool
-            AudioSource availableSource = audioSourcePool.Find(source => !source.isPlaying);
-
-            // If no source is available, create a temporary one-shot audio source
-            if (availableSource == null)
-            {
-                availableSource = gameObject.AddComponent<AudioSource>();
-                availableSource.playOnAwake = false;
-            }
-
-            availableSource.clip = clip;
-            availableSource.Play();
+            Play(clip);
         }
         else
         {
             Debug.LogWarning($"Sound '{soundName}' not found in AudioManager.");
         }
     }
+
+    public void Play(AudioClip clip)
+    {
+        // Find an available audio source in the pool
+        AudioSource availableSource = audioSourcePool.Find(source => !source.isPlaying);
+
+        // If no source is available, create a temporary one-shot audio source
+        if (availableSource == null)
+        {
+            availableSource = gameObject.AddComponent<AudioSource>();
+            availableSource.playOnAwake = false;
+        }
+
+        availableSource.clip = clip;
+        availableSource.Play();
+    }
+
 }

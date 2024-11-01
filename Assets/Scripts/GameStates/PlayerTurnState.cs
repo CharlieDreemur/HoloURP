@@ -39,6 +39,7 @@ public class PlayerTurnState : IGameState
 
     public void DrawOpponent(PlayerBase opponent)
     {
+        AudioManager.Instance.Play("roundlose");
         UIManager.Instance.ShowMessage("You Lose, draw one card from your opponent");
         _controls.Player.NavigateLeft.Enable();
         _controls.Player.NavigateRight.Enable();

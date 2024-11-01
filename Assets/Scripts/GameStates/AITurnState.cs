@@ -21,6 +21,7 @@ public class AITurnState : IGameState
 
     public void DrawOpponent(PlayerBase opponent)
     {
+        AudioManager.Instance.Play("roundwin");
         UIManager.Instance.ShowMessage("You Win! You opponent should draw a card from you!");
         AIPlayer aiPlayer = (AIPlayer)context.playerBase;
         CardPlayer cardPlayer = (CardPlayer)opponent;
