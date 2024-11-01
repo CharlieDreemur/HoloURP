@@ -64,7 +64,7 @@ public class PlayerTurnState : IGameState
     }
     public void InitKeyCommandMap()
     {
-        _controls.Player.DrawCard.performed += ctx => _drawCardCommand.Execute(playerInfo);
+        //_controls.Player.DrawCard.performed += ctx => _drawCardCommand.Execute(playerInfo);
         _controls.Player.PlayCard.performed += ctx => _playCardCommand.Execute(playerInfo);
         _controls.Player.EndTurn.performed += ctx => _endTurnCommand.Execute(playerInfo);
         _controls.Player.HideHandZone.performed += ctx => _hideShowCardCommand.Execute(playerInfo);
@@ -75,7 +75,8 @@ public class PlayerTurnState : IGameState
     public void Exit()
     {
         Debug.Log("Player's Turn Ended");
-        UIManager.Instance.holdCircle.gameObject.SetActive(false);
+        UIManager.Instance.EndTurn();
+
         player.handZoneVisual.HideHand();
         _controls.Player.Disable();
     }

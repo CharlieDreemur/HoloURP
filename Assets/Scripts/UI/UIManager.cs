@@ -13,6 +13,7 @@ public class UIManager : MonoBehaviour
     public GameObject winPanel;
     public GameObject losePanel;
     public InputControls inputControls;
+    public GameObject tutorialPanel;
     private void Awake()
     {
         if (Instance == null)
@@ -31,7 +32,14 @@ public class UIManager : MonoBehaviour
     public void ShowTurnText()
     {
         turnIndicator.AnimateText("Your Turn");
+        tutorialPanel.transform.DOScale(Vector3.one, 0.5f).OnComplete(() => tutorialPanel.SetActive(true));
     }
+    public void EndTurn()
+    {
+        holdCircle.gameObject.SetActive(false);
+        tutorialPanel.transform.DOScale(Vector3.zero, 0.5f).OnComplete(() => tutorialPanel.SetActive(false));
+    }
+
 
     public void WinGame()
     {
@@ -48,7 +56,10 @@ public class UIManager : MonoBehaviour
         losePanel.SetActive(true);
         AudioManager.Instance.Play("gamelose");
         {
-            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+            inputControls.Player.EndTurn.performed += ctx =>
+       {
+           SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+       };
         };
     }
 
