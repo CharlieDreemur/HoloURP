@@ -19,9 +19,9 @@ public class AITurnState : IGameState
         cardGameManager.StartCoroutine(cardGameManager.WaitForSeconds(() => aiPlayer.PlayRandomCard(context), 1.5f));
     }
 
-    public void PunishOpponent(PlayerBase opponent)
+    public void DrawOpponent(PlayerBase opponent)
     {
-        Debug.Log("AI's Turn PunishOpponent");
+        UIManager.Instance.ShowMessage("You Win! You opponent should draw a card from you!");
         AIPlayer aiPlayer = (AIPlayer)context.playerBase;
         CardPlayer cardPlayer = (CardPlayer)opponent;
         cardPlayer.handZoneVisual.ShowHand();
@@ -35,7 +35,7 @@ public class AITurnState : IGameState
             else
             {
                 aiPlayer.Hurt();
-                Debug.Log("AI's Turn PunishOpponent:You draw a bomb card");
+                Debug.Log("AI's Turn DrawOpponent:You draw a bomb card");
                 cardGameManager.StartCoroutine(cardGameManager.WaitForSeconds(() => cardGameManager.Reset(), 2f));
             }
         };

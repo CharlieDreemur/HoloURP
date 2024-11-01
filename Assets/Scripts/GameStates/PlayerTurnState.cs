@@ -37,7 +37,7 @@ public class PlayerTurnState : IGameState
         HintLose();
     }
 
-    public void PunishOpponent(PlayerBase opponent)
+    public void DrawOpponent(PlayerBase opponent)
     {
         UIManager.Instance.ShowMessage("You Lose, draw one card from your opponent");
         _controls.Player.NavigateLeft.Enable();

@@ -7839,6 +7839,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6346220289823629185, guid: 883f2ea4a9848b14eb161f3fda20d58f, type: 3}
+      propertyPath: perTurnDrawCount
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
@@ -12896,6 +12900,7 @@ GameObject:
   - component: {fileID: 2065105464}
   - component: {fileID: 2065105463}
   - component: {fileID: 2065105462}
+  - component: {fileID: 2065105466}
   m_Layer: 0
   m_Name: Main Camera (1)
   m_TagString: MainCamera
@@ -13022,6 +13027,25 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 2, y: 0, z: 0}
+--- !u!114 &2065105466
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2065105461}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bb822816507aedc49ada8bfb939f1559, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  shakeDuration: 0.5
+  shakeStrength: 0.5
+  shakeVibrato: 10
+  rotateDuration: 1
+  rotateAngle: 15
+  scaleDuration: 0.5
+  scaleMultiplier: 1.2
 --- !u!1 &2093773567 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -6925930415933948179, guid: 762c941c019a7b24fa3d4b73ef0fd6d0, type: 3}

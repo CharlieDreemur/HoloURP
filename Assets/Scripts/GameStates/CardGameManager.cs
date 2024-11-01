@@ -6,7 +6,7 @@ using UnityEngine.Playables;
 public interface IGameState
 {
     void Enter();
-    void PunishOpponent(PlayerBase opponent) { }
+    void DrawOpponent(PlayerBase opponent) { }
     void Exit();
 }
 
@@ -52,6 +52,8 @@ public class CardGameManager : MonoBehaviour
     private PlayZone playZone;
     [SerializeField]
     private IGameState currentState;
+    public PlayerTurnState playerTurnState;
+    public AITurnState aiTurnState;
     void Awake()
     {
         if (Instance == null)
@@ -66,6 +68,8 @@ public class CardGameManager : MonoBehaviour
         {
             players[i].cardGameManager = this;
         }
+        playerTurnState = new PlayerTurnState(this, players[0]);
+        aiTurnState = new AITurnState(this, players[1]);
         SetState(new EmptyState());
     }
     void Start()
@@ -143,7 +147,7 @@ public class CardGameManager : MonoBehaviour
     {
         winner.isDrawOpponent = true;
         IGameState playerTurnState = StateFactory.CreateState(this, winner);
-        playerTurnState.PunishOpponent(loser.playerBase);
+        playerTurnState.DrawOpponent(loser.playerBase);
     }
     public void AdvanceRound()
     {
@@ -157,7 +161,10 @@ public class CardGameManager : MonoBehaviour
         IGameState playerTurnState = StateFactory.CreateState(this, currentPlayer);
         SetState(playerTurnState);
     }
-
+    private IGameState GetTurnState(PlayerContext player)
+    {
+        return player.playerType == PlayerType.Player ? playerTurnState : aiTurnState;
+    }
     public IEnumerator WaitForSeconds(UnityAction callback, float seconds)
     {
         yield return new WaitForSeconds(seconds);
@@ -169,13 +176,8 @@ public static class StateFactory
 {
     public static IGameState CreateState(CardGameManager gameManager, PlayerContext player)
     {
-        if (player.playerType == PlayerType.Player)
-        {
-            return new PlayerTurnState(gameManager, player);
-        }
-        else
-        {
-            return new AITurnState(gameManager, player);
-        }
+        return player.playerType == PlayerType.Player 
+            ? gameManager.playerTurnState 
+            : gameManager.aiTurnState;
     }
 }

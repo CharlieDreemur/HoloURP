@@ -4,6 +4,11 @@ using UnityEngine.Events;
 using DG.Tweening;
 public class AIPlayer : PlayerBase
 {
+    void Awake(){
+        DeathEvent.AddListener(() => {
+            UIManager.Instance.ShowMessage("You Win! You save Gura from Corruption!");
+        });
+    }
     public ExpressionSwitcher expression;
     public void PlayRandomCard(PlayerContext context)
     {

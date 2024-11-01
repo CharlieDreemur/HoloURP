@@ -28,6 +28,7 @@ public class PlayCardCommand : ICommand<PlayerContext>
             }
             else
             {
+                CameraController.Instance.ShakeCamera();
                 UIManager.Instance.ShowMessage("You draw a bomb card!");
                 context.cardGameManager.StartCoroutine(context.cardGameManager.WaitForSeconds(() =>player.Hurt(), 1f));
                 context.cardGameManager.StartCoroutine(context.cardGameManager.WaitForSeconds(() => context.cardGameManager.Reset(), 1.5f));

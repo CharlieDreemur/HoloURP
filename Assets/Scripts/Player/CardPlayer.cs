@@ -9,6 +9,11 @@ public class CardPlayer : PlayerBase
 {
     public HandZoneVisual handZoneVisual;
     public  DrawOpponentCard drawOpponentCard;
+    void Awake(){
+        DeathEvent.AddListener(() => {
+            UIManager.Instance.ShowMessage("Gameover!");
+        });
+    }
     public bool PlayCard()
     {
         return base.PlayCardAtIndex(handZoneVisual.CurrentCardIndex);
