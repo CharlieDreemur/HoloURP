@@ -50,7 +50,7 @@ public class CardDeckVisual : MonoBehaviour
             GameObject topCard = _cardModels[0];
             //Debug.Log("Drawing card from deck:" + topCard);
             _cardModels.RemoveAt(0);
-            Debug.Log("Player hand transform:" + player._handTransform);
+            //Debug.Log("Player hand transform:" + player._handTransform);
             Vector3 targetPosition = player._handTransform.position + new Vector3(startOffset + (i * _drawCardHorizontalSpacing), 0, 0);
             Sequence drawSequence = DOTween.Sequence();
             drawSequence.Append(topCard.transform.DOMove(targetPosition, _drawDuration).SetEase(Ease.OutCubic));

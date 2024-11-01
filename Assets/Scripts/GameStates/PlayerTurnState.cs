@@ -15,7 +15,6 @@ public class PlayerTurnState : IGameState
     private readonly HideShowCardCommand _hideShowCardCommand = new HideShowCardCommand();
     private readonly NavigateLeftCommand _navigateLeftCommand = new NavigateLeftCommand();
     private readonly NavigateRightCommand _navigateRightCommand = new NavigateRightCommand();
-
     public PlayerTurnState(CardGameManager cardGameManager, PlayerContext playerInfo)
     {
         this._cardGameManager = cardGameManager;
@@ -39,7 +38,9 @@ public class PlayerTurnState : IGameState
 
     public void PunishOpponent(PlayerBase opponent)
     {
-
+        _controls.Player.NavigateLeft.Enable();
+        _controls.Player.NavigateRight.Enable();
+        _controls.Player.PlayCard.Enable();
     }
     private bool HintLose()
     {

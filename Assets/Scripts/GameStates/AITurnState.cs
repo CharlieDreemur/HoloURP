@@ -19,6 +19,10 @@ public class AITurnState : IGameState
         cardGameManager.StartCoroutine(cardGameManager.WaitForSeconds(() => aiPlayer.PlayRandomCard(context), 1.5f));
     }
 
+     public void PunishOpponent(PlayerBase opponent)
+    {
+
+    }
     public void Execute()
     {
     }

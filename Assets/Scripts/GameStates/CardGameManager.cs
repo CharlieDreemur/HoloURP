@@ -5,6 +5,10 @@ using UnityEngine.Events;
 public interface IGameState
 {
     void Enter();
+    void PunishOpponent(PlayerBase opponent)
+    {
+
+    }
     void Execute();
     void Exit();
 }
@@ -26,6 +30,7 @@ public class PlayerContext : IContext
     public string playerName;
     public PlayerBase playerBase;
     public CardGameManager cardGameManager;
+    public bool isPunished = false;
 }
 
 /// <summary>
@@ -102,7 +107,12 @@ public class CardGameManager : MonoBehaviour
     public void PunishPlayer(PlayerContext winner, PlayerContext loser)
     {
         Debug.Log("Winner: " + winner.playerBase.name + " Loser: " + loser.playerBase.name);
-        winner.playerBase.PunishOpponent(loser.playerBase);
+        PlayerContext currentPlayer = turnQueue.Dequeue();
+        currentPlayerInfo = currentPlayer;
+        turnQueue.Enqueue(currentPlayer);
+        // Create a state for the current player
+        IGameState playerTurnState = StateFactory.CreateState(this, currentPlayer);
+        playerTurnState.PunishOpponent(loser.playerBase);
     }
     public void AdvanceRound()
     {

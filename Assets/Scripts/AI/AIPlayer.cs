@@ -39,10 +39,8 @@ public class AIPlayer : PlayerBase
         if (opponent.HandCards.Count > 0)
         {
             CardBase card = opponent.HandCards[0];
-            opponent.HandCards.Remove(card);
-            HandCards.Add(card);
-            opponent.RemoveCardEvent?.Invoke(new List<CardBase> { card });
-            AddCardEvent?.Invoke(new List<CardBase> { card });
+            opponent.RemoveCard(card);
+            AddCard(card);
         }
         else
         {

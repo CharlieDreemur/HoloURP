@@ -48,7 +48,11 @@ public abstract class PlayerBase : MonoBehaviour
     {
         cardDeck.DrawCards(this, n);
     }
-
+    public void AddCard(CardBase card)
+    {
+        HandCards.Add(card);
+        AddCardEvent?.Invoke(new List<CardBase> { card });
+    }
     public void AddCards(List<CardBase> cards)
     {
         for (int i = 0; i < cards.Count; i++)
@@ -58,7 +62,11 @@ public abstract class PlayerBase : MonoBehaviour
         AddCardEvent?.Invoke(cards);
     }
 
-
+    public void RemoveCard(CardBase card)
+    {
+        HandCards.Remove(card);
+        RemoveCardEvent?.Invoke(new List<CardBase> { card });
+    }
     public void RemoveCards(List<CardBase> cards)
     {
         for (int i = 0; i < cards.Count; i++)
