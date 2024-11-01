@@ -6,7 +6,7 @@ using UnityEngine.Playables;
 public interface IGameState
 {
     void Enter();
-    void PunishOpponent(PlayerBase opponent) { }
+    void DrawOpponent(PlayerBase opponent) { }
     void Exit();
 }
 
@@ -35,6 +35,10 @@ public class PlayerContext : IContext
 /// </summary>
 public class CardGameManager : MonoBehaviour
 {
+    public static CardGameManager Instance;
+    public System.Random RNG = new System.Random();
+    [SerializeField]
+    private int perTurnDrawCount = 2;
     [SerializeField]
     private List<PlayerContext> players = new List<PlayerContext>();
     [SerializeField] private List<PlayerContext> turnQueueList = new List<PlayerContext>();
@@ -48,12 +52,24 @@ public class CardGameManager : MonoBehaviour
     private PlayZone playZone;
     [SerializeField]
     private IGameState currentState;
+    public PlayerTurnState playerTurnState;
+    public AITurnState aiTurnState;
     void Awake()
     {
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Destroy(this);
+        }
         for (int i = 0; i < players.Count; i++)
         {
             players[i].cardGameManager = this;
         }
+        playerTurnState = new PlayerTurnState(this, players[0]);
+        aiTurnState = new AITurnState(this, players[1]);
         SetState(new EmptyState());
     }
     void Start()
@@ -68,13 +84,14 @@ public class CardGameManager : MonoBehaviour
                 turnQueue.Enqueue(player);
                 turnQueueList.Add(player);
             }
-            AdvanceTurn();
+            AdvanceRound();
         }
         else
         {
             Debug.LogError("Not enough players defined in CardGameManager.");
         }
     }
+
 
     public void SetState(IGameState newState)
     {
@@ -90,30 +107,47 @@ public class CardGameManager : MonoBehaviour
         //Determine the winner
         PunishPlayer(currentPlayerInfo, turnQueue.Peek());
     }
+    public void Reset()
+    {
+        currentPlayerInfo.isDrawOpponent = false;
+        playZone.AddCardsIntoDeck();
+        playZone.LastCardInfo = null;
+        foreach (var player in players)
+        {
+            player.playerBase.Clear();
+        }
+        UnityAction callback = () =>
+        {
 
+            AdvanceRound();
+        };
+        StartCoroutine(WaitForSeconds(callback, 1f));
+    }
     public void AdvanceTurn()
     {
         currentPlayerInfo.isDrawOpponent = false;
         playZone.AddCardsIntoDeck();
         playZone.LastCardInfo = null;
-        turnCount++;
         UnityAction callback = () =>
         {
-            foreach (var player in players)
+            if (turnCount > 0)
             {
+                foreach (var player in players)
+                {
 
-                player.playerBase.DrawCards(3);
+                    player.playerBase.DrawCards(perTurnDrawCount);
+                }
             }
             AdvanceRound();
         };
         StartCoroutine(WaitForSeconds(callback, 1f));
-
+        turnCount++;
     }
     public void PunishPlayer(PlayerContext winner, PlayerContext loser)
     {
         winner.isDrawOpponent = true;
         IGameState playerTurnState = StateFactory.CreateState(this, winner);
-        playerTurnState.PunishOpponent(loser.playerBase);
+        playerTurnState.DrawOpponent(loser.playerBase);
     }
     public void AdvanceRound()
     {
@@ -127,7 +161,10 @@ public class CardGameManager : MonoBehaviour
         IGameState playerTurnState = StateFactory.CreateState(this, currentPlayer);
         SetState(playerTurnState);
     }
-
+    private IGameState GetTurnState(PlayerContext player)
+    {
+        return player.playerType == PlayerType.Player ? playerTurnState : aiTurnState;
+    }
     public IEnumerator WaitForSeconds(UnityAction callback, float seconds)
     {
         yield return new WaitForSeconds(seconds);
@@ -139,13 +176,8 @@ public static class StateFactory
 {
     public static IGameState CreateState(CardGameManager gameManager, PlayerContext player)
     {
-        if (player.playerType == PlayerType.Player)
-        {
-            return new PlayerTurnState(gameManager, player);
-        }
-        else
-        {
-            return new AITurnState(gameManager, player);
-        }
+        return player.playerType == PlayerType.Player 
+            ? gameManager.playerTurnState 
+            : gameManager.aiTurnState;
     }
 }

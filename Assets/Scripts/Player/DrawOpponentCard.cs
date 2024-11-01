@@ -1,5 +1,6 @@
 using UnityEngine;
 using DG.Tweening;
+using System.Collections;
 public class DrawOpponentCard : MonoBehaviour
 {
     public AIPlayer aiPlayer;
@@ -21,8 +22,21 @@ public class DrawOpponentCard : MonoBehaviour
         }
     }
     [SerializeField]
+    private int _previousIndex = 0;
+    [SerializeField]
+    private float timeSinceLastChange = 0f;
+    [SerializeField]
     private int _currentCardIndex = 0;
-
+    [SerializeField]
+    private float switchDelay = 1.0f;
+    public void EnableExpressionSwitcher()
+    {
+        StartCoroutine(CheckIndexChange());
+    }
+    public void DisableExpressionSwitcher()
+    {
+        StopCoroutine(CheckIndexChange());
+    }
     public CardBase DrawCard()
     {
         CardBase card = aiPlayer.HandCards[CurrentCardIndex];
@@ -60,5 +74,28 @@ public class DrawOpponentCard : MonoBehaviour
         aiHand.CardModels[CurrentCardIndex].GetComponent<CardBackVisual>().DeselectCard();
         CurrentCardIndex++;
         aiHand.CardModels[CurrentCardIndex].GetComponent<CardBackVisual>().SelectCard();
+    }
+
+    private IEnumerator CheckIndexChange()
+    {
+        while (true)
+        {
+            if (CurrentCardIndex == _previousIndex)
+            {
+                timeSinceLastChange += Time.deltaTime;
+                if (timeSinceLastChange >= switchDelay)
+                {
+                    aiPlayer.SwitchExpression(CurrentCardIndex);
+                    timeSinceLastChange = 0f;
+                }
+            }
+            else
+            {
+                timeSinceLastChange = 0f;
+                _previousIndex = CurrentCardIndex;
+            }
+
+            yield return null; // Wait until the next frame
+        }
     }
 }

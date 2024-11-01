@@ -7,7 +7,7 @@ public class EmptyState : IGameState
 
     }
 
-    public void PunishOpponent(PlayerBase opponent){}
+    public void DrawOpponent(PlayerBase opponent){}
     public void Exit()
     {
 

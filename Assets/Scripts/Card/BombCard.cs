@@ -2,16 +2,12 @@ using UnityEngine;
 [System.Serializable]
 public class BombCard : CardBase
 {
-    public int CountDown = 0;
-    public const int MAX_COUNTDOWN = 5;
-    public const int MIN_COUNTDOWN = 3;
-    public BombCard(System.Random rng)
+    public BombCard()
     {
         //randomly set countdown between min and max
-        CountDown = rng.Next(MIN_COUNTDOWN, MAX_COUNTDOWN + 1);
         this.description = $"Bomb Card!";
     }
-    public override void OnDiscard()
+    public override void OnRemove()
     {
         Debug.Log($"Bomb Card discarded: {description}");
     }
@@ -21,7 +17,7 @@ public class BombCard : CardBase
         Debug.Log($"Bomb Card drawn: {description}");
     }
 
-    public override void Use()
+    public override void OnUse()
     {
         Debug.Log($"Bomb Card used: {description}");
     }

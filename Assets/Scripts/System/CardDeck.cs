@@ -13,7 +13,6 @@ public class CardDeck : MonoBehaviour
     [SerializeReference]
     public List<CardBase> cardDecks;
     [SerializeField]
-    private System.Random rng = new System.Random(0);
     public const int MAX_CARD_NUMBER = 4;
     public UnityEvent DrawCardEvent;
     public UnityEvent<PlayerBase, int, UnityAction> DrawCardAnimationEvent;
@@ -69,23 +68,11 @@ public class CardDeck : MonoBehaviour
         }
 
         // Shuffle the deck randomly
-        ShuffleDeck(cards);
+        CardsUtils.Shuffle(ref cards);
 
         return cards;
     }
 
-    // Method to shuffle the deck
-    private void ShuffleDeck(List<CardBase> cards)
-    {
-        int n = cards.Count;
-        while (n > 1)
-        {
-            n--;
-            int k = rng.Next(n + 1);
-            (cards[n], cards[k]) = (cards[k], cards[n]); // Swap the cards at indices n and k
-        }
-        Debug.Log("Deck shuffled");
-    }
     /// <summary>
     /// Draw n cards from the deck.
     /// </summary>
