@@ -14598,8 +14598,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   HandCards: []
   handZoneVisual: {fileID: 582314182408338826}
-  _maxHealth: 3
-  _currHealth: 3
+  _maxHealth: 2
+  _currHealth: 2
   _handTransform: {fileID: 1708547117}
   cardDeck: {fileID: 3074649234656268195}
   playZone: {fileID: 2693123095644593192}
@@ -14715,8 +14715,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   HandCards: []
   handZoneVisual: {fileID: 6773808430331229361}
-  _maxHealth: 3
-  _currHealth: 3
+  _maxHealth: 2
+  _currHealth: 2
   _handTransform: {fileID: 2266177913286043175}
   cardDeck: {fileID: 3074649234656268195}
   playZone: {fileID: 2693123095644593192}

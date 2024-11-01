@@ -134,8 +134,11 @@ public class CardGameManager : MonoBehaviour
             {
                 foreach (var player in players)
                 {
-
-                    player.playerBase.DrawCards(perTurnDrawCount);
+                    //only draw if card <=3
+                    if (player.playerBase.HandCards.Count <= 4)
+                    {
+                        player.playerBase.DrawCards(perTurnDrawCount);
+                    }
                 }
             }
             AdvanceRound();

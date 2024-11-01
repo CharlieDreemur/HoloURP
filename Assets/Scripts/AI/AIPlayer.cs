@@ -92,7 +92,7 @@ public class AIPlayer : PlayerBase
                 else
                 {
                     Hurt();
-                    StartCoroutine(WaitAndDo(1f, ()=>CardGameManager.Instance.AdvanceTurn()));
+                    StartCoroutine(WaitAndDo(1f, ()=>CardGameManager.Instance.Reset()));
                 }
             };
             StartCoroutine(WaitAndDo(4.95f, finishCallback));
