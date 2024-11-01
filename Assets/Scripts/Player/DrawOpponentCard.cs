@@ -29,14 +29,6 @@ public class DrawOpponentCard : MonoBehaviour
     private int _currentCardIndex = 0;
     [SerializeField]
     private float switchDelay = 1.0f;
-    public void EnableExpressionSwitcher()
-    {
-        StartCoroutine(CheckIndexChange());
-    }
-    public void DisableExpressionSwitcher()
-    {
-        StopCoroutine(CheckIndexChange());
-    }
     public CardBase DrawCard()
     {
         AudioManager.Instance.Play("carddraw");
@@ -62,7 +54,7 @@ public class DrawOpponentCard : MonoBehaviour
         aiHand.CardModels[CurrentCardIndex].GetComponent<CardBackVisual>().DeselectCard();
         CurrentCardIndex--;
         aiHand.CardModels[CurrentCardIndex].GetComponent<CardBackVisual>().SelectCard();
-
+        ExpressionReflectCard();
     }
 
     public void NavigateLeft()
@@ -75,28 +67,16 @@ public class DrawOpponentCard : MonoBehaviour
         aiHand.CardModels[CurrentCardIndex].GetComponent<CardBackVisual>().DeselectCard();
         CurrentCardIndex++;
         aiHand.CardModels[CurrentCardIndex].GetComponent<CardBackVisual>().SelectCard();
+        ExpressionReflectCard();
     }
-
-    private IEnumerator CheckIndexChange()
-    {
-        while (true)
-        {
-            if (CurrentCardIndex == _previousIndex)
-            {
-                timeSinceLastChange += Time.deltaTime;
-                if (timeSinceLastChange >= switchDelay)
-                {
-                    aiPlayer.SwitchExpression(CurrentCardIndex);
-                    timeSinceLastChange = 0f;
-                }
-            }
-            else
-            {
-                timeSinceLastChange = 0f;
-                _previousIndex = CurrentCardIndex;
-            }
-
-            yield return null; // Wait until the next frame
+    
+    private void ExpressionReflectCard(){
+        //if the current selecting card is bomb card, switch to the happy expression, else switch to the sad expression
+        if(aiPlayer.HandCards[CurrentCardIndex] is BombCard){
+            AnimationController.Instance.SetExpression(ExpressionType.Happy, false);
+        }
+        else{
+            AnimationController.Instance.SetExpression(ExpressionType.Thinking, false);
         }
     }
 }

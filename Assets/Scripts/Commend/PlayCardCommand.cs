@@ -18,9 +18,7 @@ public class PlayCardCommand : ICommand<PlayerContext>
         }
         else
         {
-            player.drawOpponentCard.EnableExpressionSwitcher();
             CardBase card = player.drawOpponentCard.DrawCard();
-            player.drawOpponentCard.DisableExpressionSwitcher();
             if (card is NumberCard)
             {
                 NumberCard numberCard = card as NumberCard;
@@ -29,6 +27,7 @@ public class PlayCardCommand : ICommand<PlayerContext>
             else
             {
                 CameraController.Instance.ShakeCamera();
+                AudioManager.Instance.Play("corrupt");
                 UIManager.Instance.ShowMessage("You draw a bomb card!");
                 context.cardGameManager.StartCoroutine(context.cardGameManager.WaitForSeconds(() =>player.Hurt(), 1f));
                 context.cardGameManager.StartCoroutine(context.cardGameManager.WaitForSeconds(() => context.cardGameManager.Reset(), 1.5f));

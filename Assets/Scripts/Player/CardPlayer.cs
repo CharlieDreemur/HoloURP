@@ -7,11 +7,10 @@ using UnityEngine.Events;
 public class CardEvent : UnityEvent<List<CardBase>> { }
 public class CardPlayer : PlayerBase
 {
-    public HandZoneVisual handZoneVisual;
     public  DrawOpponentCard drawOpponentCard;
     void Awake(){
         DeathEvent.AddListener(() => {
-            UIManager.Instance.ShowMessage("Gameover!");
+            UIManager.Instance.LoseGame();
         });
     }
     public bool PlayCard()

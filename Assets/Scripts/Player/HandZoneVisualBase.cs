@@ -20,7 +20,7 @@ public abstract class HandZoneVisualBase : MonoBehaviour
 
     [Header("Animation Settings")]
     [SerializeField]
-    private bool hideAfterPlay = true;
+    protected bool hideAfterPlay = true;
     public float arrangeDuration = 0.5f; // Duration of the fan arrangement animation
     public float playDuration = 0.8f; // Duration of the throw animation
     public float verticalHideOffset = 0.5f; // Vertical offset when hiding the hand
@@ -165,7 +165,7 @@ public abstract class HandZoneVisualBase : MonoBehaviour
     }
 
     // Method to play a card and move it to the table with a throw effect
-    private void RunPlayCardAnimation(List<int> indexes)
+    protected virtual void RunPlayCardAnimation(List<int> indexes)
     {
         Sequence slideSequence = DOTween.Sequence();
         for (int i = 0; i < indexes.Count; i++)
@@ -186,7 +186,7 @@ public abstract class HandZoneVisualBase : MonoBehaviour
             slideSequence.OnComplete(() =>
             {
                 //List<CardBase> cards = new List<CardBase>{
-                playZoneVisual.AddCardModelsToTable(card);
+                playZoneVisual.AddCardModelToTable(card);
             });
         }
         if (hideAfterPlay)

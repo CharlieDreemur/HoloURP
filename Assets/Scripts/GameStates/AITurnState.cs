@@ -16,7 +16,7 @@ public class AITurnState : IGameState
     {
         Debug.Log("AI's Turn Started");
         AIPlayer aiPlayer = (AIPlayer)context.playerBase;
-        cardGameManager.StartCoroutine(cardGameManager.WaitForSeconds(() => aiPlayer.PlayRandomCard(context), 1.5f));
+        cardGameManager.StartCoroutine(cardGameManager.WaitForSeconds(() => aiPlayer.PlayRandomCard(context), 1f));
     }
 
     public void DrawOpponent(PlayerBase opponent)
@@ -31,13 +31,13 @@ public class AITurnState : IGameState
             CardBase card = aiPlayer.DrawOpponent(opponent);
             if(card is NumberCard)
             {
-                cardGameManager.StartCoroutine(cardGameManager.WaitForSeconds(() => cardGameManager.AdvanceTurn(), 2f));
+                cardGameManager.StartCoroutine(cardGameManager.WaitForSeconds(() => cardGameManager.AdvanceTurn(), 6f));
             }
             else
             {
-                aiPlayer.Hurt();
+                cardGameManager.StartCoroutine(cardGameManager.WaitForSeconds(() => aiPlayer.Hurt(), 6f));
                 Debug.Log("AI's Turn DrawOpponent:You draw a bomb card");
-                cardGameManager.StartCoroutine(cardGameManager.WaitForSeconds(() => cardGameManager.Reset(), 2f));
+                cardGameManager.StartCoroutine(cardGameManager.WaitForSeconds(() => cardGameManager.Reset(), 7f));
             }
         };
         cardGameManager.StartCoroutine(cardGameManager.WaitForSeconds(action, 1.5f));

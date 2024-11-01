@@ -2,7 +2,7 @@ using UnityEngine;
 using TMPro;
 using DG.Tweening;
 using UnityEngine.Events;
-using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 // A singleton class that manages all UI Events
 public class UIManager : MonoBehaviour
 {
@@ -10,6 +10,9 @@ public class UIManager : MonoBehaviour
     public TextIndicator turnIndicator;
     public TextIndicator messageIndicator;
     public GameObject holdCircle;
+    public GameObject winPanel;
+    public GameObject losePanel;
+    public InputControls inputControls;
     private void Awake()
     {
         if (Instance == null)
@@ -29,5 +32,25 @@ public class UIManager : MonoBehaviour
     {
         turnIndicator.AnimateText("Your Turn");
     }
+
+    public void WinGame()
+    {
+        winPanel.SetActive(true);
+        AudioManager.Instance.Play("gamewin");
+        //if hold R, restart the game
+        inputControls.Player.EndTurn.performed += ctx =>
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        };
+    }
+    public void LoseGame()
+    {
+        losePanel.SetActive(true);
+        AudioManager.Instance.Play("gamelose");
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        };
+    }
+
 
 }

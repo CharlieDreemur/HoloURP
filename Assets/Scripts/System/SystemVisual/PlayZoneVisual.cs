@@ -41,12 +41,18 @@ public class PlayZoneVisual : MonoBehaviour
         _LastCardVisual.SetCard(card);
     }
     // Add a card to the table
-    public void AddCardModelsToTable(GameObject card)
+    public void AddCardModelToTable(GameObject card)
     {
         card.transform.SetParent(transform);
         cardModels.Add(card);
     }
-
+    public void AddCardModelsToTable(List<GameObject> cards)
+    {
+        foreach (var card in cards)
+        {
+            AddCardModelToTable(card);
+        }
+    }
     public void PlayAddCardsIntoDeckAnimation(UnityAction callback)
     {
         Debug.Log("PlayAddCardsIntoDeckAnimation");
