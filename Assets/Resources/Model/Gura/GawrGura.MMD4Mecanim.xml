@@ -142,9 +142,9 @@
     <waitProcessExitting>false</waitProcessExitting>
     <pmxAssetPath>Assets/Resources/Model/Gura/GawrGura.pmx</pmxAssetPath>
     <vmdAssetPathList>
-      <string>Assets/Resources/Animation/VMD/Final/Animation/Gura_Take_Card_V3.vmd</string>
+      <string>Assets/Resources/Animation/VMD/Final/Animation/Gura_Play_Card_V4.vmd</string>
     </vmdAssetPathList>
-    <fbxOutputPath>Assets/Resources/Model/Gura_Take3.fbx</fbxOutputPath>
+    <fbxOutputPath>Assets/Resources/Model/Gura_play4.fbx</fbxOutputPath>
     <bulletPhysicsVersion>_275</bulletPhysicsVersion>
     <useWineFlag>false</useWineFlag>
     <wine>Manual</wine>

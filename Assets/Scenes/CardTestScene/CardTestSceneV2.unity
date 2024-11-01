@@ -5050,6 +5050,7 @@ MonoBehaviour:
     playerBase: {fileID: 559348404}
     cardGameManager: {fileID: 0}
     isDrawOpponent: 0
+  turnQueueList: []
   turnCount: 0
   currentPlayerInfo:
     playerType: 0
@@ -7219,6 +7220,38 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9128207215404129817, guid: 762c941c019a7b24fa3d4b73ef0fd6d0, type: 3}
       propertyPath: 'm_BlendShapeWeights.Array.data[5]'
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9128207215404129817, guid: 762c941c019a7b24fa3d4b73ef0fd6d0, type: 3}
+      propertyPath: 'm_BlendShapeWeights.Array.data[63]'
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9128207215404129817, guid: 762c941c019a7b24fa3d4b73ef0fd6d0, type: 3}
+      propertyPath: 'm_BlendShapeWeights.Array.data[64]'
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9128207215404129817, guid: 762c941c019a7b24fa3d4b73ef0fd6d0, type: 3}
+      propertyPath: 'm_BlendShapeWeights.Array.data[65]'
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9128207215404129817, guid: 762c941c019a7b24fa3d4b73ef0fd6d0, type: 3}
+      propertyPath: 'm_BlendShapeWeights.Array.data[66]'
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9128207215404129817, guid: 762c941c019a7b24fa3d4b73ef0fd6d0, type: 3}
+      propertyPath: 'm_BlendShapeWeights.Array.data[67]'
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9128207215404129817, guid: 762c941c019a7b24fa3d4b73ef0fd6d0, type: 3}
+      propertyPath: 'm_BlendShapeWeights.Array.data[68]'
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9128207215404129817, guid: 762c941c019a7b24fa3d4b73ef0fd6d0, type: 3}
+      propertyPath: 'm_BlendShapeWeights.Array.data[69]'
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9128207215404129817, guid: 762c941c019a7b24fa3d4b73ef0fd6d0, type: 3}
+      propertyPath: 'm_BlendShapeWeights.Array.data[71]'
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
