@@ -38,6 +38,7 @@ public class CardDeck : MonoBehaviour
     }
     public void DrawCards(PlayerBase player, int n)
     {
+        AudioManager.Instance.Play("carddraw");
         List<CardBase> drawCards = TryDrawCards(n);
         if (drawCards == null)
         {

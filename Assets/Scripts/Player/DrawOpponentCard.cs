@@ -39,6 +39,7 @@ public class DrawOpponentCard : MonoBehaviour
     }
     public CardBase DrawCard()
     {
+        AudioManager.Instance.Play("carddraw");
         CardBase card = aiPlayer.HandCards[CurrentCardIndex];
         aiHand.CardModels[CurrentCardIndex].GetComponent<CardBackVisual>().DeselectCard();
         GameObject cardModel = aiHand.CardModels[CurrentCardIndex];

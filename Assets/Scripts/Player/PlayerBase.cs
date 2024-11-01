@@ -133,14 +133,17 @@ public abstract class PlayerBase : MonoBehaviour
         if (card is BombCard)
         {
             UIManager.Instance.ShowMessage("You can't play bomb card");
+            AudioManager.Instance.Play("cannotplay");
             return false;
         }
         NumberCard numberCard = card as NumberCard;
         if (!playZone.TryAddCardToPlayZone(this, numberCard))
         {
             UIManager.Instance.ShowMessage("You can't play a smaller card");
+            AudioManager.Instance.Play("cannotplay");
             return false;
         }
+        AudioManager.Instance.Play("cardplace");
         HandCards.Remove(HandCards[index]);
         List<int> indexes = new List<int> { index };
         PlayCardAnimationEvent?.Invoke(indexes);

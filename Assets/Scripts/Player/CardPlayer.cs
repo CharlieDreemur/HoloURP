@@ -25,6 +25,7 @@ public class CardPlayer : PlayerBase
     }
     public override void DrawCards(int n = 1)
     {
+        base.DrawCards(n);
         handZoneVisual.ShowHand();
         cardDeck.DrawCards(this, n);
     }
