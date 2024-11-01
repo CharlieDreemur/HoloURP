@@ -76,6 +76,7 @@ public class PlayerTurnState : IGameState
     {
         Debug.Log("Player's Turn Ended");
         UIManager.Instance.holdCircle.gameObject.SetActive(false);
+        player.handZoneVisual.HideHand();
         _controls.Player.Disable();
     }
 }

@@ -26,6 +26,9 @@ public class AnimationController : MonoBehaviour
     private readonly int neutralExpression = Animator.StringToHash("Neutral");
     private readonly int thinkExpression = Animator.StringToHash("Think");
     public VoiceClipGroupSO voiceClipGroupSO;
+    private Coroutine neutralAudioCoroutine;
+    [SerializeField]
+    private float neutralAudioInterval = 5.0f;
     void Awake()
     {
         if (Instance == null)
@@ -46,8 +49,36 @@ public class AnimationController : MonoBehaviour
             Debug.LogError("Animator component not found.");
             return;
         }
+        StartNeutralAudioCoroutine();
     }
 
+
+
+    private void StartNeutralAudioCoroutine()
+    {
+        if (neutralAudioCoroutine != null)
+        {
+            StopCoroutine(neutralAudioCoroutine);
+        }
+        neutralAudioCoroutine = StartCoroutine(NeutralExpressionAudioCoroutine());
+    }
+
+    private void StopNeutralAudioCoroutine()
+    {
+        if (neutralAudioCoroutine != null)
+        {
+            StopCoroutine(neutralAudioCoroutine);
+            neutralAudioCoroutine = null;
+        }
+    }
+
+    private IEnumerator NeutralExpressionAudioCoroutine()
+    {
+        yield return new WaitForSeconds(neutralAudioInterval);
+
+        // Play neutral expression audio
+        PlayAudioClip(ExpressionType.Neutral);
+    }
 
     public void SetMotionState(int motion)
     {
@@ -77,7 +108,7 @@ public class AnimationController : MonoBehaviour
                 break;
         }
     }
-    public void SetExpression(ExpressionType expression, bool audio=true)
+    public void SetExpression(ExpressionType expression, bool audio = true)
     {
         ResetExpressionTriggers();
         switch (expression)
@@ -103,6 +134,7 @@ public class AnimationController : MonoBehaviour
         StartCoroutine(WaitAndDo(2.0f, () =>
         {
             animator.SetTrigger(neutralExpression);
+            StartNeutralAudioCoroutine();
         }));
     }
     public void SetCallBack(string state, UnityAction callback)

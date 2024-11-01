@@ -66,7 +66,7 @@ public class AIHandZoneVisual : HandZoneVisualBase
                 playZoneVisual.AddCardModelsToTable(cards);
                 ArrangeCardsInFan();
             };
-        AnimationController.Instance.SetCallBack("playcard", finishCallback);
+        StartCoroutine(waitAndDo(4.3f, finishCallback));
 
     }
     private IEnumerator waitAndDo(float waitTime, UnityAction callback)

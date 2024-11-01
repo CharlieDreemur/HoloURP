@@ -6,8 +6,10 @@ using System.Collections;
 public class AIPlayer : PlayerBase
 {
 
-    void Awake(){
-        DeathEvent.AddListener(() => {
+    void Awake()
+    {
+        DeathEvent.AddListener(() =>
+        {
             UIManager.Instance.WinGame();
         });
     }
@@ -58,16 +60,17 @@ public class AIPlayer : PlayerBase
         int index = Random.Range(0, opponent.HandCards.Count);
         Debug.Log("AIPlayer:PunishOpponent");
         CardPlayer cardPlayer = (CardPlayer)opponent;
+        CardBase card;
         //draw one card from opponent
         if (cardPlayer.HandCards.Count > 0)
         {
-            CardBase card = cardPlayer.HandCards[index];
+            card = cardPlayer.HandCards[index];
             GameObject cardModel = cardPlayer.handZoneVisual.CardModels[index];
             UnityAction pickCallback = () =>
             {
                 AIHandZoneVisual hand = (AIHandZoneVisual)handZoneVisual;
                 cardModel.transform.SetParent(hand.RightHandTransform);
-                cardModel.transform.DOLocalMove(new Vector3(0,0,0), 0.3f).OnComplete(() =>
+                cardModel.transform.DOLocalMove(new Vector3(0, 0, 0), 0.3f).OnComplete(() =>
                 {
                     AnimationController.Instance.SetMotionState("Idle");
                 });
@@ -81,8 +84,18 @@ public class AIPlayer : PlayerBase
                 AddCard(card);
                 Destroy(cardModel);
                 cardPlayer.handZoneVisual.HideHand();
+                if (card is NumberCard)
+                {
+                    AnimationController.Instance.SetExpression(ExpressionType.Happy);
+                    CardGameManager.Instance.AdvanceTurn();
+                }
+                else
+                {
+                    Hurt();
+                    StartCoroutine(WaitAndDo(1f, ()=>CardGameManager.Instance.AdvanceTurn()));
+                }
             };
-            AnimationController.Instance.SetCallBack("TakeCard", finishCallback);
+            StartCoroutine(WaitAndDo(4.95f, finishCallback));
             return card;
         }
         else
@@ -113,18 +126,23 @@ public class AIPlayer : PlayerBase
         }
         return bestCard;
     }
-    public void SwitchExpression(int CurrentCardIndex){
-        if(CurrentCardIndex < 0){
+    public void SwitchExpression(int CurrentCardIndex)
+    {
+        if (CurrentCardIndex < 0)
+        {
             return;
         }
-        else if(CurrentCardIndex >= HandCards.Count){
+        else if (CurrentCardIndex >= HandCards.Count)
+        {
             return;
         }
         //if the card at the index is a bomb card, switch to the bomb expression
-        if(HandCards[CurrentCardIndex] is BombCard){
+        if (HandCards[CurrentCardIndex] is BombCard)
+        {
             AnimationController.Instance.SetExpression(ExpressionType.Sad);
         }
-        else{
+        else
+        {
             AnimationController.Instance.SetExpression(ExpressionType.Happy);
         }
     }

@@ -29,16 +29,6 @@ public class AITurnState : IGameState
         UnityAction action = () =>
         {
             CardBase card = aiPlayer.DrawOpponent(opponent);
-            if(card is NumberCard)
-            {
-                cardGameManager.StartCoroutine(cardGameManager.WaitForSeconds(() => cardGameManager.AdvanceTurn(), 6f));
-            }
-            else
-            {
-                cardGameManager.StartCoroutine(cardGameManager.WaitForSeconds(() => aiPlayer.Hurt(), 6f));
-                Debug.Log("AI's Turn DrawOpponent:You draw a bomb card");
-                cardGameManager.StartCoroutine(cardGameManager.WaitForSeconds(() => cardGameManager.Reset(), 7f));
-            }
         };
         cardGameManager.StartCoroutine(cardGameManager.WaitForSeconds(action, 1.5f));
     }
