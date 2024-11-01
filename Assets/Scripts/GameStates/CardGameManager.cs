@@ -108,13 +108,9 @@ public class CardGameManager : MonoBehaviour
         currentPlayerInfo.isDrawOpponent = false;
         playZone.AddCardsIntoDeck();
         playZone.LastCardInfo = null;
-        turnQueue.Clear();
-        turnQueueList.Clear();
         foreach (var player in players)
         {
             player.playerBase.Clear();
-            turnQueue.Enqueue(player);
-            turnQueueList.Add(player);
         }
         UnityAction callback = () =>
         {

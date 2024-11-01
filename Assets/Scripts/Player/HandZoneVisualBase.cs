@@ -132,7 +132,8 @@ public abstract class HandZoneVisualBase : MonoBehaviour
         // Calculate vertical offset, with the middle card having the most displacement
         float verticalEffectFactor = Mathf.Abs(index - (_cardModels.Count - 1) / 2.0f) / (_cardModels.Count - 1) * 2;
         float y = Mathf.Lerp(verticalSpacing, 0, verticalEffectFactor);
-        return new Vector3(x, y, 0);
+        float z = -0.0001f * index;
+        return new Vector3(x, y, z);
     }
 
     private Quaternion CalculateCardRotation(float angle, int index)

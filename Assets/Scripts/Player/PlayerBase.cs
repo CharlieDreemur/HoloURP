@@ -10,6 +10,23 @@ public abstract class PlayerBase : MonoBehaviour
     [SerializeReference]
     public List<CardBase> HandCards = new List<CardBase>();
     [SerializeField]
+    public int MaxHealth
+    {
+        get => _maxHealth;
+        set
+        {
+            _maxHealth = value;
+        }
+    }
+    public int CurrentHealth
+    {
+        get => _currHealth;
+        set
+        {
+            _currHealth = value;
+        }
+    }
+    [SerializeField]
     private int _maxHealth = 3;
     [SerializeField]
     private int _currHealth = 3;

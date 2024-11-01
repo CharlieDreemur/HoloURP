@@ -4,7 +4,6 @@ public enum ExpressionType
 {
     Neutral,
     Sad,
-    Angry,
     Happy,
     Surprised,
     Thinking,
@@ -18,7 +17,6 @@ public class ExpressionSwitcher : MonoBehaviour
     {
         int index = (int)expression;
         animator.SetInteger("Expression", index);
-        PlayAudioClip(expression);
     }
 
     private void PlayAudioClip(ExpressionType expression)

@@ -8,16 +8,18 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: OfficeMaterial
-  m_Shader: {fileID: -6465566751694194690, guid: 6eb231ce89cf0264699c805e24eb51bd, type: 3}
+  m_Shader: {fileID: 4800000, guid: 933532a4fcc9baf4fa0491de14d08ed7, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
-  m_ValidKeywords: []
+  m_ValidKeywords:
+  - _SPECULAR_SETUP
   m_InvalidKeywords: []
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 1
   m_CustomRenderQueue: -1
-  stringTagMap: {}
+  stringTagMap:
+    RenderType: Opaque
   disabledShaderPasses:
   - CharacterTransparent
   - CharacterOutline
@@ -120,6 +122,7 @@ Material:
     - _AnisotropicSlide: 0.3
     - _Blend: 0
     - _BlendModePreserveSpecular: 1
+    - _BlendOp: 0
     - _BlinnPhongPow: 5
     - _BumpScale: 1
     - _ClearCoatMask: 0
@@ -185,6 +188,7 @@ Material:
     - _QueueOffset: 0
     - _ReceiveShadows: 1
     - _SHADOW_RAMP: 0
+    - _SampleGI: 0
     - _Scale: 10
     - _ShadowOffset: 0.5
     - _ShadowSmoothNdotL: 0.25
@@ -204,9 +208,9 @@ Material:
     - _WorkflowMode: 0
     - _ZWrite: 1
     m_Colors:
-    - _BaseColor: {r: 0.5825027, g: 0.63903093, b: 0.6603774, a: 1}
+    - _BaseColor: {r: 0.44255075, g: 0.46268016, b: 0.4811321, a: 1}
     - _BaseColorOutter: {r: 1, g: 1, b: 1, a: 1}
-    - _Color: {r: 0.4811321, g: 0.4811321, b: 0.4811321, a: 1}
+    - _Color: {r: 0.44255072, g: 0.46268016, b: 0.4811321, a: 1}
     - _DirectRimBackCol: {r: 0.2, g: 0.2, b: 0.2, a: 0.5}
     - _DirectRimFrontCol: {r: 1, g: 1, b: 1, a: 0.5}
     - _EmissionCol: {r: 0, g: 0, b: 0, a: 1}

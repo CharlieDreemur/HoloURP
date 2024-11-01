@@ -94,6 +94,12 @@ public class AIPlayer : PlayerBase
         return bestCard;
     }
     public void SwitchExpression(int CurrentCardIndex){
+        if(CurrentCardIndex < 0){
+            return;
+        }
+        else if(CurrentCardIndex >= HandCards.Count){
+            return;
+        }
         //if the card at the index is a bomb card, switch to the bomb expression
         if(HandCards[CurrentCardIndex] is BombCard){
             expression.SwitchExpression(ExpressionType.Happy);

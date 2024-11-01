@@ -145,6 +145,7 @@
       <string>Assets/Resources/Animation/VMD/Final/Animation/Gura_Take_Card_V3.vmd</string>
     </vmdAssetPathList>
     <fbxOutputPath>Assets/Resources/Model/Gura_Take3.fbx</fbxOutputPath>
+    <fbxAssetPath>Assets/Resources/Model/Gura/GawrGura.fbx</fbxAssetPath>
     <bulletPhysicsVersion>_275</bulletPhysicsVersion>
     <useWineFlag>false</useWineFlag>
     <wine>Manual</wine>
