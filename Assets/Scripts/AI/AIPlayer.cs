@@ -4,6 +4,7 @@ using UnityEngine.Events;
 using DG.Tweening;
 public class AIPlayer : PlayerBase
 {
+    public ExpressionSwitcher expression;
     public void PlayRandomCard(PlayerContext context)
     {
         if (HandCards.Count > 0)
@@ -31,15 +32,19 @@ public class AIPlayer : PlayerBase
 
         }
     }
-
+    public override void Hurt()
+    {
+        base.Hurt();
+    }
     // public override void DrawCards(int n = 1)
     // {
     //     base.DrawCards(3);
     // }
 
-    public override void PunishOpponent(PlayerBase opponent)
+    public override CardBase DrawOpponent(PlayerBase opponent)
     {
-        int index = 0;
+        //randomly draw one card from opponent
+        int index = Random.Range(0, opponent.HandCards.Count);
         float moveDuration = 1f;
         Debug.Log("AIPlayer:PunishOpponent");
         CardPlayer cardPlayer = (CardPlayer)opponent;
@@ -58,12 +63,13 @@ public class AIPlayer : PlayerBase
                 Destroy(cardModel);
                 cardPlayer.handZoneVisual.HideHand();
             });
-
+            return card;
         }
         else
         {
             Debug.Log("Opponent has no card to draw");
         }
+        return null;
     }
 
     private NumberCard FindBestCard()
@@ -77,7 +83,7 @@ public class AIPlayer : PlayerBase
                 continue;
             }
             NumberCard card = c as NumberCard;
-            if (card.Number > lastCardNumber)
+            if (card.LargerThan(lastCardNumber))
             {
                 if (bestCard == null || card.Number < bestCard.Number)
                 {
@@ -87,5 +93,13 @@ public class AIPlayer : PlayerBase
         }
         return bestCard;
     }
-
+    public void SwitchExpression(int CurrentCardIndex){
+        //if the card at the index is a bomb card, switch to the bomb expression
+        if(HandCards[CurrentCardIndex] is BombCard){
+            expression.SwitchExpression(ExpressionType.Happy);
+        }
+        else{
+            expression.SwitchExpression(ExpressionType.Neutral);
+        }
+    }
 }

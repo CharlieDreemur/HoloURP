@@ -24,19 +24,4 @@ public class CardPlayer : PlayerBase
         cardDeck.DrawCards(this, n);
     }
 
-    public override void PunishOpponent(PlayerBase opponent)
-    {
-        Debug.Log("CardPlayer:PunishOpponent");
-        //draw one card from opponent
-        if (opponent.HandCards.Count > 0)
-        {
-            CardBase card = opponent.HandCards[handZoneVisual.CurrentCardIndex];
-            opponent.RemoveCard(card);
-            AddCard(card);
-        }
-        else
-        {
-            Debug.Log("Opponent has no card to draw");
-        }
-    }
 }

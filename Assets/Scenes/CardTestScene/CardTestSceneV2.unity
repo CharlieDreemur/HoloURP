@@ -1561,6 +1561,28 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 762c941c019a7b24fa3d4b73ef0fd6d0, type: 3}
   m_PrefabInstance: {fileID: 1812480051}
   m_PrefabAsset: {fileID: 0}
+--- !u!95 &142904737 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 5866666021909216657, guid: 762c941c019a7b24fa3d4b73ef0fd6d0, type: 3}
+  m_PrefabInstance: {fileID: 1812480051}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &142904738
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 142904733}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3a5f1a9913653a34fbd90a327ba574e0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  faceMesh: {fileID: 1543819610}
+  blinkBlendShapeIndex: 0
+  blinkDuration: 0.15
+  blinkMinInterval: 3
+  blinkMaxInterval: 6
 --- !u!1 &155635799 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2818560409135344482, guid: 762c941c019a7b24fa3d4b73ef0fd6d0, type: 3}
@@ -3020,8 +3042,10 @@ GameObject:
   - component: {fileID: 559348403}
   - component: {fileID: 559348405}
   - component: {fileID: 559348404}
+  - component: {fileID: 559348406}
+  - component: {fileID: 559348407}
   m_Layer: 0
-  m_Name: AIHandZone
+  m_Name: AIPlayer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3054,15 +3078,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 728b23f664864e9489da7a78c2a3a2de, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  initCardCount: 4
   HandCards: []
   _maxHealth: 3
+  _currHealth: 3
   _handTransform: {fileID: 207539346}
   cardDeck: {fileID: 2119859123}
   playZone: {fileID: 439035820}
-  HealthEvent:
-    m_PersistentCalls:
-      m_Calls: []
   RemoveCardEvent:
     m_PersistentCalls:
       m_Calls: []
@@ -3072,6 +3093,16 @@ MonoBehaviour:
   PlayCardEvent:
     m_PersistentCalls:
       m_Calls: []
+  HurtEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  DeathEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  ClearEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  expression: {fileID: 559348406}
   references:
     version: 2
     RefIds: []
@@ -3107,6 +3138,118 @@ MonoBehaviour:
   _cardModels: []
   _originalPos: {x: 0, y: 0, z: 0}
   _isHandHidden: 0
+--- !u!114 &559348406
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 559348402}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 342e259d043465a41bc56edb75435ad7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  animator: {fileID: 142904737}
+  audioSource: {fileID: 559348407}
+  voiceClipGroupSO: {fileID: 0}
+--- !u!82 &559348407
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 559348402}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_Resource: {fileID: 0}
+  m_PlayOnAwake: 1
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &571631938 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -5718897288143664541, guid: 762c941c019a7b24fa3d4b73ef0fd6d0, type: 3}
@@ -4060,6 +4203,7 @@ GameObject:
   m_Component:
   - component: {fileID: 858290811}
   - component: {fileID: 858290810}
+  - component: {fileID: 858290812}
   m_Layer: 0
   m_Name: AudioPlayer
   m_TagString: Untagged
@@ -4077,8 +4221,8 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: 1b829bac46c407a42ac51edd8d2da4d7, type: 3}
-  m_Resource: {fileID: 8300000, guid: 1b829bac46c407a42ac51edd8d2da4d7, type: 3}
+  m_audioClip: {fileID: 8300000, guid: cf9b0644878630946b95f9629c26d0f0, type: 3}
+  m_Resource: {fileID: 8300000, guid: cf9b0644878630946b95f9629c26d0f0, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 1
   m_Pitch: 1
@@ -4179,6 +4323,29 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &858290812
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 858290809}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7485e3ce7fa93d64ba1b60f2553b7b65, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sounds:
+  - name: cardplace
+    clip: {fileID: 8300000, guid: 8e5e9c9ccf8d03040b2ecca3fdd109b2, type: 3}
+  - name: cardswipe
+    clip: {fileID: 8300000, guid: 713a076b35b5400468d830b296aafede, type: 3}
+  - name: corrupt
+    clip: {fileID: 8300000, guid: b00ebc442b2e78c4a8e137607c97005e, type: 3}
+  - name: explosion
+    clip: {fileID: 8300000, guid: df7a414f01f09714d93e26ec22e8f902, type: 3}
+  - name: gamewin
+    clip: {fileID: 0}
 --- !u!1 &868284210 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -5087066412304085624, guid: 762c941c019a7b24fa3d4b73ef0fd6d0, type: 3}
@@ -5039,6 +5206,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 34a2af23449716048ba0bae18ae22daf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  perTurnDrawCount: 2
   players:
   - playerType: 0
     playerName: Dreemur
@@ -5050,6 +5218,7 @@ MonoBehaviour:
     playerBase: {fileID: 559348404}
     cardGameManager: {fileID: 0}
     isDrawOpponent: 0
+  turnQueueList: []
   turnCount: 0
   currentPlayerInfo:
     playerType: 0
@@ -6269,6 +6438,11 @@ MonoBehaviour:
   boneID: 10
   ikEnabled: 0
   ikWeight: 1
+--- !u!137 &1543819610 stripped
+SkinnedMeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 9128207215404129817, guid: 762c941c019a7b24fa3d4b73ef0fd6d0, type: 3}
+  m_PrefabInstance: {fileID: 1812480051}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1547127674 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -2477617006768873857, guid: 762c941c019a7b24fa3d4b73ef0fd6d0, type: 3}
@@ -7206,6 +7380,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9128207215404129817, guid: 762c941c019a7b24fa3d4b73ef0fd6d0, type: 3}
+      propertyPath: m_RayTraceProcedural
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9128207215404129817, guid: 762c941c019a7b24fa3d4b73ef0fd6d0, type: 3}
       propertyPath: m_RenderingLayerMask
       value: 128
       objectReference: {fileID: 0}
@@ -7221,6 +7399,114 @@ PrefabInstance:
       propertyPath: 'm_BlendShapeWeights.Array.data[5]'
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 9128207215404129817, guid: 762c941c019a7b24fa3d4b73ef0fd6d0, type: 3}
+      propertyPath: 'm_BlendShapeWeights.Array.data[6]'
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9128207215404129817, guid: 762c941c019a7b24fa3d4b73ef0fd6d0, type: 3}
+      propertyPath: 'm_BlendShapeWeights.Array.data[7]'
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9128207215404129817, guid: 762c941c019a7b24fa3d4b73ef0fd6d0, type: 3}
+      propertyPath: 'm_BlendShapeWeights.Array.data[10]'
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9128207215404129817, guid: 762c941c019a7b24fa3d4b73ef0fd6d0, type: 3}
+      propertyPath: 'm_BlendShapeWeights.Array.data[12]'
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9128207215404129817, guid: 762c941c019a7b24fa3d4b73ef0fd6d0, type: 3}
+      propertyPath: 'm_BlendShapeWeights.Array.data[18]'
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9128207215404129817, guid: 762c941c019a7b24fa3d4b73ef0fd6d0, type: 3}
+      propertyPath: 'm_BlendShapeWeights.Array.data[19]'
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9128207215404129817, guid: 762c941c019a7b24fa3d4b73ef0fd6d0, type: 3}
+      propertyPath: 'm_BlendShapeWeights.Array.data[20]'
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9128207215404129817, guid: 762c941c019a7b24fa3d4b73ef0fd6d0, type: 3}
+      propertyPath: 'm_BlendShapeWeights.Array.data[22]'
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9128207215404129817, guid: 762c941c019a7b24fa3d4b73ef0fd6d0, type: 3}
+      propertyPath: 'm_BlendShapeWeights.Array.data[23]'
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9128207215404129817, guid: 762c941c019a7b24fa3d4b73ef0fd6d0, type: 3}
+      propertyPath: 'm_BlendShapeWeights.Array.data[24]'
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9128207215404129817, guid: 762c941c019a7b24fa3d4b73ef0fd6d0, type: 3}
+      propertyPath: 'm_BlendShapeWeights.Array.data[26]'
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9128207215404129817, guid: 762c941c019a7b24fa3d4b73ef0fd6d0, type: 3}
+      propertyPath: 'm_BlendShapeWeights.Array.data[27]'
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9128207215404129817, guid: 762c941c019a7b24fa3d4b73ef0fd6d0, type: 3}
+      propertyPath: 'm_BlendShapeWeights.Array.data[28]'
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9128207215404129817, guid: 762c941c019a7b24fa3d4b73ef0fd6d0, type: 3}
+      propertyPath: 'm_BlendShapeWeights.Array.data[29]'
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9128207215404129817, guid: 762c941c019a7b24fa3d4b73ef0fd6d0, type: 3}
+      propertyPath: 'm_BlendShapeWeights.Array.data[32]'
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9128207215404129817, guid: 762c941c019a7b24fa3d4b73ef0fd6d0, type: 3}
+      propertyPath: 'm_BlendShapeWeights.Array.data[33]'
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9128207215404129817, guid: 762c941c019a7b24fa3d4b73ef0fd6d0, type: 3}
+      propertyPath: 'm_BlendShapeWeights.Array.data[34]'
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9128207215404129817, guid: 762c941c019a7b24fa3d4b73ef0fd6d0, type: 3}
+      propertyPath: 'm_BlendShapeWeights.Array.data[38]'
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9128207215404129817, guid: 762c941c019a7b24fa3d4b73ef0fd6d0, type: 3}
+      propertyPath: 'm_BlendShapeWeights.Array.data[40]'
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9128207215404129817, guid: 762c941c019a7b24fa3d4b73ef0fd6d0, type: 3}
+      propertyPath: 'm_BlendShapeWeights.Array.data[41]'
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9128207215404129817, guid: 762c941c019a7b24fa3d4b73ef0fd6d0, type: 3}
+      propertyPath: 'm_BlendShapeWeights.Array.data[42]'
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9128207215404129817, guid: 762c941c019a7b24fa3d4b73ef0fd6d0, type: 3}
+      propertyPath: 'm_BlendShapeWeights.Array.data[43]'
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9128207215404129817, guid: 762c941c019a7b24fa3d4b73ef0fd6d0, type: 3}
+      propertyPath: 'm_BlendShapeWeights.Array.data[44]'
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9128207215404129817, guid: 762c941c019a7b24fa3d4b73ef0fd6d0, type: 3}
+      propertyPath: 'm_BlendShapeWeights.Array.data[45]'
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9128207215404129817, guid: 762c941c019a7b24fa3d4b73ef0fd6d0, type: 3}
+      propertyPath: 'm_BlendShapeWeights.Array.data[46]'
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9128207215404129817, guid: 762c941c019a7b24fa3d4b73ef0fd6d0, type: 3}
+      propertyPath: 'm_BlendShapeWeights.Array.data[47]'
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9128207215404129817, guid: 762c941c019a7b24fa3d4b73ef0fd6d0, type: 3}
+      propertyPath: 'm_BlendShapeWeights.Array.data[48]'
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
@@ -7231,6 +7517,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 762c941c019a7b24fa3d4b73ef0fd6d0, type: 3}
       insertIndex: -1
       addedObject: {fileID: 142904734}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 762c941c019a7b24fa3d4b73ef0fd6d0, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 142904738}
     - targetCorrespondingSourceObject: {fileID: -984924751261603934, guid: 762c941c019a7b24fa3d4b73ef0fd6d0, type: 3}
       insertIndex: -1
       addedObject: {fileID: 692150293}
@@ -8419,15 +8708,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bba2f21f65842ef46995c549ff0c5cb4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  initCardCount: 3
   HandCards: []
   _maxHealth: 3
+  _currHealth: 3
   _handTransform: {fileID: 1326758196}
   cardDeck: {fileID: 2119859123}
   playZone: {fileID: 439035820}
-  HealthEvent:
-    m_PersistentCalls:
-      m_Calls: []
   RemoveCardEvent:
     m_PersistentCalls:
       m_Calls: []
@@ -8435,6 +8721,15 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   PlayCardEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  HurtEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  DeathEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  ClearEvent:
     m_PersistentCalls:
       m_Calls: []
   handZoneVisual: {fileID: 1985906578}

@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d10f1b959775474409a72b346a28bb47, type: 3}
+  m_Name: GuraClip
+  m_EditorClassIdentifier: 
+  voiceClipGroups:
+  - type: 0
+    audioClips:
+    - {fileID: 8300000, guid: f6643bb65c2a0754c9a6b07c296b76bc, type: 3}
+    - {fileID: 8300000, guid: 188ca29605f7cd84cb9dca1dae28127f, type: 3}
+  - type: 1
+    audioClips:
+    - {fileID: 8300000, guid: 9073134bae8622348b3e647bcf09daab, type: 3}
+    - {fileID: 8300000, guid: 500ec637ad0a1714398f053125719181, type: 3}
+  - type: 3
+    audioClips:
+    - {fileID: 8300000, guid: 5fc73261311e4ba4bbdfe2e7591bdf92, type: 3}
+  - type: 4
+    audioClips:
+    - {fileID: 8300000, guid: e7981d2c35b121b44b130e6f0e91a874, type: 3}
+    - {fileID: 8300000, guid: fc2a6264911dc2d4bab05c5822b9c551, type: 3}
+  - type: 5
+    audioClips:
+    - {fileID: 8300000, guid: ab6c8bafdf3e5524e8b42a5bb53fa03a, type: 3}
+    - {fileID: 8300000, guid: 8c2e177677a775d4f9d3f68a70a44620, type: 3}

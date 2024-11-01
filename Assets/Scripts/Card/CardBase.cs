@@ -1,14 +1,9 @@
 using UnityEngine;
-public interface ICardEffect
-{
-    void ApplyEffect();
-}
-
 public interface ICard
 {
-    void Use();
+    void OnUse();
     void OnDraw();
-    void OnDiscard();
+    void OnRemove();
 }
 
 public enum OwnerType
@@ -23,7 +18,7 @@ public abstract class CardBase: ICard
 {
     [SerializeField]
     protected string description = "CardBase";
-    public virtual void Use()
+    public virtual void OnUse()
     {
         Debug.Log($"CardBase used");
     }
@@ -33,7 +28,7 @@ public abstract class CardBase: ICard
     {
         Debug.Log($"CardBase used");
     }
-    public virtual void OnDiscard()
+    public virtual void OnRemove()
     {
         Debug.Log($"CardBase used");
     }

@@ -4,7 +4,7 @@ public class NavigateLeftCommand : ICommand<PlayerContext>
 {
     public void Execute(PlayerContext context)
     {
-        Debug.Log("NavigateLeftCommand");
+        //Debug.Log("NavigateLeftCommand");
         CardPlayer player = context.playerBase as CardPlayer;
         if (!context.isDrawOpponent)
         {

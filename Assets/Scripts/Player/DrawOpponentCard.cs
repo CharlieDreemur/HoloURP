@@ -47,6 +47,7 @@ public class DrawOpponentCard : MonoBehaviour
         aiHand.CardModels[CurrentCardIndex].GetComponent<CardBackVisual>().DeselectCard();
         CurrentCardIndex--;
         aiHand.CardModels[CurrentCardIndex].GetComponent<CardBackVisual>().SelectCard();
+        aiPlayer.SwitchExpression(CurrentCardIndex);
 
     }
 
@@ -60,5 +61,6 @@ public class DrawOpponentCard : MonoBehaviour
         aiHand.CardModels[CurrentCardIndex].GetComponent<CardBackVisual>().DeselectCard();
         CurrentCardIndex++;
         aiHand.CardModels[CurrentCardIndex].GetComponent<CardBackVisual>().SelectCard();
+        aiPlayer.SwitchExpression(CurrentCardIndex);
     }
 }

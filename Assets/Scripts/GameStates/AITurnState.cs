@@ -25,8 +25,21 @@ public class AITurnState : IGameState
         AIPlayer aiPlayer = (AIPlayer)context.playerBase;
         CardPlayer cardPlayer = (CardPlayer)opponent;
         cardPlayer.handZoneVisual.ShowHand();
-        cardGameManager.StartCoroutine(cardGameManager.WaitForSeconds(() => aiPlayer.PunishOpponent(opponent), 1.5f));
-        cardGameManager.StartCoroutine(cardGameManager.WaitForSeconds(() => cardGameManager.AdvanceTurn(), 2f));
+        UnityAction action = () =>
+        {
+            CardBase card = aiPlayer.DrawOpponent(opponent);
+            if(card is NumberCard)
+            {
+                cardGameManager.StartCoroutine(cardGameManager.WaitForSeconds(() => cardGameManager.AdvanceTurn(), 2f));
+            }
+            else
+            {
+                aiPlayer.Hurt();
+                Debug.Log("AI's Turn PunishOpponent:You draw a bomb card");
+                cardGameManager.StartCoroutine(cardGameManager.WaitForSeconds(() => cardGameManager.Reset(), 2f));
+            }
+        };
+        cardGameManager.StartCoroutine(cardGameManager.WaitForSeconds(action, 1.5f));
     }
 
     public void Exit()

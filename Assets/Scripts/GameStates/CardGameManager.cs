@@ -35,6 +35,10 @@ public class PlayerContext : IContext
 /// </summary>
 public class CardGameManager : MonoBehaviour
 {
+    public static CardGameManager Instance;
+    public System.Random RNG = new System.Random();
+    [SerializeField]
+    private int perTurnDrawCount = 2;
     [SerializeField]
     private List<PlayerContext> players = new List<PlayerContext>();
     [SerializeField] private List<PlayerContext> turnQueueList = new List<PlayerContext>();
@@ -50,6 +54,14 @@ public class CardGameManager : MonoBehaviour
     private IGameState currentState;
     void Awake()
     {
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Destroy(this);
+        }
         for (int i = 0; i < players.Count; i++)
         {
             players[i].cardGameManager = this;
@@ -68,13 +80,14 @@ public class CardGameManager : MonoBehaviour
                 turnQueue.Enqueue(player);
                 turnQueueList.Add(player);
             }
-            AdvanceTurn();
+            AdvanceRound();
         }
         else
         {
             Debug.LogError("Not enough players defined in CardGameManager.");
         }
     }
+
 
     public void SetState(IGameState newState)
     {
@@ -90,24 +103,45 @@ public class CardGameManager : MonoBehaviour
         //Determine the winner
         PunishPlayer(currentPlayerInfo, turnQueue.Peek());
     }
+    public void Reset()
+    {
+        currentPlayerInfo.isDrawOpponent = false;
+        playZone.AddCardsIntoDeck();
+        playZone.LastCardInfo = null;
+        turnQueue.Clear();
+        turnQueueList.Clear();
+        foreach (var player in players)
+        {
+            player.playerBase.Clear();
+            turnQueue.Enqueue(player);
+            turnQueueList.Add(player);
+        }
+        UnityAction callback = () =>
+        {
 
+            AdvanceRound();
+        };
+        StartCoroutine(WaitForSeconds(callback, 1f));
+    }
     public void AdvanceTurn()
     {
         currentPlayerInfo.isDrawOpponent = false;
         playZone.AddCardsIntoDeck();
         playZone.LastCardInfo = null;
-        turnCount++;
         UnityAction callback = () =>
         {
-            foreach (var player in players)
+            if (turnCount > 0)
             {
+                foreach (var player in players)
+                {
 
-                player.playerBase.DrawCards(3);
+                    player.playerBase.DrawCards(perTurnDrawCount);
+                }
             }
             AdvanceRound();
         };
         StartCoroutine(WaitForSeconds(callback, 1f));
-
+        turnCount++;
     }
     public void PunishPlayer(PlayerContext winner, PlayerContext loser)
     {
