@@ -76,6 +76,7 @@ public abstract class PlayerBase : MonoBehaviour
         CardsUtils.Shuffle(ref HandCards);
         AddCardEvent?.Invoke(HandCards);
     }
+    [ContextMenu("Hurt")]
     public virtual void Hurt()
     {
         Health--;
