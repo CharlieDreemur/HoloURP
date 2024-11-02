@@ -82,8 +82,14 @@ public class DrawOpponentCard : MonoBehaviour
     {
         if (aiPlayer.Health <= 1)
         {
-            AnimationController.Instance.SetExpression(ExpressionType.Corrupted, false);
-            return;
+            if (aiPlayer.HandCards[CurrentCardIndex] is BombCard)
+            {
+                AnimationController.Instance.SetExpression(ExpressionType.Thinking, false);
+            }
+            else
+            {
+                AnimationController.Instance.SetExpression(ExpressionType.Happy, false);
+            }
         }
         //if the current selecting card is bomb card, switch to the happy expression, else switch to the sad expression
         if (aiPlayer.HandCards[CurrentCardIndex] is BombCard)

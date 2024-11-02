@@ -12598,6 +12598,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9128207215404129817, guid: 762c941c019a7b24fa3d4b73ef0fd6d0, type: 3}
+      propertyPath: 'm_BlendShapeWeights.Array.data[18]'
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9128207215404129817, guid: 762c941c019a7b24fa3d4b73ef0fd6d0, type: 3}
       propertyPath: 'm_BlendShapeWeights.Array.data[19]'
       value: 0
       objectReference: {fileID: 0}
@@ -12611,6 +12615,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9128207215404129817, guid: 762c941c019a7b24fa3d4b73ef0fd6d0, type: 3}
       propertyPath: 'm_BlendShapeWeights.Array.data[22]'
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9128207215404129817, guid: 762c941c019a7b24fa3d4b73ef0fd6d0, type: 3}
+      propertyPath: 'm_BlendShapeWeights.Array.data[23]'
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9128207215404129817, guid: 762c941c019a7b24fa3d4b73ef0fd6d0, type: 3}
@@ -12686,6 +12694,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9128207215404129817, guid: 762c941c019a7b24fa3d4b73ef0fd6d0, type: 3}
+      propertyPath: 'm_BlendShapeWeights.Array.data[52]'
+      value: 2.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 9128207215404129817, guid: 762c941c019a7b24fa3d4b73ef0fd6d0, type: 3}
       propertyPath: 'm_BlendShapeWeights.Array.data[53]'
       value: 0
       objectReference: {fileID: 0}
@@ -12726,11 +12738,23 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9128207215404129817, guid: 762c941c019a7b24fa3d4b73ef0fd6d0, type: 3}
+      propertyPath: 'm_BlendShapeWeights.Array.data[68]'
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9128207215404129817, guid: 762c941c019a7b24fa3d4b73ef0fd6d0, type: 3}
+      propertyPath: 'm_BlendShapeWeights.Array.data[69]'
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9128207215404129817, guid: 762c941c019a7b24fa3d4b73ef0fd6d0, type: 3}
       propertyPath: 'm_BlendShapeWeights.Array.data[72]'
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9128207215404129817, guid: 762c941c019a7b24fa3d4b73ef0fd6d0, type: 3}
       propertyPath: 'm_BlendShapeWeights.Array.data[73]'
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9128207215404129817, guid: 762c941c019a7b24fa3d4b73ef0fd6d0, type: 3}
+      propertyPath: 'm_BlendShapeWeights.Array.data[74]'
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -15036,8 +15060,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   HandCards: []
   handZoneVisual: {fileID: 582314182408338826}
-  _maxHealth: 2
-  _currHealth: 2
+  _maxHealth: 3
+  _currHealth: 3
   _handTransform: {fileID: 1708547117}
   cardDeck: {fileID: 3074649234656268195}
   playZone: {fileID: 2693123095644593192}
@@ -15059,8 +15083,10 @@ MonoBehaviour:
   ClearEvent:
     m_PersistentCalls:
       m_Calls: []
-  EmissionMaterial: {fileID: 2100000, guid: 9315bd384dd33204e9abffb5cfd6e343, type: 2}
+  materialIndex: 5
+  emissionMaterial: {fileID: 0}
   originalColor: {r: 2.8284268, g: 2.8284268, b: 2.8284268, a: 1}
+  meshRenderer: {fileID: 96236846}
   references:
     version: 2
     RefIds: []
@@ -15621,6 +15647,8 @@ MonoBehaviour:
     clip: {fileID: 8300000, guid: 38804ab2c60301943a7f135dce7e2796, type: 3}
   - name: gamelose
     clip: {fileID: 8300000, guid: 1be2f01c9a4434f449fe715f5e0b1070, type: 3}
+  - name: evil
+    clip: {fileID: 8300000, guid: ca786bfe4f2d5c74aaf8926a3c58f70f, type: 3}
 --- !u!4 &6940245210001665401
 Transform:
   m_ObjectHideFlags: 0

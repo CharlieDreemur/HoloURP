@@ -198,7 +198,7 @@ public class AnimationController : MonoBehaviour
         animator.ResetTrigger(thinkExpression);
     }
 
-    private void PlayAudioClip(ExpressionType expression)
+    public void PlayAudioClip(ExpressionType expression)
     {
         foreach (var item in voiceClipGroupSO.voiceClipGroups)
         {

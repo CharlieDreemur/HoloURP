@@ -21,13 +21,11 @@ MonoBehaviour:
     audioClips:
     - {fileID: 8300000, guid: 9073134bae8622348b3e647bcf09daab, type: 3}
     - {fileID: 8300000, guid: 500ec637ad0a1714398f053125719181, type: 3}
+    - {fileID: 8300000, guid: e7981d2c35b121b44b130e6f0e91a874, type: 3}
+    - {fileID: 8300000, guid: fc2a6264911dc2d4bab05c5822b9c551, type: 3}
   - type: 2
     audioClips:
     - {fileID: 8300000, guid: 5fc73261311e4ba4bbdfe2e7591bdf92, type: 3}
-  - type: 3
-    audioClips:
-    - {fileID: 8300000, guid: e7981d2c35b121b44b130e6f0e91a874, type: 3}
-    - {fileID: 8300000, guid: fc2a6264911dc2d4bab05c5822b9c551, type: 3}
   - type: 4
     audioClips:
     - {fileID: 8300000, guid: ab6c8bafdf3e5524e8b42a5bb53fa03a, type: 3}

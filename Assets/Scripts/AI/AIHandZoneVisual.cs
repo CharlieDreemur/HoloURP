@@ -27,6 +27,7 @@ public class AIHandZoneVisual : HandZoneVisualBase
 
     protected override void RunPlayCardAnimation(List<int> indexes)
     {
+        AnimationController.Instance.PlayAudioClip(ExpressionType.Thinking);
         AnimationController.Instance.SetMotionState("playcard");
         List<GameObject> cards = new List<GameObject>();
         UnityAction prepareAnimation = () =>
