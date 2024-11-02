@@ -5,13 +5,17 @@ using DG.Tweening;
 using System.Collections;
 public class AIPlayer : PlayerBase
 {
-
+    [SerializeField]
+    public Material EmissionMaterial;
+    [SerializeField]
+    private Color originalColor;
     void Awake()
     {
         DeathEvent.AddListener(() =>
         {
             UIManager.Instance.WinGame();
         });
+        EmissionMaterial.SetColor("_EmissionCol", originalColor);
     }
     public void PlayRandomCard(PlayerContext context)
     {
@@ -48,6 +52,11 @@ public class AIPlayer : PlayerBase
         AnimationController.Instance.SetExpression(ExpressionType.Sad);
         AudioManager.Instance.Play("corrupt");
         base.Hurt();
+        if(Health<=1){
+            //change the emission map of the shader to the color
+            Color darkColor = new Color(7.55234385f,0f,6.03824663f,1f);
+            EmissionMaterial.SetColor("_EmissionCol", darkColor);
+        }
     }
     // public override void DrawCards(int n = 1)
     // {

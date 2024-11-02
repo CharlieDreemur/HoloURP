@@ -127,7 +127,7 @@ public class AnimationController : MonoBehaviour
                 animator.SetTrigger(thinkExpression);
                 break;
             case ExpressionType.Corrupted:
-                animator.SetTrigger(sadExpression);
+                animator.SetTrigger(neutralExpression);
                 break;
             default:
                 Debug.LogWarning("Invalid expression type");

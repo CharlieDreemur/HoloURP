@@ -14589,18 +14589,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 5882471115165423090}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &469880609279375030
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3847601855133114380}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 0}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &582314182408338826
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15048,8 +15036,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   HandCards: []
   handZoneVisual: {fileID: 582314182408338826}
-  _maxHealth: 3
-  _currHealth: 3
+  _maxHealth: 2
+  _currHealth: 2
   _handTransform: {fileID: 1708547117}
   cardDeck: {fileID: 3074649234656268195}
   playZone: {fileID: 2693123095644593192}
@@ -15071,6 +15059,8 @@ MonoBehaviour:
   ClearEvent:
     m_PersistentCalls:
       m_Calls: []
+  EmissionMaterial: {fileID: 2100000, guid: 9315bd384dd33204e9abffb5cfd6e343, type: 2}
+  originalColor: {r: 2.8284268, g: 2.8284268, b: 2.8284268, a: 1}
   references:
     version: 2
     RefIds: []
@@ -15291,8 +15281,6 @@ GameObject:
   - component: {fileID: 2819149119444420629}
   - component: {fileID: 582314182408338826}
   - component: {fileID: 2523827937740206939}
-  - component: {fileID: 469880609279375030}
-  - component: {fileID: 4446084004974627187}
   m_Layer: 0
   m_Name: AIPlayer
   m_TagString: Untagged
@@ -15364,103 +15352,6 @@ RectTransform:
   m_AnchoredPosition: {x: -26.901, y: -100}
   m_SizeDelta: {x: 800, y: 70}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!82 &4446084004974627187
-AudioSource:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3847601855133114380}
-  m_Enabled: 1
-  serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 0}
-  m_Resource: {fileID: 0}
-  m_PlayOnAwake: 1
-  m_Volume: 1
-  m_Pitch: 1
-  Loop: 0
-  Mute: 0
-  Spatialize: 0
-  SpatializePostEffects: 0
-  Priority: 128
-  DopplerLevel: 1
-  MinDistance: 1
-  MaxDistance: 500
-  Pan2D: 0
-  rolloffMode: 0
-  BypassEffects: 0
-  BypassListenerEffects: 0
-  BypassReverbZones: 0
-  rolloffCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 1
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  panLevelCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  spreadCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  reverbZoneMixCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
 --- !u!224 &4615635802177765902
 RectTransform:
   m_ObjectHideFlags: 0

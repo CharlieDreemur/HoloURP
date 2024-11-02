@@ -50,6 +50,10 @@ public class DrawOpponentCard : MonoBehaviour
         {
             return;
         }
+        if (CurrentCardIndex < 0 || CurrentCardIndex >= aiHand.CardModels.Count)
+        {
+            CurrentCardIndex = 0;
+        }
         //Debug.Log("NavigateLeft");
         aiHand.CardModels[CurrentCardIndex].GetComponent<CardBackVisual>().DeselectCard();
         CurrentCardIndex--;
@@ -59,6 +63,10 @@ public class DrawOpponentCard : MonoBehaviour
 
     public void NavigateLeft()
     {
+        if (CurrentCardIndex < 0 || CurrentCardIndex >= aiHand.CardModels.Count)
+        {
+            CurrentCardIndex = 0;
+        }
         if (aiHand.CardModels.Count == 0)
         {
             return;
@@ -69,17 +77,21 @@ public class DrawOpponentCard : MonoBehaviour
         aiHand.CardModels[CurrentCardIndex].GetComponent<CardBackVisual>().SelectCard();
         ExpressionReflectCard();
     }
-    
-    private void ExpressionReflectCard(){
-        if(aiPlayer.Health<=1){
+
+    private void ExpressionReflectCard()
+    {
+        if (aiPlayer.Health <= 1)
+        {
             AnimationController.Instance.SetExpression(ExpressionType.Corrupted, false);
             return;
         }
         //if the current selecting card is bomb card, switch to the happy expression, else switch to the sad expression
-        if(aiPlayer.HandCards[CurrentCardIndex] is BombCard){
+        if (aiPlayer.HandCards[CurrentCardIndex] is BombCard)
+        {
             AnimationController.Instance.SetExpression(ExpressionType.Happy, false);
         }
-        else{
+        else
+        {
             AnimationController.Instance.SetExpression(ExpressionType.Thinking, false);
         }
     }
