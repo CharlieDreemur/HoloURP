@@ -8,6 +8,7 @@ public enum ExpressionType
     Happy,
     Surprised,
     Thinking,
+    Corrupted
 }
 public class AnimationController : MonoBehaviour
 {
@@ -124,6 +125,9 @@ public class AnimationController : MonoBehaviour
                 break;
             case ExpressionType.Thinking:
                 animator.SetTrigger(thinkExpression);
+                break;
+            case ExpressionType.Corrupted:
+                animator.SetTrigger(sadExpression);
                 break;
             default:
                 Debug.LogWarning("Invalid expression type");

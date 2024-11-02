@@ -96,7 +96,7 @@ public class AIPlayer : PlayerBase
                     StartCoroutine(WaitAndDo(1f, ()=>CardGameManager.Instance.Reset()));
                 }
             };
-            StartCoroutine(WaitAndDo(4.95f, finishCallback));
+            StartCoroutine(WaitAndDo(3.5f, finishCallback));
             return card;
         }
         else
