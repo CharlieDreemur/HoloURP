@@ -8,7 +8,7 @@ public enum ExpressionType
     Happy,
     Surprised,
     Thinking,
-    Corrupted
+    Unhappy
 }
 public class AnimationController : MonoBehaviour
 {
@@ -26,6 +26,7 @@ public class AnimationController : MonoBehaviour
     private readonly int sadExpression = Animator.StringToHash("Sad");
     private readonly int neutralExpression = Animator.StringToHash("Neutral");
     private readonly int thinkExpression = Animator.StringToHash("Think");
+    private readonly int unhappyExpression = Animator.StringToHash("UnHappy");
     public VoiceClipGroupSO voiceClipGroupSO;
     private Coroutine neutralAudioCoroutine;
     [SerializeField]
@@ -126,8 +127,8 @@ public class AnimationController : MonoBehaviour
             case ExpressionType.Thinking:
                 animator.SetTrigger(thinkExpression);
                 break;
-            case ExpressionType.Corrupted:
-                animator.SetTrigger(neutralExpression);
+            case ExpressionType.Unhappy:
+                animator.SetTrigger(unhappyExpression);
                 break;
             default:
                 Debug.LogWarning("Invalid expression type");
@@ -196,6 +197,7 @@ public class AnimationController : MonoBehaviour
         animator.ResetTrigger(sadExpression);
         animator.ResetTrigger(neutralExpression);
         animator.ResetTrigger(thinkExpression);
+        animator.ResetTrigger(unhappyExpression);
     }
 
     public void PlayAudioClip(ExpressionType expression)

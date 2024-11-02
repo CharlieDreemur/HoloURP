@@ -84,7 +84,7 @@ public class DrawOpponentCard : MonoBehaviour
         {
             if (aiPlayer.HandCards[CurrentCardIndex] is BombCard)
             {
-                AnimationController.Instance.SetExpression(ExpressionType.Thinking, false);
+                AnimationController.Instance.SetExpression(ExpressionType.Unhappy, false);
             }
             else
             {
@@ -98,7 +98,7 @@ public class DrawOpponentCard : MonoBehaviour
         }
         else
         {
-            AnimationController.Instance.SetExpression(ExpressionType.Thinking, false);
+            AnimationController.Instance.SetExpression(ExpressionType.Unhappy, false);
         }
     }
 }
