@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 8457468094784622674}
   - component: {fileID: 5777443947312635706}
   m_Layer: 5
-  m_Name: WinPanel
+  m_Name: Lose
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

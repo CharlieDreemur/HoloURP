@@ -48,22 +48,22 @@ public class UIManager : MonoBehaviour
         winPanel.SetActive(true);
         AudioManager.Instance.Play("gamewin");
         //if hold R, restart the game
-        inputControls.Player.EndTurn.performed += ctx =>
-        {
-            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-        };
+        inputControls.Player.EndTurn.performed += RestartGame;
         inputControls.Player.EndTurn.Enable();
     }
     public void LoseGame()
     {
         losePanel.SetActive(true);
         AudioManager.Instance.Play("gamelose");
-        inputControls.Player.EndTurn.performed += ctx =>
-    {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-    };
+        inputControls.Player.EndTurn.performed += RestartGame;
         inputControls.Player.EndTurn.Enable();
 
+    }
+
+    private void RestartGame(UnityEngine.InputSystem.InputAction.CallbackContext ctx)
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        inputControls.Player.EndTurn.performed -= RestartGame;
     }
 
 

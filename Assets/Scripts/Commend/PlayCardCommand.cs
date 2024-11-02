@@ -19,6 +19,7 @@ public class PlayCardCommand : ICommand<PlayerContext>
         else
         {
             CardBase card = player.drawOpponentCard.DrawCard();
+            CameraController.Instance.RestoreCamera();
             if (card is NumberCard)
             {
                 NumberCard numberCard = card as NumberCard;

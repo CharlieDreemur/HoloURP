@@ -44,6 +44,7 @@ public class AIPlayer : PlayerBase
     }
     public override void Hurt()
     {
+        CameraController.Instance.ShakeCamera();
         AnimationController.Instance.SetExpression(ExpressionType.Sad);
         AudioManager.Instance.Play("corrupt");
         base.Hurt();

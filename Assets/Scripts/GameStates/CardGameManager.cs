@@ -135,7 +135,7 @@ public class CardGameManager : MonoBehaviour
                 foreach (var player in players)
                 {
                     //only draw if card <=3
-                    if (player.playerBase.HandCards.Count <= 4)
+                    if (player.playerBase.HandCards.Count <= 3)
                     {
                         player.playerBase.DrawCards(perTurnDrawCount);
                     }
