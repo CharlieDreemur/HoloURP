@@ -12582,6 +12582,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9128207215404129817, guid: 762c941c019a7b24fa3d4b73ef0fd6d0, type: 3}
+      propertyPath: 'm_BlendShapeWeights.Array.data[6]'
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9128207215404129817, guid: 762c941c019a7b24fa3d4b73ef0fd6d0, type: 3}
       propertyPath: 'm_BlendShapeWeights.Array.data[9]'
       value: 0
       objectReference: {fileID: 0}
@@ -14741,6 +14745,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d1e5453228bb47d4a9d84f3bf2ba2999, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  faceMesh: {fileID: 96236846}
   aiPlayer: {fileID: 2523827937740206939}
   aiHand: {fileID: 582314182408338826}
   player: {fileID: 2931973064798965648}

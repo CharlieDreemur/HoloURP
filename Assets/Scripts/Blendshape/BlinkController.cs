@@ -4,7 +4,7 @@ using DG.Tweening;
 
 public class BlinkController : MonoBehaviour
 {
-    public SkinnedMeshRenderer faceMesh; // Assign the SkinnedMeshRenderer with blend shapes here
+    public SkinnedMeshRenderer faceMesh;
     public int blinkIndex; // The index of the blend shape for blinking
     public int eyebowIndex; // The index of the blend shape for blinking
     public float blinkDuration = 0.15f; // Time for each blink (up and down)
@@ -27,7 +27,7 @@ public class BlinkController : MonoBehaviour
         }
     }
 
-    private void PlayBlinkAnimation(int index)
+    public void PlayBlinkAnimation(int index)
     {
         // Animate the blend shape weight from 0 to 100 and back to 0 for a blink
         faceMesh.SetBlendShapeWeight(index, 0);

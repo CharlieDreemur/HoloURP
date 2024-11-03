@@ -3,6 +3,7 @@ using DG.Tweening;
 using System.Collections;
 public class DrawOpponentCard : MonoBehaviour
 {
+    public SkinnedMeshRenderer faceMesh;
     public AIPlayer aiPlayer;
     public AIHandZoneVisual aiHand;
     public CardPlayer player;
@@ -83,14 +84,7 @@ public class DrawOpponentCard : MonoBehaviour
         Debug.Log("aiPlayer.Health: " + aiPlayer.Health);
         if (aiPlayer.Health <= 1)
         {
-            if (aiPlayer.HandCards[CurrentCardIndex] is BombCard)
-            {
-                AnimationController.Instance.SetExpression(ExpressionType.Neutral, false);
-            }
-            else
-            {
-                AnimationController.Instance.SetExpression(ExpressionType.Neutral, false);
-            }
+            AnimationController.Instance.SetExpression(ExpressionType.Neutral, false);
             return;
         }
         //if the current selecting card is bomb card, switch to the happy expression, else switch to the sad expression
@@ -103,4 +97,5 @@ public class DrawOpponentCard : MonoBehaviour
             AnimationController.Instance.SetExpression(ExpressionType.Unhappy, false);
         }
     }
+
 }
