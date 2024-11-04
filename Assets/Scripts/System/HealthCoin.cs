@@ -42,6 +42,7 @@ public class HealthCoin : MonoBehaviour
     // Flip the life coin using DOTween
     private void FlipCoin(GameObject coin)
     {
+        AudioManager.Instance.Play("coinflip");
         coin.transform.DORotate(new Vector3(0, 0, 180), 0.5f, RotateMode.LocalAxisAdd)
             .SetEase(Ease.InOutQuad);
     }
