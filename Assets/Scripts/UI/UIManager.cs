@@ -14,6 +14,7 @@ public class UIManager : MonoBehaviour
     public GameObject losePanel;
     public InputControls inputControls;
     public GameObject tutorialPanel;
+    public GameObject drawOpponentTutorialPanel;
     private void Awake()
     {
         if (Instance == null)
@@ -25,10 +26,21 @@ public class UIManager : MonoBehaviour
             Destroy(this);
         }
         inputControls = new InputControls();
+        drawOpponentTutorialPanel.transform.localScale = Vector3.zero;
     }
     public void ShowMessage(string text)
     {
         messageIndicator.AnimateText(text);
+    }
+    public void ShowDrawOpponentTutorial()
+    {
+        drawOpponentTutorialPanel.SetActive(true);
+        drawOpponentTutorialPanel.transform.DOScale(Vector3.one, 0.5f).OnComplete(() => drawOpponentTutorialPanel.SetActive(true));
+    }
+
+    public void HideDrawOpponentTutorial()
+    {
+        drawOpponentTutorialPanel.transform.DOScale(Vector3.zero, 0.5f).OnComplete(() => drawOpponentTutorialPanel.SetActive(false));
     }
     public void ShowTurnText()
     {
@@ -44,26 +56,29 @@ public class UIManager : MonoBehaviour
 
     public void WinGame()
     {
-        Debug.Log("You Win");
+        SettingMenu.Instance.PauseGame();
         winPanel.SetActive(true);
         AudioManager.Instance.Play("gamewin");
         //if hold R, restart the game
-        inputControls.Player.EndTurn.performed += RestartGame;
-        inputControls.Player.EndTurn.Enable();
+        inputControls.Player.Restart.performed += RestartGame;
+        inputControls.Player.Restart.Enable();
     }
     public void LoseGame()
     {
+        SettingMenu.Instance.PauseGame();
         losePanel.SetActive(true);
         AudioManager.Instance.Play("gamelose");
-        inputControls.Player.EndTurn.performed += RestartGame;
-        inputControls.Player.EndTurn.Enable();
+        inputControls.Player.Restart.performed += RestartGame;
+        inputControls.Player.Restart.Enable();
 
     }
 
     private void RestartGame(UnityEngine.InputSystem.InputAction.CallbackContext ctx)
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-        inputControls.Player.EndTurn.performed -= RestartGame;
+        inputControls.Player.Restart.performed -= RestartGame;
+        inputControls.Player.Restart.Disable();  
+        SettingMenu.Instance.ResumeGame();
     }
 
 

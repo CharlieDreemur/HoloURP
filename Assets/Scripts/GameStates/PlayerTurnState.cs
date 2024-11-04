@@ -41,6 +41,7 @@ public class PlayerTurnState : IGameState
     {
         AnimationController.Instance.SetMotionState("Idle");
         CameraController.Instance.PlayCameraAnimation();
+        UIManager.Instance.ShowDrawOpponentTutorial();
         AudioManager.Instance.Play("roundlose");
         UIManager.Instance.ShowMessage("You Lose, draw one card from your opponent");
         _controls.Player.NavigateLeft.Enable();

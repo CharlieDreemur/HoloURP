@@ -6,27 +6,14 @@ using System.Collections;
 public class AIPlayer : PlayerBase
 {
     [SerializeField]
-    public int materialIndex;
-    [SerializeField]
-    private Material emissionMaterial;
-    [SerializeField]
-    private Color originalColor;
-    [SerializeField]
-    private SkinnedMeshRenderer meshRenderer;
+    private MaterialSetter materialSetter;
+
     void Awake()
     {
         DeathEvent.AddListener(() =>
         {
             UIManager.Instance.WinGame();
         });
-        if (meshRenderer != null && materialIndex >= 0 && materialIndex < meshRenderer.materials.Length)
-        {
-            emissionMaterial = meshRenderer.materials[materialIndex];
-        }
-        else
-        {
-            Debug.LogWarning("Material index is out of range or MeshRenderer not found.");
-        }
     }
     public void PlayRandomCard(PlayerContext context)
     {
@@ -57,11 +44,6 @@ public class AIPlayer : PlayerBase
 
         }
     }
-    [ContextMenu("BecomePurple")]
-    public void BecomePurple()
-    {
-        emissionMaterial.SetColor("_EmissionCol", new Color(7.55234385f, 0f, 6.03824663f, 1f));
-    }
     public override void Hurt()
     {
         CameraController.Instance.ShakeCamera();
@@ -71,7 +53,7 @@ public class AIPlayer : PlayerBase
         base.Hurt();
         if(Health<=1){
             AudioManager.Instance.Play("evil");
-            BecomePurple();
+            materialSetter.Change2EvilColor();
         }
     }
     // public override void DrawCards(int n = 1)

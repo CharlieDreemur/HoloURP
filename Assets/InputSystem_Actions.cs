@@ -99,6 +99,15 @@ public partial class @InputControls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": ""Hold"",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Restart"",
+                    ""type"": ""Button"",
+                    ""id"": ""282bf961-8408-44b5-938b-55ca5066b3a7"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -352,6 +361,39 @@ public partial class @InputControls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": ""XR"",
                     ""action"": ""EndTurn"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""290c8454-bacd-44f9-91b2-f861e67c6147"",
+                    ""path"": ""<Keyboard>/h"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""Restart"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""8a00c233-26af-4d0e-8ca8-203411f8fe87"",
+                    ""path"": ""<Gamepad>/rightTrigger"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""Restart"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""c8358e0f-bc58-4f27-8df1-d1107ac352ae"",
+                    ""path"": ""<XRController>/trigger"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""XR"",
+                    ""action"": ""Restart"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -1024,6 +1066,7 @@ public partial class @InputControls: IInputActionCollection2, IDisposable
         m_Player_NavigateRight = m_Player.FindAction("NavigateRight", throwIfNotFound: true);
         m_Player_DrawCard = m_Player.FindAction("DrawCard", throwIfNotFound: true);
         m_Player_EndTurn = m_Player.FindAction("EndTurn", throwIfNotFound: true);
+        m_Player_Restart = m_Player.FindAction("Restart", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -1111,6 +1154,7 @@ public partial class @InputControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_NavigateRight;
     private readonly InputAction m_Player_DrawCard;
     private readonly InputAction m_Player_EndTurn;
+    private readonly InputAction m_Player_Restart;
     public struct PlayerActions
     {
         private @InputControls m_Wrapper;
@@ -1123,6 +1167,7 @@ public partial class @InputControls: IInputActionCollection2, IDisposable
         public InputAction @NavigateRight => m_Wrapper.m_Player_NavigateRight;
         public InputAction @DrawCard => m_Wrapper.m_Player_DrawCard;
         public InputAction @EndTurn => m_Wrapper.m_Player_EndTurn;
+        public InputAction @Restart => m_Wrapper.m_Player_Restart;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -1156,6 +1201,9 @@ public partial class @InputControls: IInputActionCollection2, IDisposable
             @EndTurn.started += instance.OnEndTurn;
             @EndTurn.performed += instance.OnEndTurn;
             @EndTurn.canceled += instance.OnEndTurn;
+            @Restart.started += instance.OnRestart;
+            @Restart.performed += instance.OnRestart;
+            @Restart.canceled += instance.OnRestart;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
@@ -1184,6 +1232,9 @@ public partial class @InputControls: IInputActionCollection2, IDisposable
             @EndTurn.started -= instance.OnEndTurn;
             @EndTurn.performed -= instance.OnEndTurn;
             @EndTurn.canceled -= instance.OnEndTurn;
+            @Restart.started -= instance.OnRestart;
+            @Restart.performed -= instance.OnRestart;
+            @Restart.canceled -= instance.OnRestart;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -1374,6 +1425,7 @@ public partial class @InputControls: IInputActionCollection2, IDisposable
         void OnNavigateRight(InputAction.CallbackContext context);
         void OnDrawCard(InputAction.CallbackContext context);
         void OnEndTurn(InputAction.CallbackContext context);
+        void OnRestart(InputAction.CallbackContext context);
     }
     public interface IUIActions
     {

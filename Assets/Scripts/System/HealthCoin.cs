@@ -43,7 +43,7 @@ public class HealthCoin : MonoBehaviour
     private void FlipCoin(GameObject coin)
     {
         AudioManager.Instance.Play("coinflip");
-        coin.transform.DORotate(new Vector3(0, 0, 180), 0.5f, RotateMode.LocalAxisAdd)
+        coin.transform.DORotate(new Vector3(0, 0, 180), flipDuration, RotateMode.LocalAxisAdd)
             .SetEase(Ease.InOutQuad);
     }
 }

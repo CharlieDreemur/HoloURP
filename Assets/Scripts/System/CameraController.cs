@@ -107,6 +107,7 @@ public class CameraController : MonoBehaviour
     [ContextMenu("PlayCameraAnimation")]
     public void PlayCameraAnimation()
     {
+        Debug.Log("PlayCameraAnimation");
         isFreeLook = false;
         AnimateCameraPath(cameraPath, 1f, 1f);
     }
